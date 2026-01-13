@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artwork - Vaultorx</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --vx-primary: #22c55e;
+            --vx-primary-hover: #16a34a;
+            --vx-blue: #3b82f6;
+            --vx-dark: #1a1a2e;
+            --vx-light: #f8fafc;
+            --vx-card-bg: #ffffff;
+            --vx-border: #e2e8f0;
+            --vx-text: #1e293b;
+            --vx-text-muted: #64748b;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8fafc;
+            color: var(--vx-text);
+        }
+        
+        .vx-header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--vx-border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .vx-header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+        
+        .vx-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--vx-text);
+        }
+        
+        .vx-logo-icon svg { width: 28px; height: 28px; }
+        
+        .vx-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .vx-btn-login {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--vx-text);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        
+        .vx-btn-signup {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            background: var(--vx-primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        
+        .vx-main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        
+        .vx-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: var(--vx-text-muted);
+        }
+        
+        .vx-breadcrumb a {
+            color: var(--vx-text-muted);
+            text-decoration: none;
+        }
+        
+        .vx-breadcrumb a:hover { color: var(--vx-blue); }
+        
+        .vx-artwork-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+        
+        @media (max-width: 992px) {
+            .vx-artwork-detail { grid-template-columns: 1fr; }
+        }
+        
+        .vx-artwork-image-container {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .vx-artwork-image {
+            width: 100%;
+            display: block;
+        }
+        
+        .vx-artwork-actions {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .vx-action-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.95);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+        
+        .vx-action-icon:hover { transform: scale(1.1); }
+        .vx-action-icon.liked { background: #ef4444; color: white; }
+        
+        .vx-artwork-info {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .vx-artwork-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .vx-artwork-category {
+            display: inline-block;
+            background: var(--vx-light);
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--vx-text-muted);
+            margin-bottom: 1.5rem;
+        }
+        
+        .vx-creator-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--vx-light);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+        
+        .vx-creator-link:hover {
+            background: #e2e8f0;
+            color: inherit;
+        }
+        
+        .vx-creator-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--vx-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .vx-creator-info h6 {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .vx-creator-info small {
+            color: var(--vx-text-muted);
+        }
+        
+        .vx-artwork-description {
+            color: var(--vx-text-muted);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+        
+        .vx-meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .vx-meta-item {
+            background: var(--vx-light);
+            padding: 1rem;
+            border-radius: 10px;
+        }
+        
+        .vx-meta-label {
+            font-size: 0.8rem;
+            color: var(--vx-text-muted);
+            margin-bottom: 0.25rem;
+        }
+        
+        .vx-meta-value {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .vx-price-section {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .vx-price-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+        }
+        
+        .vx-price-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .vx-price-usd {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .vx-buy-section {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .vx-buy-btn {
+            flex: 1;
+            padding: 1rem;
+            background: var(--vx-blue);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .vx-buy-btn:hover { background: #2563eb; }
+        
+        .vx-buy-btn.disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+        
+        .vx-share-section {
+            margin-top: 1.5rem;
+        }
+        
+        .vx-share-label {
+            font-size: 0.85rem;
+            color: var(--vx-text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        .vx-share-link {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .vx-share-link input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--vx-border);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            background: var(--vx-light);
+        }
+        
+        .vx-share-link button {
+            padding: 0.75rem 1rem;
+            background: var(--vx-light);
+            border: 1px solid var(--vx-border);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .vx-section {
+            margin-bottom: 3rem;
+        }
+        
+        .vx-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .vx-section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .vx-see-all {
+            color: var(--vx-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .vx-carousel {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .vx-carousel::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .vx-carousel::-webkit-scrollbar-track {
+            background: var(--vx-light);
+            border-radius: 3px;
+        }
+        
+        .vx-carousel::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        
+        .vx-carousel-card {
+            flex: 0 0 260px;
+            background: white;
+            border: 1px solid var(--vx-border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .vx-carousel-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+        }
+        
+        .vx-carousel-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .vx-carousel-content {
+            padding: 1rem;
+        }
+        
+        .vx-carousel-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .vx-carousel-creator {
+            font-size: 0.85rem;
+            color: var(--vx-text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        .vx-carousel-price {
+            font-weight: 700;
+            color: var(--vx-text);
+        }
+        
+        .vx-footer {
+            background: var(--vx-dark);
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+        
+        .vx-loading {
+            text-align: center;
+            padding: 4rem;
+            color: var(--vx-text-muted);
+        }
+        
+        .vx-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .vx-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--vx-text-muted);
+        }
+    </style>
+</head>
+<body>
+    <header class="vx-header">
+        <div class="vx-header-inner">
+            <a href="/marketplace" class="vx-logo">
+                <div class="vx-logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#1e293b"/>
+                        <path d="M2 17L12 22L22 17" stroke="#1e293b" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="#1e293b" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                VAULTORX
+            </a>
+            <div class="vx-header-actions">
+                <a href="/dashboard" class="vx-btn-login"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+                <a href="/dashboard" class="vx-btn-signup"><i class="bi bi-person-plus"></i> Sign Up</a>
+            </div>
+        </div>
+    </header>
+    
+    <main class="vx-main" id="mainContent">
+        <div class="vx-loading">
+            <i class="bi bi-hourglass-split" style="font-size: 3rem;"></i>
+            <h4>Loading artwork...</h4>
+        </div>
+    </main>
+    
+    <footer class="vx-footer">
+        <div class="container text-center">
+            <p class="text-white-50 mb-0">2024 Vaultorx. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentNFT = null;
+        let artistNFTs = [];
+        let categoryNFTs = [];
+        let likedNFTs = JSON.parse(localStorage.getItem('likedNFTs') || '[]');
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const nftId = params.get('id');
+            if (nftId) {
+                loadArtwork(nftId);
+            } else {
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="vx-loading">
+                        <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
+                        <h4>Artwork not found</h4>
+                        <a href="/marketplace" class="vx-buy-btn" style="display: inline-block; margin-top: 1rem;">Back to Marketplace</a>
+                    </div>
+                `;
+            }
+        });
+        
+        async function loadArtwork(nftId) {
+            try {
+                const res = await fetch('/api/marketplace/nfts');
+                if (!res.ok) throw new Error('Failed to load');
+                
+                const allNFTs = await res.json();
+                currentNFT = allNFTs.find(n => n._id === nftId);
+                
+                if (!currentNFT) {
+                    throw new Error('Artwork not found');
+                }
+                
+                document.title = `${currentNFT.name} - Vaultorx`;
+                
+                await fetch(`/api/marketplace/nfts/${nftId}/view`, { method: 'POST' });
+                
+                artistNFTs = allNFTs.filter(n => n.creator === currentNFT.creator && n._id !== nftId);
+                categoryNFTs = allNFTs.filter(n => n.category === currentNFT.category && n._id !== nftId && n.creator !== currentNFT.creator);
+                
+                renderArtwork();
+            } catch (err) {
+                console.error(err);
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="vx-loading">
+                        <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
+                        <h4>Error loading artwork</h4>
+                        <a href="/marketplace" class="vx-buy-btn" style="display: inline-block; margin-top: 1rem;">Back to Marketplace</a>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderArtwork() {
+            const isLiked = likedNFTs.includes(currentNFT._id);
+            const creatorInitial = (currentNFT.creator || 'U')[0].toUpperCase();
+            const creatorSlug = encodeURIComponent(currentNFT.creator || 'unknown');
+            
+            let buyButtonHTML = '';
+            if (currentNFT.status === 'listed') {
+                buyButtonHTML = `
+                    <button class="vx-buy-btn" onclick="buyNFT()" data-testid="button-buy-artwork">
+                        <i class="bi bi-cart me-2"></i>Buy Now for ${currentNFT.price} ${currentNFT.currency || 'ETH'}
+                    </button>
+                `;
+            } else if (currentNFT.status === 'auction') {
+                buyButtonHTML = `
+                    <button class="vx-buy-btn" onclick="placeBid()" data-testid="button-bid-artwork">
+                        <i class="bi bi-hammer me-2"></i>Place Bid
+                    </button>
+                `;
+            } else {
+                buyButtonHTML = `
+                    <button class="vx-buy-btn disabled" disabled>
+                        <i class="bi bi-lock me-2"></i>Not Available for Sale
+                    </button>
+                `;
+            }
+            
+            document.getElementById('mainContent').innerHTML = `
+                <nav class="vx-breadcrumb">
+                    <a href="/marketplace">Marketplace</a>
+                    <i class="bi bi-chevron-right"></i>
+                    <a href="category.html?category=${encodeURIComponent(currentNFT.category || 'Art')}">${currentNFT.category || 'Art'}</a>
+                    <i class="bi bi-chevron-right"></i>
+                    <span>${currentNFT.name}</span>
+                </nav>
+                
+                <div class="vx-artwork-detail">
+                    <div class="vx-artwork-image-container">
+                        <img src="${currentNFT.imageUrl}" alt="${currentNFT.name}" class="vx-artwork-image">
+                        <div class="vx-artwork-actions">
+                            <button class="vx-action-icon ${isLiked ? 'liked' : ''}" onclick="toggleLike()" data-testid="button-like-artwork">
+                                <i class="bi bi-heart${isLiked ? '-fill' : ''}"></i>
+                            </button>
+                            <button class="vx-action-icon" onclick="shareArtwork()" data-testid="button-share-artwork">
+                                <i class="bi bi-share"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="vx-artwork-info">
+                        <h1 class="vx-artwork-title">${currentNFT.name}</h1>
+                        <span class="vx-artwork-category">${currentNFT.category || 'Art'}</span>
+                        
+                        <a href="artist.html?name=${creatorSlug}" class="vx-creator-link" data-testid="link-artist">
+                            <div class="vx-creator-avatar">${creatorInitial}</div>
+                            <div class="vx-creator-info">
+                                <h6>${currentNFT.creator || 'Unknown Artist'}</h6>
+                                <small>Click to view artist profile</small>
+                            </div>
+                            <i class="bi bi-chevron-right ms-auto"></i>
+                        </a>
+                        
+                        <div class="vx-stats">
+                            <div class="vx-stat">
+                                <i class="bi bi-heart-fill"></i>
+                                <span>${currentNFT.likes || 0} likes</span>
+                            </div>
+                            <div class="vx-stat">
+                                <i class="bi bi-eye-fill"></i>
+                                <span>${currentNFT.views || 0} views</span>
+                            </div>
+                        </div>
+                        
+                        <p class="vx-artwork-description">${currentNFT.description || 'No description available for this artwork.'}</p>
+                        
+                        <div class="vx-meta-grid">
+                            <div class="vx-meta-item">
+                                <div class="vx-meta-label">Rarity</div>
+                                <div class="vx-meta-value">${currentNFT.rarity || 'Common'}</div>
+                            </div>
+                            <div class="vx-meta-item">
+                                <div class="vx-meta-label">Token ID</div>
+                                <div class="vx-meta-value">#${currentNFT.tokenId || currentNFT._id.slice(-6)}</div>
+                            </div>
+                            <div class="vx-meta-item">
+                                <div class="vx-meta-label">Created</div>
+                                <div class="vx-meta-value">${new Date(currentNFT.createdAt).toLocaleDateString()}</div>
+                            </div>
+                            <div class="vx-meta-item">
+                                <div class="vx-meta-label">Owner</div>
+                                <div class="vx-meta-value">${currentNFT.owner || currentNFT.creator || 'Unknown'}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="vx-price-section">
+                            <div class="vx-price-label">Current Price</div>
+                            <div class="vx-price-value">${currentNFT.price ? currentNFT.price.toFixed(4) + ' ' + (currentNFT.currency || 'ETH') : 'Not for sale'}</div>
+                        </div>
+                        
+                        <div class="vx-buy-section">
+                            ${buyButtonHTML}
+                        </div>
+                        
+                        <div class="vx-share-section">
+                            <div class="vx-share-label">Share this artwork</div>
+                            <div class="vx-share-link">
+                                <input type="text" id="shareLink" value="${window.location.href}" readonly>
+                                <button onclick="copyLink()" data-testid="button-copy-link"><i class="bi bi-copy"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                ${renderArtistSection()}
+                ${renderCategorySection()}
+            `;
+        }
+        
+        function renderArtistSection() {
+            if (artistNFTs.length === 0) return '';
+            
+            return `
+                <section class="vx-section">
+                    <div class="vx-section-header">
+                        <h2 class="vx-section-title">More from ${currentNFT.creator || 'this artist'}</h2>
+                        <a href="artist.html?name=${encodeURIComponent(currentNFT.creator || 'unknown')}" class="vx-see-all">View All <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                    <div class="vx-carousel" id="artistCarousel">
+                        ${artistNFTs.slice(0, 10).map(nft => renderCarouselCard(nft)).join('')}
+                    </div>
+                </section>
+            `;
+        }
+        
+        function renderCategorySection() {
+            if (categoryNFTs.length === 0) return '';
+            
+            return `
+                <section class="vx-section">
+                    <div class="vx-section-header">
+                        <h2 class="vx-section-title">More in ${currentNFT.category || 'Art'}</h2>
+                        <a href="category.html?category=${encodeURIComponent(currentNFT.category || 'Art')}" class="vx-see-all">View All <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                    <div class="vx-carousel" id="categoryCarousel">
+                        ${categoryNFTs.slice(0, 10).map(nft => renderCarouselCard(nft)).join('')}
+                    </div>
+                </section>
+            `;
+        }
+        
+        function renderCarouselCard(nft) {
+            return `
+                <a href="artwork.html?id=${nft._id}" class="vx-carousel-card" data-testid="card-carousel-${nft._id}">
+                    <img src="${nft.imageUrl}" alt="${nft.name}" class="vx-carousel-image">
+                    <div class="vx-carousel-content">
+                        <h6 class="vx-carousel-title">${nft.name}</h6>
+                        <p class="vx-carousel-creator">by ${nft.creator || 'Unknown'}</p>
+                        <div class="vx-carousel-price">${nft.price ? nft.price.toFixed(2) + ' ' + (nft.currency || 'ETH') : 'Not listed'}</div>
+                    </div>
+                </a>
+            `;
+        }
+        
+        async function toggleLike() {
+            if (!currentNFT) return;
+            
+            const isLiked = likedNFTs.includes(currentNFT._id);
+            if (isLiked) {
+                likedNFTs = likedNFTs.filter(id => id !== currentNFT._id);
+            } else {
+                likedNFTs.push(currentNFT._id);
+            }
+            localStorage.setItem('likedNFTs', JSON.stringify(likedNFTs));
+            
+            currentNFT.likes = isLiked ? Math.max(0, (currentNFT.likes || 0) - 1) : (currentNFT.likes || 0) + 1;
+            renderArtwork();
+            
+            try {
+                await fetch(`/api/marketplace/nfts/${currentNFT._id}/like`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ unlike: isLiked })
+                });
+            } catch (err) {
+                console.error('Like sync error:', err);
+            }
+        }
+        
+        async function buyNFT() {
+            const sessionRes = await fetch('/api/auth/session');
+            const session = await sessionRes.json();
+            
+            if (!session.authenticated) {
+                const result = await Swal.fire({
+                    icon: 'warning',
+                    title: 'Login Required',
+                    text: 'You need to login to purchase NFTs. Go to login page?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Go to Login',
+                    confirmButtonColor: '#3b82f6'
+                });
+                if (result.isConfirmed) {
+                    window.location.href = '/dashboard';
+                }
+                return;
+            }
+            
+            const result = await Swal.fire({
+                icon: 'question',
+                title: 'Confirm Purchase',
+                text: `Are you sure you want to buy "${currentNFT.name}" for ${currentNFT.price} ${currentNFT.currency || 'ETH'}?`,
+                showCancelButton: true,
+                confirmButtonText: 'Buy Now',
+                confirmButtonColor: '#3b82f6'
+            });
+            if (!result.isConfirmed) return;
+            
+            try {
+                const res = await fetch(`/api/marketplace/nfts/${currentNFT._id}/buy`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!res.ok) {
+                    const error = await res.json();
+                    throw new Error(error.message || 'Purchase failed');
+                }
+                
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Congratulations!',
+                    text: `You now own "${currentNFT.name}". The artwork has been transferred to your collection.`,
+                    confirmButtonColor: '#3b82f6'
+                });
+                
+                window.location.reload();
+            } catch (err) {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: err.message || 'Failed to complete purchase.',
+                    confirmButtonColor: '#3b82f6'
+                });
+            }
+        }
+        
+        async function placeBid() {
+            const { value: bidAmount } = await Swal.fire({
+                icon: 'question',
+                title: 'Place Bid',
+                input: 'number',
+                inputLabel: 'Enter your bid amount (ETH):',
+                inputPlaceholder: 'e.g., 1.5',
+                showCancelButton: true,
+                confirmButtonText: 'Submit Bid',
+                confirmButtonColor: '#3b82f6'
+            });
+            
+            if (bidAmount) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Bid Placed!',
+                    text: `Your bid of ${bidAmount} ETH has been submitted.`,
+                    confirmButtonColor: '#3b82f6'
+                });
+            }
+        }
+        
+        function shareArtwork() {
+            if (navigator.share) {
+                navigator.share({
+                    title: currentNFT.name,
+                    text: `Check out this NFT: ${currentNFT.name}`,
+                    url: window.location.href
+                });
+            } else {
+                copyLink();
+            }
+        }
+        
+        function copyLink() {
+            const input = document.getElementById('shareLink');
+            input.select();
+            document.execCommand('copy');
+            Swal.fire({
+                icon: 'success',
+                title: 'Copied!',
+                text: 'Link copied to clipboard',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+    </script>
+</body>
+</html>

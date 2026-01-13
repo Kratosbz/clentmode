@@ -1,0 +1,44 @@
+// {
+//   "include": ["server/**/*", "shared/**/*"],
+//   "exclude": ["node_modules", "build", "dist", "**/*.test.ts"],
+//   "compilerOptions": {
+//     "target": "ES2022",
+//     "module": "CommonJS",
+//     "moduleResolution": "Node",
+//     "esModuleInterop": true,
+//     "strict": false,
+//     "skipLibCheck": true,
+//     "resolveJsonModule": true,
+//     "outDir": "./dist",
+//     "rootDir": ".",
+//     "baseUrl": ".",
+//     "types": ["node"],
+//     "paths": {
+//       "@shared/*": ["./shared/*"]
+//     }
+//   }
+// }
+{
+  "include": ["server/**/*", "shared/**/*"],
+  "exclude": ["node_modules", "build", "dist"],
+  
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    "noEmit": true,
+    "allowImportingTsExtensions": false,
+
+    "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
+
+    "target": "ES2022",
+    "types": ["node"],
+    "skipLibCheck": true
+  }
+
+
+
+ 
+
+}

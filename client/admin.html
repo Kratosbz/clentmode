@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaultorx Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --admin-primary: #5d8df4;
+            --admin-dark: #1a1a2e;
+            --admin-sidebar: #16213e;
+            --admin-light: #f8f9fa;
+        }
+        body {
+            background: var(--admin-light);
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+        .admin-sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: var(--admin-sidebar);
+            color: white;
+            padding: 1.5rem 1rem;
+            overflow-y: auto;
+            transition: width 0.3s ease;
+            z-index: 1000;
+        }
+        .admin-sidebar.collapsed {
+            width: 70px;
+            padding: 1.5rem 0.5rem;
+        }
+        .admin-sidebar.collapsed .admin-logo span,
+        .admin-sidebar.collapsed .nav-text,
+        .admin-sidebar.collapsed .nav-section-title,
+        .admin-sidebar.collapsed .badge {
+            display: none;
+        }
+        .admin-sidebar.collapsed .admin-logo {
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .admin-sidebar.collapsed .admin-nav-item {
+            justify-content: center;
+            padding: 0.75rem;
+        }
+        .admin-sidebar.collapsed .admin-nav-item i {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        .sidebar-toggle {
+            position: absolute;
+            top: 1rem;
+            right: -12px;
+            width: 24px;
+            height: 24px;
+            background: var(--admin-primary);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            z-index: 1001;
+            transition: transform 0.3s ease;
+        }
+        .sidebar-toggle:hover {
+            background: #4a7ae0;
+        }
+        .admin-sidebar.collapsed .sidebar-toggle {
+            transform: rotate(180deg);
+        }
+        .admin-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .admin-logo span { color: var(--admin-primary); }
+        .admin-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .admin-nav-item:hover, .admin-nav-item.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .admin-nav-item.active { background: var(--admin-primary); }
+        .admin-main {
+            margin-left: 70px;
+            padding: 2rem;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+        .admin-main.expanded {
+            margin-left: 260px;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .admin-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--admin-dark);
+        }
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .data-table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .data-table th {
+            background: var(--admin-light);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #6c757d;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .data-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+        .data-table tr:hover { background: #f8f9fa; }
+        .badge-pending { background: #ffc107; color: #000; }
+        .badge-approved { background: #28a745; color: #fff; }
+        .badge-declined { background: #dc3545; color: #fff; }
+        .badge-listed { background: var(--admin-primary); color: #fff; }
+        .badge-owned { background: #6c757d; color: #fff; }
+        .badge-sold { background: #28a745; color: #fff; }
+        .btn-admin {
+            background: var(--admin-primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+        .btn-admin:hover { background: #4a7bd9; color: white; }
+        .btn-admin-sm { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
+        .btn-admin-danger { background: #dc3545; }
+        .btn-admin-danger:hover { background: #c82333; }
+        .btn-admin-success { background: #28a745; }
+        .btn-admin-success:hover { background: #218838; }
+        .btn-admin-warning { background: #ffc107; color: #000; }
+        .search-box {
+            padding: 0.5rem 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            width: 300px;
+        }
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background: white;
+        }
+        .section { display: none; }
+        .section.active { display: block; }
+        .pagination-btn {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #dee2e6;
+            background: white;
+            cursor: pointer;
+            margin: 0 2px;
+            border-radius: 4px;
+        }
+        .pagination-btn.active { background: var(--admin-primary); color: white; border-color: var(--admin-primary); }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1050;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-box {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .form-label { font-weight: 600; margin-bottom: 0.5rem; }
+        .form-input {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--admin-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        .nft-thumb {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .impersonation-bar {
+            display: none;
+            background: #ffc107;
+            color: #000;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 260px;
+            right: 0;
+            z-index: 1000;
+        }
+        .impersonation-bar.active { display: block; }
+        .nav-section-title {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            padding: 1rem 1rem 0.5rem;
+            margin-top: 1rem;
+        }
+        #loginSection {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--admin-sidebar), var(--admin-dark));
+        }
+        .login-box {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="loginSection">
+        <div class="login-box">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold">Vault<span style="color: var(--admin-primary)">orx</span></h2>
+                <p class="text-muted">Admin Panel</p>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="loginEmail" placeholder="admin@vaultorx.com" data-testid="input-admin-email">
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="Enter password" data-testid="input-admin-password">
+            </div>
+            <button class="btn-admin w-100 py-2" onclick="adminLogin()" data-testid="button-admin-login">
+                <i class="bi bi-shield-lock me-2"></i>Login to Admin Panel
+            </button>
+            <div class="text-center mt-3">
+                <small class="text-muted">Contact system administrator for access</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Admin Panel -->
+    <div id="adminPanel" style="display: none;">
+        <!-- Impersonation Bar -->
+        <div class="impersonation-bar" id="impersonationBar">
+            <i class="bi bi-person-badge me-2"></i>
+            <span id="impersonatingUser"></span>
+            <button class="btn btn-sm btn-dark ms-3" onclick="stopImpersonation()" data-testid="button-stop-impersonation">Stop Impersonation</button>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="admin-sidebar collapsed" id="adminSidebar">
+            <button class="sidebar-toggle" onclick="toggleSidebar()" data-testid="button-sidebar-toggle">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+            <div class="admin-logo">
+                <i class="bi bi-shield-check"></i>
+                <span>Vault<span style="color: var(--admin-primary)">orx</span> Admin</span>
+            </div>
+            
+            <div class="admin-nav-item active" onclick="showSection('dashboard')" data-testid="nav-dashboard">
+                <i class="bi bi-speedometer2"></i> <span class="nav-text">Dashboard</span>
+            </div>
+            
+            <div class="nav-section-title">Management</div>
+            
+            <div class="admin-nav-item" onclick="showSection('users')" data-testid="nav-users">
+                <i class="bi bi-people"></i> <span class="nav-text">Users</span>
+            </div>
+            <div class="admin-nav-item" onclick="showSection('nfts')" data-testid="nav-nfts">
+                <i class="bi bi-image"></i> <span class="nav-text">NFTs / Artworks</span>
+            </div>
+            <div class="admin-nav-item" onclick="showSection('collections')" data-testid="nav-collections">
+                <i class="bi bi-collection"></i> <span class="nav-text">Collections</span>
+            </div>
+            
+            <div class="nav-section-title">Financial</div>
+            
+            <div class="admin-nav-item" onclick="showSection('deposits')" data-testid="nav-deposits">
+                <i class="bi bi-box-arrow-in-down"></i> <span class="nav-text">Deposits</span>
+                <span class="badge bg-warning text-dark ms-auto" id="pendingDepositsCount">0</span>
+            </div>
+            <div class="admin-nav-item" onclick="showSection('withdrawals')" data-testid="nav-withdrawals">
+                <i class="bi bi-box-arrow-up"></i> <span class="nav-text">Withdrawals</span>
+                <span class="badge bg-warning text-dark ms-auto" id="pendingWithdrawalsCount">0</span>
+            </div>
+            <div class="admin-nav-item" onclick="showSection('transactions')" data-testid="nav-transactions">
+                <i class="bi bi-receipt"></i> <span class="nav-text">Transactions</span>
+            </div>
+            
+            <div class="nav-section-title">Sales</div>
+            
+            <div class="admin-nav-item" onclick="showSection('sales')" data-testid="nav-sales">
+                <i class="bi bi-tag"></i> <span class="nav-text">Sales Listings</span>
+            </div>
+            <div class="admin-nav-item" onclick="showSection('auctions')" data-testid="nav-auctions">
+                <i class="bi bi-hammer"></i> <span class="nav-text">Auctions</span>
+            </div>
+            
+            <div class="nav-section-title">System</div>
+            
+            <div class="admin-nav-item" onclick="showSection('admins')" data-testid="nav-admins">
+                <i class="bi bi-person-gear"></i> <span class="nav-text">Admin Users</span>
+            </div>
+            <div class="admin-nav-item" onclick="adminLogout()" data-testid="nav-logout">
+                <i class="bi bi-box-arrow-right"></i> <span class="nav-text">Logout</span>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Dashboard Section -->
+            <section id="dashboardSection" class="section active">
+                <div class="admin-header">
+                    <h4 class="fw-bold mb-0">Dashboard Overview</h4>
+                    <span class="text-muted" id="adminWelcome"></span>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="admin-card stat-card">
+                            <div class="stat-value" id="statUsers">0</div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="admin-card stat-card">
+                            <div class="stat-value" id="statNfts">0</div>
+                            <div class="stat-label">Total NFTs</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="admin-card stat-card">
+                            <div class="stat-value" id="statListedNfts">0</div>
+                            <div class="stat-label">Listed NFTs</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="admin-card stat-card">
+                            <div class="stat-value" id="statSoldNfts">0</div>
+                            <div class="stat-label">Sold NFTs</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="admin-card stat-card">
+                            <div class="stat-value" id="statCollections">0</div>
+                            <div class="stat-label">Collections</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="admin-card stat-card">
+                            <div class="stat-value" id="statAuctions">0</div>
+                            <div class="stat-label">Active Auctions</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="admin-card stat-card">
+                            <div class="stat-value text-warning" id="statPendingDeposits">0</div>
+                            <div class="stat-label">Pending Deposits</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="admin-card stat-card">
+                            <div class="stat-value text-warning" id="statPendingWithdrawals">0</div>
+                            <div class="stat-label">Pending Withdrawals</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="admin-card">
+                            <h6 class="fw-bold mb-3">Total Trading Volume</h6>
+                            <div class="stat-value" id="statVolume">0 ETH</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="admin-card">
+                            <h6 class="fw-bold mb-3">Total User Balances</h6>
+                            <div class="stat-value" id="statUserBalance">0 ETH</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section id="usersSection" class="section">
+                <div class="admin-header">
+                    <h4 class="fw-bold mb-0">User Management</h4>
+                    <div class="d-flex gap-2">
+                        <input type="text" class="search-box" id="userSearch" placeholder="Search users..." onkeyup="searchUsers()" data-testid="input-search-users">
+                        <select class="filter-select" id="userStatusFilter" onchange="loadUsers()" data-testid="select-user-status">
+                            <option value="">All Status</option>
+                            <option value="verified">Verified</option>
+                            <option value="unverified">Unverified</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="admin-card">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Balance</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3" id="usersPagination"></div>
+                </div>
+            </section>
+
+            <!-- NFTs Section -->
+            <section id="nftsSection" class="section">
+                <div class="admin-header">
+                    <h4 class="fw-bold mb-0">NFT / Artwork Management</h4>
+                    <div class="d-flex gap-2">
+                        <input type="text" class="search-box" id="nftSearch" placeholder="Search NFTs..." onkeyup="searchNfts()" data-testid="input-search-nfts">
+                        <select class="filter-select" id="nftStatusFilter" onchange="loadNfts()" data-testid="select-nft-status">
+                            <option value="">All Status</option>
+                            <option value="owned">Owned</option>
+                            <option value="listed">Listed</option>
+                            <option value="sold">Sold</option>
+                            <option value="auction">Auction</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="admin-card">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Owner</th>
+                                    <th>Creator</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="nftsTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3" id="nftsPagination"></div>
+                </div>
+            </section>
+
+            <!-- Collections Section -->
+            <section id="collectionsSection" class="section">
+                <div class="admin-header">
+                    <h4 class="fw-bold mb-0">Collection Management</h4>
+                    <input type="text" class="search-box" id="collectionSearch" placeholder="Search collections..." onkeyup="searchCollections()" data-testid="input-search-collections">
+                </div>
+                <div class="admin-card">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Creator</th>
+                                    <th>Category</th>
+                                    <th>Floor Price</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="collectionsTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3" id="collectionsPagination"></div>
+                </div>
+            </section>
+
+            <!-- Deposits Section -->
+            <section id="depositsSection" class="section">
+                <div class="admin-header">
+                    <h4 class="fw-bold mb-0">Deposit Requests</h4>
+                    <select class="filter-select" id="depositStatusFilter" onchange="loadDeposits()" data-testid="select-deposit-status">
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="declined">Declined</option>
+                        <option value="">All</option>
+                    </select>
+                </div>
+                <div class="admin-card">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Amount</th>
+                                    <th>TX Hash</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="depositsTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3" id="depositsPagination"></div>
+                </div>
+            </section>
+
+            <!-- Withdrawals Section -->
+            <section id="withdrawalsSection" class="section">
+                <div class="admin-header">
+                    <h4 class="fw-bold mb-0">Withdrawal Requests</h4>
+                    <select class="filter-select" id="withdrawalStatusFilter" onchange="loadWithdrawals()" data-testid="select-withdrawal-status">
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="declined">Declined</option>
+                        <option value="">All</option>
+                    </select>
+                </div>
+                <div class="admin-card">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Amount</th>
+                                    <th>Wallet Address</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="withdrawalsTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3" id="withdrawalsPagination"></div>
+                </div>
+            </section>
+
+            <!-- Transactions Section -->
+            <section id="transactionsSection" class="section">
+                <div class="admin-header">
+                    <h4 class="fw-bold mb-0">Transaction History</h4>
+                    <select class="filter-select" id="txTypeFilter" onchange="loadTransactions()" data-testid="select-tx-type">
+                        <option value="">All Types</option>
+                        <option value="sale">Sale</option>
+                        <option value="purchase">Purchase</option>
+                        <option value="transfer">Transfer</option>
+                        <option value="mint">Mint</option>
+                    </select>
+                </div>
+                <div class="admin-card">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Amount</th>
+                                    <th>Description</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3" id="transactionsPagination"></div>
+                </div>
+            </section>
+
+            <!-- Sales Section -->
+            <section id="salesSection" class="section">
+                <div class="admin-header">
+                    <h4 class="fw-bold mb-0">Sales Listings</h4>
+                    <select class="filter-select" id="saleStatusFilter" onchange="loadSales()" data-testid="select-sale-status">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="sold">Sold</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="admin-card">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>NFT</th>
+                                    <th>Seller</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Listed Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3" id="salesPagination"></div>
+                </div>
+            </section>
+
+            <!-- Auctions Section -->
+            <section id="auctionsSection" class="section">
+                <div class="admin-header">
+                    <h4 class="fw-bold mb-0">Auctions</h4>
+                    <select class="filter-select" id="auctionStatusFilter" onchange="loadAuctions()" data-testid="select-auction-status">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="ended">Ended</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="admin-card">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>NFT</th>
+                                    <th>Seller</th>
+                                    <th>Starting Price</th>
+                                    <th>Current Bid</th>
+                                    <th>End Time</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auctionsTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3" id="auctionsPagination"></div>
+                </div>
+            </section>
+
+            <!-- Admins Section -->
+            <section id="adminsSection" class="section">
+                <div class="admin-header">
+                    <h4 class="fw-bold mb-0">Admin Users</h4>
+                    <button class="btn-admin" onclick="openCreateAdminModal()" data-testid="button-create-admin">
+                        <i class="bi bi-plus-lg me-1"></i> Add Admin
+                    </button>
+                </div>
+                <div class="admin-card">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Last Login</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal-overlay" id="editUserModal">
+        <div class="modal-box">
+            <h5 class="fw-bold mb-4">Edit User</h5>
+            <input type="hidden" id="editUserId">
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="editUserEmail" data-testid="input-edit-user-email">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-input" id="editUserUsername" data-testid="input-edit-user-username">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Wallet Balance (ETH)</label>
+                <input type="number" step="0.0001" class="form-input" id="editUserBalance" data-testid="input-edit-user-balance">
+            </div>
+            <div class="mb-4">
+                <label class="form-check">
+                    <input type="checkbox" id="editUserVerified" class="form-check-input" data-testid="checkbox-edit-user-verified">
+                    Email Verified
+                </label>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn-admin flex-fill" onclick="saveUser()" data-testid="button-save-user">Save Changes</button>
+                <button class="btn btn-secondary flex-fill" onclick="closeModal('editUserModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit NFT Modal -->
+    <div class="modal-overlay" id="editNftModal">
+        <div class="modal-box">
+            <h5 class="fw-bold mb-4">Edit NFT</h5>
+            <input type="hidden" id="editNftId">
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-input" id="editNftName" data-testid="input-edit-nft-name">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea class="form-input" id="editNftDescription" rows="3" data-testid="input-edit-nft-description"></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Owner</label>
+                <input type="text" class="form-input" id="editNftOwner" data-testid="input-edit-nft-owner">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Price (ETH)</label>
+                <input type="number" step="0.0001" class="form-input" id="editNftPrice" data-testid="input-edit-nft-price">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Status</label>
+                <select class="form-input" id="editNftStatus" data-testid="select-edit-nft-status">
+                    <option value="owned">Owned</option>
+                    <option value="listed">Listed</option>
+                    <option value="sold">Sold</option>
+                    <option value="auction">Auction</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Royalty (%)</label>
+                <input type="number" step="0.1" class="form-input" id="editNftRoyalty" data-testid="input-edit-nft-royalty">
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn-admin flex-fill" onclick="saveNft()" data-testid="button-save-nft">Save Changes</button>
+                <button class="btn btn-secondary flex-fill" onclick="closeModal('editNftModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Buy NFT Modal -->
+    <div class="modal-overlay" id="adminBuyModal">
+        <div class="modal-box">
+            <h5 class="fw-bold mb-4">Admin Purchase NFT</h5>
+            <input type="hidden" id="buyNftId">
+            <p class="text-muted mb-3">Transfer this NFT to a user's ownership</p>
+            <div class="mb-3">
+                <label class="form-label">NFT Name</label>
+                <input type="text" class="form-input" id="buyNftName" readonly>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">New Owner Email</label>
+                <input type="email" class="form-input" id="buyerEmail" placeholder="buyer@example.com" data-testid="input-buyer-email">
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Purchase Price (ETH)</label>
+                <input type="number" step="0.0001" class="form-input" id="buyPrice" data-testid="input-buy-price">
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn-admin-success btn-admin flex-fill" onclick="confirmAdminBuy()" data-testid="button-confirm-buy">Transfer Ownership</button>
+                <button class="btn btn-secondary flex-fill" onclick="closeModal('adminBuyModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Collection Modal -->
+    <div class="modal-overlay" id="editCollectionModal">
+        <div class="modal-box">
+            <h5 class="fw-bold mb-4">Edit Collection</h5>
+            <input type="hidden" id="editCollectionId">
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-input" id="editCollectionName" data-testid="input-edit-collection-name">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea class="form-input" id="editCollectionDescription" rows="3" data-testid="input-edit-collection-description"></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Category</label>
+                <input type="text" class="form-input" id="editCollectionCategory" data-testid="input-edit-collection-category">
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Floor Price (ETH)</label>
+                <input type="number" step="0.0001" class="form-input" id="editCollectionFloorPrice" data-testid="input-edit-collection-floor-price">
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn-admin flex-fill" onclick="saveCollection()" data-testid="button-save-collection">Save Changes</button>
+                <button class="btn btn-secondary flex-fill" onclick="closeModal('editCollectionModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Admin Modal -->
+    <div class="modal-overlay" id="createAdminModal">
+        <div class="modal-box">
+            <h5 class="fw-bold mb-4">Create New Admin</h5>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="newAdminEmail" data-testid="input-new-admin-email">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-input" id="newAdminUsername" data-testid="input-new-admin-username">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="newAdminPassword" data-testid="input-new-admin-password">
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Role</label>
+                <select class="form-input" id="newAdminRole" data-testid="select-new-admin-role">
+                    <option value="admin">Admin</option>
+                    <option value="moderator">Moderator</option>
+                </select>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn-admin flex-fill" onclick="createAdmin()" data-testid="button-create-admin-submit">Create Admin</button>
+                <button class="btn btn-secondary flex-fill" onclick="closeModal('createAdminModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial Request Note Modal -->
+    <div class="modal-overlay" id="requestNoteModal">
+        <div class="modal-box">
+            <h5 class="fw-bold mb-4" id="requestNoteTitle">Process Request</h5>
+            <input type="hidden" id="requestNoteId">
+            <input type="hidden" id="requestNoteAction">
+            <div class="mb-4">
+                <label class="form-label">Admin Note (Optional)</label>
+                <textarea class="form-input" id="requestNoteText" rows="3" placeholder="Add a note for this action..." data-testid="input-request-note"></textarea>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn-admin flex-fill" id="requestNoteSubmit" onclick="submitRequestAction()" data-testid="button-submit-request-action">Confirm</button>
+                <button class="btn btn-secondary flex-fill" onclick="closeModal('requestNoteModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = { users: 1, nfts: 1, collections: 1, deposits: 1, withdrawals: 1, transactions: 1, sales: 1, auctions: 1 };
+        let adminSession = null;
+
+        // Check admin session on load
+        async function checkAdminSession() {
+            try {
+                const res = await fetch('/api/admin/session');
+                const data = await res.json();
+                if (data.authenticated) {
+                    adminSession = data;
+                    document.getElementById('loginSection').style.display = 'none';
+                    document.getElementById('adminPanel').style.display = 'block';
+                    document.getElementById('adminWelcome').textContent = `Welcome, ${data.email} (${data.role})`;
+                    
+                    if (data.impersonating) {
+                        document.getElementById('impersonationBar').classList.add('active');
+                        document.getElementById('impersonatingUser').textContent = `Impersonating user session`;
+                    }
+                    
+                    loadDashboard();
+                }
+            } catch (err) {
+                console.error('Session check failed:', err);
+            }
+        }
+
+        async function adminLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                Swal.fire({ icon: 'warning', title: 'Required', text: 'Please enter email and password', confirmButtonColor: '#5d8df4' });
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    Swal.fire({ icon: 'success', title: 'Welcome!', text: 'Login successful', confirmButtonColor: '#5d8df4', timer: 1500 });
+                    checkAdminSession();
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Login Failed', text: data.message, confirmButtonColor: '#5d8df4' });
+                }
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to login', confirmButtonColor: '#5d8df4' });
+            }
+        }
+
+        async function adminLogout() {
+            await fetch('/api/admin/logout', { method: 'POST' });
+            location.reload();
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('adminSidebar');
+            const main = document.querySelector('.admin-main');
+            sidebar.classList.toggle('collapsed');
+            main.classList.toggle('expanded');
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.admin-nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(section + 'Section').classList.add('active');
+            event.target.closest('.admin-nav-item').classList.add('active');
+
+            switch(section) {
+                case 'dashboard': loadDashboard(); break;
+                case 'users': loadUsers(); break;
+                case 'nfts': loadNfts(); break;
+                case 'collections': loadCollections(); break;
+                case 'deposits': loadDeposits(); break;
+                case 'withdrawals': loadWithdrawals(); break;
+                case 'transactions': loadTransactions(); break;
+                case 'sales': loadSales(); break;
+                case 'auctions': loadAuctions(); break;
+                case 'admins': loadAdmins(); break;
+            }
+        }
+
+        async function loadDashboard() {
+            try {
+                const res = await fetch('/api/admin/stats');
+                const data = await res.json();
+                
+                document.getElementById('statUsers').textContent = data.users?.total || 0;
+                document.getElementById('statNfts').textContent = data.nfts?.total || 0;
+                document.getElementById('statListedNfts').textContent = data.nfts?.listed || 0;
+                document.getElementById('statSoldNfts').textContent = data.nfts?.sold || 0;
+                document.getElementById('statCollections').textContent = data.collections || 0;
+                document.getElementById('statAuctions').textContent = data.auctions || 0;
+                document.getElementById('statPendingDeposits').textContent = data.financials?.pendingDeposits || 0;
+                document.getElementById('statPendingWithdrawals').textContent = data.financials?.pendingWithdrawals || 0;
+                document.getElementById('statVolume').textContent = (data.volume || 0).toFixed(4) + ' ETH';
+                document.getElementById('statUserBalance').textContent = (data.totalUserBalance || 0).toFixed(4) + ' ETH';
+                
+                document.getElementById('pendingDepositsCount').textContent = data.financials?.pendingDeposits || 0;
+                document.getElementById('pendingWithdrawalsCount').textContent = data.financials?.pendingWithdrawals || 0;
+            } catch (err) {
+                console.error('Failed to load dashboard:', err);
+            }
+        }
+
+        // Users Management
+        async function loadUsers(page = 1) {
+            currentPage.users = page;
+            const search = document.getElementById('userSearch')?.value || '';
+            const status = document.getElementById('userStatusFilter')?.value || '';
+            
+            try {
+                const res = await fetch(`/api/admin/users?page=${page}&search=${search}&status=${status}`);
+                const data = await res.json();
+                
+                const tbody = document.getElementById('usersTableBody');
+                tbody.innerHTML = data.users.map(user => `
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="user-avatar">${(user.username || user.email)[0].toUpperCase()}</div>
+                                <span>${user.username || '-'}</span>
+                            </div>
+                        </td>
+                        <td>${user.email}</td>
+                        <td>${(user.walletBalance || 0).toFixed(4)} ETH</td>
+                        <td><span class="badge ${user.verified ? 'badge-approved' : 'badge-pending'}">${user.verified ? 'Verified' : 'Unverified'}</span></td>
+                        <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+                        <td>
+                            <button class="btn-admin btn-admin-sm me-1" onclick="editUser('${user._id}')" data-testid="button-edit-user-${user._id}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn-admin btn-admin-sm btn-admin-warning me-1" onclick="impersonateUser('${user._id}')" data-testid="button-impersonate-${user._id}">
+                                <i class="bi bi-person-badge"></i>
+                            </button>
+                            <button class="btn-admin btn-admin-sm btn-admin-danger" onclick="deleteUser('${user._id}')" data-testid="button-delete-user-${user._id}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                renderPagination('usersPagination', data.pages, page, 'loadUsers');
+            } catch (err) {
+                console.error('Failed to load users:', err);
+            }
+        }
+
+        function searchUsers() {
+            clearTimeout(window.userSearchTimeout);
+            window.userSearchTimeout = setTimeout(() => loadUsers(1), 300);
+        }
+
+        async function editUser(id) {
+            try {
+                const res = await fetch(`/api/admin/users/${id}`);
+                const data = await res.json();
+                const user = data.user;
+                
+                document.getElementById('editUserId').value = id;
+                document.getElementById('editUserEmail').value = user.email;
+                document.getElementById('editUserUsername').value = user.username || '';
+                document.getElementById('editUserBalance').value = user.walletBalance || 0;
+                document.getElementById('editUserVerified').checked = user.verified;
+                
+                openModal('editUserModal');
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to load user', confirmButtonColor: '#5d8df4' });
+            }
+        }
+
+        async function saveUser() {
+            const id = document.getElementById('editUserId').value;
+            const data = {
+                email: document.getElementById('editUserEmail').value,
+                username: document.getElementById('editUserUsername').value,
+                walletBalance: parseFloat(document.getElementById('editUserBalance').value) || 0,
+                verified: document.getElementById('editUserVerified').checked
+            };
+
+            try {
+                const res = await fetch(`/api/admin/users/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    Swal.fire({ icon: 'success', title: 'Success', text: 'User updated successfully', confirmButtonColor: '#5d8df4' });
+                    closeModal('editUserModal');
+                    loadUsers(currentPage.users);
+                } else {
+                    const err = await res.json();
+                    Swal.fire({ icon: 'error', title: 'Error', text: err.message, confirmButtonColor: '#5d8df4' });
+                }
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to update user', confirmButtonColor: '#5d8df4' });
+            }
+        }
+
+        async function deleteUser(id) {
+            const result = await Swal.fire({
+                icon: 'warning',
+                title: 'Delete User?',
+                text: 'This will also delete all their NFTs. This action cannot be undone.',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                confirmButtonText: 'Delete'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' });
+                    if (res.ok) {
+                        Swal.fire({ icon: 'success', title: 'Deleted', text: 'User deleted successfully', confirmButtonColor: '#5d8df4' });
+                        loadUsers(currentPage.users);
+                    } else {
+                        const err = await res.json();
+                        Swal.fire({ icon: 'error', title: 'Error', text: err.message, confirmButtonColor: '#5d8df4' });
+                    }
+                } catch (err) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to delete user', confirmButtonColor: '#5d8df4' });
+                }
+            }
+        }
+
+        async function impersonateUser(id) {
+            const result = await Swal.fire({
+                icon: 'question',
+                title: 'Login as User?',
+                text: 'You will be logged into the main dashboard as this user.',
+                showCancelButton: true,
+                confirmButtonColor: '#5d8df4',
+                confirmButtonText: 'Proceed'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const res = await fetch(`/api/admin/users/${id}/impersonate`, { method: 'POST' });
+                    if (res.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Impersonating',
+                            text: 'Opening user dashboard...',
+                            timer: 1500,
+                            confirmButtonColor: '#5d8df4'
+                        }).then(() => {
+                            window.open('/', '_blank');
+                        });
+                        document.getElementById('impersonationBar').classList.add('active');
+                    }
+                } catch (err) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to impersonate user', confirmButtonColor: '#5d8df4' });
+                }
+            }
+        }
+
+        async function stopImpersonation() {
+            await fetch('/api/admin/stop-impersonation', { method: 'POST' });
+            document.getElementById('impersonationBar').classList.remove('active');
+            Swal.fire({ icon: 'success', title: 'Stopped', text: 'Impersonation ended', confirmButtonColor: '#5d8df4' });
+        }
+
+        // NFTs Management
+        async function loadNfts(page = 1) {
+            currentPage.nfts = page;
+            const search = document.getElementById('nftSearch')?.value || '';
+            const status = document.getElementById('nftStatusFilter')?.value || '';
+            
+            try {
+                const res = await fetch(`/api/admin/nfts?page=${page}&search=${search}&status=${status}`);
+                const data = await res.json();
+                
+                const tbody = document.getElementById('nftsTableBody');
+                tbody.innerHTML = data.nfts.map(nft => `
+                    <tr>
+                        <td><img src="${nft.imageUrl}" class="nft-thumb" alt="${nft.name}"></td>
+                        <td><strong>${nft.name}</strong></td>
+                        <td>${nft.owner}</td>
+                        <td>${nft.creator}</td>
+                        <td>${nft.price ? nft.price.toFixed(4) + ' ' + (nft.currency || 'ETH') : '-'}</td>
+                        <td><span class="badge badge-${nft.status}">${nft.status}</span></td>
+                        <td>
+                            <button class="btn-admin btn-admin-sm me-1" onclick="editNft('${nft._id}')" data-testid="button-edit-nft-${nft._id}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn-admin btn-admin-sm btn-admin-success me-1" onclick="adminBuyNft('${nft._id}', '${nft.name}', ${nft.price || 0})" data-testid="button-buy-nft-${nft._id}">
+                                <i class="bi bi-cart"></i>
+                            </button>
+                            <button class="btn-admin btn-admin-sm btn-admin-danger" onclick="deleteNft('${nft._id}')" data-testid="button-delete-nft-${nft._id}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                renderPagination('nftsPagination', data.pages, page, 'loadNfts');
+            } catch (err) {
+                console.error('Failed to load NFTs:', err);
+            }
+        }
+
+        function searchNfts() {
+            clearTimeout(window.nftSearchTimeout);
+            window.nftSearchTimeout = setTimeout(() => loadNfts(1), 300);
+        }
+
+        async function editNft(id) {
+            try {
+                const res = await fetch(`/api/admin/nfts/${id}`);
+                const nft = await res.json();
+                
+                document.getElementById('editNftId').value = id;
+                document.getElementById('editNftName').value = nft.name;
+                document.getElementById('editNftDescription').value = nft.description || '';
+                document.getElementById('editNftOwner').value = nft.owner;
+                document.getElementById('editNftPrice').value = nft.price || 0;
+                document.getElementById('editNftStatus').value = nft.status;
+                document.getElementById('editNftRoyalty').value = nft.royalty || 0;
+                
+                openModal('editNftModal');
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to load NFT', confirmButtonColor: '#5d8df4' });
+            }
+        }
+
+        async function saveNft() {
+            const id = document.getElementById('editNftId').value;
+            const data = {
+                name: document.getElementById('editNftName').value,
+                description: document.getElementById('editNftDescription').value,
+                owner: document.getElementById('editNftOwner').value,
+                price: parseFloat(document.getElementById('editNftPrice').value) || undefined,
+                status: document.getElementById('editNftStatus').value,
+                royalty: parseFloat(document.getElementById('editNftRoyalty').value) || 0
+            };
+
+            try {
+                const res = await fetch(`/api/admin/nfts/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    Swal.fire({ icon: 'success', title: 'Success', text: 'NFT updated successfully', confirmButtonColor: '#5d8df4' });
+                    closeModal('editNftModal');
+                    loadNfts(currentPage.nfts);
+                }
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to update NFT', confirmButtonColor: '#5d8df4' });
+            }
+        }
+
+        async function deleteNft(id) {
+            const result = await Swal.fire({
+                icon: 'warning',
+                title: 'Delete NFT?',
+                text: 'This action cannot be undone.',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                confirmButtonText: 'Delete'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const res = await fetch(`/api/admin/nfts/${id}`, { method: 'DELETE' });
+                    if (res.ok) {
+                        Swal.fire({ icon: 'success', title: 'Deleted', confirmButtonColor: '#5d8df4' });
+                        loadNfts(currentPage.nfts);
+                    }
+                } catch (err) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to delete NFT', confirmButtonColor: '#5d8df4' });
+                }
+            }
+        }
+
+        function adminBuyNft(id, name, price) {
+            document.getElementById('buyNftId').value = id;
+            document.getElementById('buyNftName').value = name;
+            document.getElementById('buyPrice').value = price;
+            openModal('adminBuyModal');
+        }
+
+        async function confirmAdminBuy() {
+            const id = document.getElementById('buyNftId').value;
+            const buyerEmail = document.getElementById('buyerEmail').value;
+            const price = parseFloat(document.getElementById('buyPrice').value) || 0;
+
+            try {
+                const res = await fetch(`/api/admin/nfts/${id}/buy`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ buyerEmail, price })
+                });
+
+                if (res.ok) {
+                    Swal.fire({ icon: 'success', title: 'Success', text: 'NFT ownership transferred', confirmButtonColor: '#5d8df4' });
+                    closeModal('adminBuyModal');
+                    loadNfts(currentPage.nfts);
+                }
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to transfer NFT', confirmButtonColor: '#5d8df4' });
+            }
+        }
+
+        // Collections Management
+        async function loadCollections(page = 1) {
+            currentPage.collections = page;
+            const search = document.getElementById('collectionSearch')?.value || '';
+            
+            try {
+                const res = await fetch(`/api/admin/collections?page=${page}&search=${search}`);
+                const data = await res.json();
+                
+                const tbody = document.getElementById('collectionsTableBody');
+                tbody.innerHTML = data.collections.map(col => `
+                    <tr>
+                        <td><img src="${col.imageUrl || 'https://via.placeholder.com/50'}" class="nft-thumb" alt="${col.name}"></td>
+                        <td><strong>${col.name}</strong></td>
+                        <td>${col.creator || '-'}</td>
+                        <td>${col.category || '-'}</td>
+                        <td>${col.floorPrice ? col.floorPrice.toFixed(4) + ' ETH' : '-'}</td>
+                        <td>${new Date(col.createdAt).toLocaleDateString()}</td>
+                        <td>
+                            <button class="btn-admin btn-admin-sm me-1" onclick="editCollection('${col._id}')" data-testid="button-edit-collection-${col._id}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn-admin btn-admin-sm btn-admin-danger" onclick="deleteCollection('${col._id}')" data-testid="button-delete-collection-${col._id}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                renderPagination('collectionsPagination', data.pages, page, 'loadCollections');
+            } catch (err) {
+                console.error('Failed to load collections:', err);
+            }
+        }
+
+        function searchCollections() {
+            clearTimeout(window.colSearchTimeout);
+            window.colSearchTimeout = setTimeout(() => loadCollections(1), 300);
+        }
+
+        async function editCollection(id) {
+            try {
+                const res = await fetch(`/api/admin/collections?page=1`);
+                const data = await res.json();
+                const col = data.collections.find(c => c._id === id);
+                
+                if (col) {
+                    document.getElementById('editCollectionId').value = id;
+                    document.getElementById('editCollectionName').value = col.name;
+                    document.getElementById('editCollectionDescription').value = col.description || '';
+                    document.getElementById('editCollectionCategory').value = col.category || '';
+                    document.getElementById('editCollectionFloorPrice').value = col.floorPrice || 0;
+                    openModal('editCollectionModal');
+                }
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to load collection', confirmButtonColor: '#5d8df4' });
+            }
+        }
+
+        async function saveCollection() {
+            const id = document.getElementById('editCollectionId').value;
+            const data = {
+                name: document.getElementById('editCollectionName').value,
+                description: document.getElementById('editCollectionDescription').value,
+                category: document.getElementById('editCollectionCategory').value,
+                floorPrice: parseFloat(document.getElementById('editCollectionFloorPrice').value) || undefined
+            };
+
+            try {
+                const res = await fetch(`/api/admin/collections/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    Swal.fire({ icon: 'success', title: 'Success', text: 'Collection updated', confirmButtonColor: '#5d8df4' });
+                    closeModal('editCollectionModal');
+                    loadCollections(currentPage.collections);
+                }
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to update collection', confirmButtonColor: '#5d8df4' });
+            }
+        }
+
+        async function deleteCollection(id) {
+            const result = await Swal.fire({
+                icon: 'warning',
+                title: 'Delete Collection?',
+                text: 'NFTs in this collection will be orphaned.',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                confirmButtonText: 'Delete'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await fetch(`/api/admin/collections/${id}`, { method: 'DELETE' });
+                    Swal.fire({ icon: 'success', title: 'Deleted', confirmButtonColor: '#5d8df4' });
+                    loadCollections(currentPage.collections);
+                } catch (err) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to delete', confirmButtonColor: '#5d8df4' });
+                }
+            }
+        }
+
+        // Financial Requests
+        async function loadDeposits(page = 1) {
+            currentPage.deposits = page;
+            const status = document.getElementById('depositStatusFilter')?.value || 'pending';
+            
+            try {
+                const res = await fetch(`/api/admin/financial-requests?page=${page}&type=deposit&status=${status}`);
+                const data = await res.json();
+                
+                const tbody = document.getElementById('depositsTableBody');
+                tbody.innerHTML = data.requests.map(req => `
+                    <tr>
+                        <td>${req.userId?.email || 'Unknown'}</td>
+                        <td><strong>${req.amount} ${req.currency}</strong></td>
+                        <td><code>${req.transactionHash ? req.transactionHash.substring(0, 20) + '...' : '-'}</code></td>
+                        <td><span class="badge badge-${req.status}">${req.status}</span></td>
+                        <td>${new Date(req.createdAt).toLocaleString()}</td>
+                        <td>
+                            ${req.status === 'pending' ? `
+                                <button class="btn-admin btn-admin-sm btn-admin-success me-1" onclick="processRequest('${req._id}', 'approve', 'Deposit')" data-testid="button-approve-deposit-${req._id}">
+                                    <i class="bi bi-check"></i> Approve
+                                </button>
+                                <button class="btn-admin btn-admin-sm btn-admin-danger" onclick="processRequest('${req._id}', 'decline', 'Deposit')" data-testid="button-decline-deposit-${req._id}">
+                                    <i class="bi bi-x"></i> Decline
+                                </button>
+                            ` : `<span class="text-muted">${req.adminNote || 'Processed'}</span>`}
+                        </td>
+                    </tr>
+                `).join('');
+                
+                renderPagination('depositsPagination', data.pages, page, 'loadDeposits');
+            } catch (err) {
+                console.error('Failed to load deposits:', err);
+            }
+        }
+
+        async function loadWithdrawals(page = 1) {
+            currentPage.withdrawals = page;
+            const status = document.getElementById('withdrawalStatusFilter')?.value || 'pending';
+            
+            try {
+                const res = await fetch(`/api/admin/financial-requests?page=${page}&type=withdrawal&status=${status}`);
+                const data = await res.json();
+                
+                const tbody = document.getElementById('withdrawalsTableBody');
+                tbody.innerHTML = data.requests.map(req => `
+                    <tr>
+                        <td>${req.userId?.email || 'Unknown'} (Bal: ${(req.userId?.walletBalance || 0).toFixed(4)} ETH)</td>
+                        <td><strong>${req.amount} ${req.currency}</strong></td>
+                        <td><code>${req.walletAddress ? req.walletAddress.substring(0, 20) + '...' : '-'}</code></td>
+                        <td><span class="badge badge-${req.status}">${req.status}</span></td>
+                        <td>${new Date(req.createdAt).toLocaleString()}</td>
+                        <td>
+                            ${req.status === 'pending' ? `
+                                <button class="btn-admin btn-admin-sm btn-admin-success me-1" onclick="processRequest('${req._id}', 'approve', 'Withdrawal')" data-testid="button-approve-withdrawal-${req._id}">
+                                    <i class="bi bi-check"></i> Approve
+                                </button>
+                                <button class="btn-admin btn-admin-sm btn-admin-danger" onclick="processRequest('${req._id}', 'decline', 'Withdrawal')" data-testid="button-decline-withdrawal-${req._id}">
+                                    <i class="bi bi-x"></i> Decline
+                                </button>
+                            ` : `<span class="text-muted">${req.adminNote || 'Processed'}</span>`}
+                        </td>
+                    </tr>
+                `).join('');
+                
+                renderPagination('withdrawalsPagination', data.pages, page, 'loadWithdrawals');
+            } catch (err) {
+                console.error('Failed to load withdrawals:', err);
+            }
+        }
+
+        function processRequest(id, action, type) {
+            document.getElementById('requestNoteId').value = id;
+            document.getElementById('requestNoteAction').value = action;
+            document.getElementById('requestNoteTitle').textContent = `${action.charAt(0).toUpperCase() + action.slice(1)} ${type}`;
+            document.getElementById('requestNoteSubmit').className = action === 'approve' ? 'btn-admin btn-admin-success flex-fill' : 'btn-admin btn-admin-danger flex-fill';
+            document.getElementById('requestNoteText').value = '';
+            openModal('requestNoteModal');
+        }
+
+        async function submitRequestAction() {
+            const id = document.getElementById('requestNoteId').value;
+            const action = document.getElementById('requestNoteAction').value;
+            const adminNote = document.getElementById('requestNoteText').value;
+
+            try {
+                const res = await fetch(`/api/admin/financial-requests/${id}/${action}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ adminNote })
+                });
+
+                if (res.ok) {
+                    Swal.fire({ icon: 'success', title: 'Success', text: `Request ${action}d successfully`, confirmButtonColor: '#5d8df4' });
+                    closeModal('requestNoteModal');
+                    loadDeposits(currentPage.deposits);
+                    loadWithdrawals(currentPage.withdrawals);
+                    loadDashboard();
+                } else {
+                    const err = await res.json();
+                    Swal.fire({ icon: 'error', title: 'Error', text: err.message, confirmButtonColor: '#5d8df4' });
+                }
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to process request', confirmButtonColor: '#5d8df4' });
+            }
+        }
+
+        // Transactions
+        async function loadTransactions(page = 1) {
+            currentPage.transactions = page;
+            const type = document.getElementById('txTypeFilter')?.value || '';
+            
+            try {
+                const res = await fetch(`/api/admin/transactions?page=${page}&type=${type}`);
+                const data = await res.json();
+                
+                const tbody = document.getElementById('transactionsTableBody');
+                tbody.innerHTML = data.transactions.map(tx => `
+                    <tr>
+                        <td><span class="badge bg-secondary">${tx.type}</span></td>
+                        <td>${tx.from}</td>
+                        <td>${tx.to}</td>
+                        <td>${tx.amount ? tx.amount.toFixed(4) + ' ' + tx.currency : '-'}</td>
+                        <td>${tx.description}</td>
+                        <td>${new Date(tx.createdAt).toLocaleString()}</td>
+                    </tr>
+                `).join('');
+                
+                renderPagination('transactionsPagination', data.pages, page, 'loadTransactions');
+            } catch (err) {
+                console.error('Failed to load transactions:', err);
+            }
+        }
+
+        // Sales
+        async function loadSales(page = 1) {
+            currentPage.sales = page;
+            const status = document.getElementById('saleStatusFilter')?.value || '';
+            
+            try {
+                const res = await fetch(`/api/admin/sales?page=${page}&status=${status}`);
+                const data = await res.json();
+                
+                const tbody = document.getElementById('salesTableBody');
+                tbody.innerHTML = data.sales.map(sale => `
+                    <tr>
+                        <td>${sale.nftId?.name || 'Unknown NFT'}</td>
+                        <td>${sale.seller || '-'}</td>
+                        <td>${sale.price?.toFixed(4) || 0} ${sale.currency || 'ETH'}</td>
+                        <td><span class="badge badge-${sale.status === 'active' ? 'listed' : sale.status}">${sale.status}</span></td>
+                        <td>${new Date(sale.createdAt).toLocaleString()}</td>
+                    </tr>
+                `).join('');
+                
+                renderPagination('salesPagination', data.pages, page, 'loadSales');
+            } catch (err) {
+                console.error('Failed to load sales:', err);
+            }
+        }
+
+        // Auctions
+        async function loadAuctions(page = 1) {
+            currentPage.auctions = page;
+            const status = document.getElementById('auctionStatusFilter')?.value || '';
+            
+            try {
+                const res = await fetch(`/api/admin/auctions?page=${page}&status=${status}`);
+                const data = await res.json();
+                
+                const tbody = document.getElementById('auctionsTableBody');
+                tbody.innerHTML = data.auctions.map(auction => `
+                    <tr>
+                        <td>${auction.nftId?.name || 'Unknown NFT'}</td>
+                        <td>${auction.seller || '-'}</td>
+                        <td>${auction.startingPrice?.toFixed(4) || 0} ${auction.currency || 'ETH'}</td>
+                        <td>${auction.currentBid?.toFixed(4) || '-'}</td>
+                        <td>${new Date(auction.endTime).toLocaleString()}</td>
+                        <td><span class="badge badge-${auction.status === 'active' ? 'listed' : auction.status}">${auction.status}</span></td>
+                        <td>
+                            <button class="btn-admin btn-admin-sm" onclick="editAuction('${auction._id}')" data-testid="button-edit-auction-${auction._id}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                renderPagination('auctionsPagination', data.pages, page, 'loadAuctions');
+            } catch (err) {
+                console.error('Failed to load auctions:', err);
+            }
+        }
+
+        // Admins
+        async function loadAdmins() {
+            try {
+                const res = await fetch('/api/admin/admins');
+                const admins = await res.json();
+                
+                const tbody = document.getElementById('adminsTableBody');
+                tbody.innerHTML = admins.map(admin => `
+                    <tr>
+                        <td>${admin.username}</td>
+                        <td>${admin.email}</td>
+                        <td><span class="badge bg-${admin.role === 'superadmin' ? 'danger' : 'primary'}">${admin.role}</span></td>
+                        <td>${admin.lastLogin ? new Date(admin.lastLogin).toLocaleString() : 'Never'}</td>
+                        <td>
+                            ${admin.role !== 'superadmin' ? `
+                                <button class="btn-admin btn-admin-sm btn-admin-danger" onclick="deleteAdmin('${admin._id}')" data-testid="button-delete-admin-${admin._id}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            ` : '<span class="text-muted">Protected</span>'}
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Failed to load admins:', err);
+            }
+        }
+
+        function openCreateAdminModal() {
+            document.getElementById('newAdminEmail').value = '';
+            document.getElementById('newAdminUsername').value = '';
+            document.getElementById('newAdminPassword').value = '';
+            document.getElementById('newAdminRole').value = 'admin';
+            openModal('createAdminModal');
+        }
+
+        async function createAdmin() {
+            const data = {
+                email: document.getElementById('newAdminEmail').value,
+                username: document.getElementById('newAdminUsername').value,
+                password: document.getElementById('newAdminPassword').value,
+                role: document.getElementById('newAdminRole').value
+            };
+
+            if (!data.email || !data.username || !data.password) {
+                Swal.fire({ icon: 'warning', title: 'Required', text: 'Please fill all fields', confirmButtonColor: '#5d8df4' });
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/admin/admins', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    Swal.fire({ icon: 'success', title: 'Success', text: 'Admin created', confirmButtonColor: '#5d8df4' });
+                    closeModal('createAdminModal');
+                    loadAdmins();
+                } else {
+                    const err = await res.json();
+                    Swal.fire({ icon: 'error', title: 'Error', text: err.message, confirmButtonColor: '#5d8df4' });
+                }
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to create admin', confirmButtonColor: '#5d8df4' });
+            }
+        }
+
+        async function deleteAdmin(id) {
+            const result = await Swal.fire({
+                icon: 'warning',
+                title: 'Delete Admin?',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                confirmButtonText: 'Delete'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await fetch(`/api/admin/admins/${id}`, { method: 'DELETE' });
+                    Swal.fire({ icon: 'success', title: 'Deleted', confirmButtonColor: '#5d8df4' });
+                    loadAdmins();
+                } catch (err) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to delete admin', confirmButtonColor: '#5d8df4' });
+                }
+            }
+        }
+
+        // Utilities
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function renderPagination(containerId, pages, currentPage, loadFunction) {
+            const container = document.getElementById(containerId);
+            if (pages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            for (let i = 1; i <= pages; i++) {
+                html += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="${loadFunction}(${i})">${i}</button>`;
+            }
+            container.innerHTML = html;
+        }
+
+        // Initialize
+        checkAdminSession();
+    </script>
+</body>
+</html>
