@@ -1022,7 +1022,7 @@
     <!-- Signup Page -->
     <div id="signupPage" class="auth-page" style="display: none;">
         <div class="auth-wrapper">
-            <button class="btn btn-link text-decoration-none p-0 mb-4" onclick="showAuthPage('login')">
+            <button class="btn btn-link text-decoration-none p-0 mb-4" onclick="showAuthPage('signup')">
                 <i class="bi bi-arrow-left me-2"></i> Back
             </button>
             <div class="auth-card">
@@ -1910,6 +1910,9 @@
                             <option value="Art">Art</option>
                             <option value="Photography">Photography</option>
                             <option value="Digital">Digital</option>
+                            <option value="Sports">Sports</option>
+                             <option value="Music">Music</option>
+                            <option value="Fashion">Fashion</option>
                             <option value="Collectibles">Collectibles</option>
                         </select>
                     </div>
@@ -2226,6 +2229,7 @@
                             <option value="Photography">Photography</option>
                             <option value="Music">Music</option>
                             <option value="Video">Video</option>
+                            <option value="Fashion">Fashion</option>
                             <option value="Collectibles">Collectibles</option>
                             <option value="Gaming">Gaming</option>
                         </select>
@@ -5008,6 +5012,7 @@ function getSelectedTags() {
         document.getElementById('signupPage').style.display = page === 'signup' ? 'block' : 'none';
         document.getElementById('verifyPage').style.display = page === 'verify' ? 'block' : 'none';
     }
+
      function dontshowDashboard() {
       
         document.getElementById('authContainer').style.display = 'none';
