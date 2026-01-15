@@ -2988,7 +2988,7 @@ categorySelect.addEventListener('change', (e) => {
     if (!res.ok) throw new Error('Failed to fetch stats');
 
     const data = await res.json();
-
+alert("stats"+data)
     document.getElementById('statTotalNfts').innerText = data.totalNfts || 0;
     document.getElementById('statListedNfts').innerText = data.listedNfts || 0;
 
@@ -4281,6 +4281,8 @@ credentials:"include"
             {credentials:"include"} );
             if (res.ok) {
                 const data = await res.json();
+
+                alert("balance"+data)
                 userBalance = data.balance || 0;
                 userWethBalance = data.wethBalance || 0;
                 
