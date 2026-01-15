@@ -4276,7 +4276,9 @@ credentials:"include"
     
     async function loadUserBalances() {
         try {
-            const res = await fetch('https://changes-sample.onrender.com/api/user/balance,',{credentials:"include"});
+            const res = await fetch('https://changes-sample.onrender.com/api/user/balance,',
+            
+            {credentials:"include"} );
             if (res.ok) {
                 const data = await res.json();
                 userBalance = data.balance || 0;
@@ -5070,7 +5072,7 @@ function getSelectedTags() {
             
             showDashboard();
             loadDashboardStats();
-            loadUserBalances()
+            
 
         } catch (err) {
             console.error('Login error:', err);
