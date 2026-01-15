@@ -2985,7 +2985,7 @@ const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
 
     const res = await fetch('https://changes-sample.onrender.com/api/stats', {
-        credentials: 'include',
+       
 'Authorization': `Bearer ${token}`, // ✅ IMPORTANT
     });
 
