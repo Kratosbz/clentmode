@@ -3358,7 +3358,10 @@ const token = localStorage.getItem('token');
 const token = localStorage.getItem('token'); 
     if (!token) throw new Error('No token found');
 
-            const res = await fetch('https://changes-sample.onrender.com/api/nfts');
+            const res = await fetch('https://changes-sample.onrender.com/api/nfts', { headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }});
             const data = await res.json();
             nfts = data.owned || [];
             // Only show unlisted NFTs in the list dropdown
@@ -3380,7 +3383,10 @@ const token = localStorage.getItem('token');
 const token = localStorage.getItem('token'); 
     if (!token) throw new Error('No token found');
 
-            const res = await fetch('https://changes-sample.onrender.com/api/nfts');
+            const res = await fetch('https://changes-sample.onrender.com/api/nfts', { headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }});
             const data = await res.json();
             nfts = data.owned || [];
             const select = document.getElementById('auctionNftSelect');
@@ -5073,8 +5079,7 @@ const token = localStorage.getItem('token');
             
             const nftRes = await fetch('https://changes-sample.onrender.com/api/nfts', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            credentials:"include",
+                
  headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // ✅ Send JWT
