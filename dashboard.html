@@ -2985,9 +2985,13 @@ const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
 
     const res = await fetch('https://changes-sample.onrender.com/api/stats', {
-       
-'Authorization': `Bearer ${token}`, // ✅ IMPORTANT
-    });
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }
+});
+
 
     if (!res.ok) throw new Error('Failed to fetch stats');
 
@@ -3010,8 +3014,10 @@ const token = localStorage.getItem('token');
     // Load transactions for dashboard if not already loaded
     if (transactions.length === 0) {
         const txRes = await fetch('https://changes-sample.onrender.com/api/transactions', {
-            credentials: 'include',
-'Authorization': `Bearer ${token}`, // ✅ REQUIRED
+            credentials: 'include',  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  } // ✅ REQUIRED
         });
 
         if (!txRes.ok) throw new Error('Failed to fetch transactions');
@@ -3087,8 +3093,10 @@ async function loadDashboardNfts() {
 const token = localStorage.getItem('token'); 
     if (!token) throw new Error('No token found');
  const res = await fetch('https://changes-sample.onrender.com/api/nfts/user',
-     { credentials: 'include',
-'Authorization': `Bearer ${token}`, });
+     { credentials: 'include',  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }, });
       const data = await res.json();
        allNfts = data.owned || []; 
        listedNfts = data.listed || [];
@@ -3145,8 +3153,10 @@ const token = localStorage.getItem('token');
 
     const res = await fetch('https://changes-sample.onrender.com/api/nfts/user', {
       method: 'GET',
-      credentials: 'include',
-'Authorization': `Bearer ${token}`, // ✅ IMPORTANT: send session cookie
+      credentials: 'include',  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }, // ✅ IMPORTANT: send session cookie
     });
 
     if (!res.ok) {
@@ -3658,8 +3668,10 @@ const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
 
         const res = await fetch('https://changes-sample.onrender.com/api/transactions', {
-            credentials: 'include',
-'Authorization': `Bearer ${token}`, // ✅ REQUIRED for session cookies
+            credentials: 'include',  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }, // ✅ REQUIRED for session cookies
         });
 
         // ❌ throw ONLY if response is NOT OK
