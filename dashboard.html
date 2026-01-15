@@ -5069,6 +5069,8 @@ function getSelectedTags() {
             
             showDashboard();
             loadDashboardStats();
+            loadUserBalances()
+
         } catch (err) {
             console.error('Login error:', err);
             Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to login. Please try again.', confirmButtonColor: '#5d8df4' });
