@@ -4150,7 +4150,7 @@ const token = localStorage.getItem('token');
  headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // ✅ Send JWT
-      }
+      },
                 body: JSON.stringify(userSettings)
             });
             
@@ -4642,7 +4642,7 @@ const token = localStorage.getItem('token');
  headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // ✅ Send JWT
-      }
+      },
                 body: JSON.stringify({
                     type: 'withdrawal',
                     description: `Withdrawal request to ${wallet.substring(0, 10)}... on ${network}`,
@@ -5057,7 +5057,7 @@ const token = localStorage.getItem('token');
  headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // ✅ Send JWT
-      }
+      },
                 body: JSON.stringify(nftData)
             });
             
@@ -5090,7 +5090,7 @@ const token = localStorage.getItem('token');
  headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // ✅ Send JWT
-      }
+      },
                 body: JSON.stringify({
                     type: 'mint',
                     description: `Minted ${mintData.name}`,
