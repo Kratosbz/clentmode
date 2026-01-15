@@ -930,6 +930,10 @@ const token = localStorage.getItem('token');
 
                 const res = await fetch('https://changes-sample.onrender.com/api/admin/session',{
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                 });
                 const data = await res.json();
                 if (data.authenticated) {
@@ -967,6 +971,10 @@ const token = localStorage.getItem('token');
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                     body: JSON.stringify({ email, password })
                 });
 
@@ -983,7 +991,11 @@ const token = localStorage.getItem('token');
         }
 
         async function adminLogout() {
-            await fetch('https://changes-sample.onrender.com/api/admin/logout', { method: 'POST', credentials:"include", });
+            await fetch('https://changes-sample.onrender.com/api/admin/logout', { method: 'POST', credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      } });
             location.reload();
         }
 
@@ -1021,6 +1033,10 @@ const token = localStorage.getItem('token');
 
                 const res = await fetch('https://changes-sample.onrender.com/api/admin/stats',{
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                 });
                 const data = await res.json();
                 
@@ -1055,6 +1071,10 @@ const token = localStorage.getItem('token');
                 const res = await fetch(`https://changes-sample.onrender.com/api/admin/users?page=${page}&search=${search}&status=${status}`
                 ,{
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                 });
                 const data = await res.json();
                 
@@ -1103,6 +1123,10 @@ const token = localStorage.getItem('token');
 
                 const res = await fetch(`https://changes-sample.onrender.com/api/admin/users/${id}`,{
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                 });
                 const data = await res.json();
                 const user = data.user;
@@ -1136,6 +1160,10 @@ const token = localStorage.getItem('token');
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                     body: JSON.stringify(data)
                 });
 
@@ -1167,7 +1195,11 @@ const token = localStorage.getItem('token');
 const token = localStorage.getItem('token'); 
     if (!token) throw new Error('No token found');
 
-                    const res = await fetch(`https://changes-sample.onrender.com/api/admin/users/${id}`, { method: 'DELETE', credentials:"include", });
+                    const res = await fetch(`https://changes-sample.onrender.com/api/admin/users/${id}`, { method: 'DELETE', credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      } });
                     if (res.ok) {
                         Swal.fire({ icon: 'success', title: 'Deleted', text: 'User deleted successfully', confirmButtonColor: '#5d8df4' });
                         loadUsers(currentPage.users);
@@ -1196,7 +1228,11 @@ const token = localStorage.getItem('token');
 const token = localStorage.getItem('token'); 
     if (!token) throw new Error('No token found');
 
-                    const res = await fetch(`https://changes-sample.onrender.com/api/admin/users/${id}/impersonate`, { method: 'POST' , credentials:"include",});
+                    const res = await fetch(`https://changes-sample.onrender.com/api/admin/users/${id}/impersonate`, { method: 'POST' , credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }});
                     if (res.ok) {
                         Swal.fire({
                             icon: 'success',
@@ -1216,7 +1252,11 @@ const token = localStorage.getItem('token');
         }
 
         async function stopImpersonation() {
-            await fetch('https://changes-sample.onrender.com/api/admin/stop-impersonation', { method: 'POST' , credentials:"include",});
+            await fetch('https://changes-sample.onrender.com/api/admin/stop-impersonation', { method: 'POST' , credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }});
             document.getElementById('impersonationBar').classList.remove('active');
             Swal.fire({ icon: 'success', title: 'Stopped', text: 'Impersonation ended', confirmButtonColor: '#5d8df4' });
         }
@@ -1234,6 +1274,10 @@ const token = localStorage.getItem('token');
                 const res = await fetch(`https://changes-sample.onrender.com/api/admin/nfts?page=${page}&search=${search}&status=${status}`,{
 
                     credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                 });
                 const data = await res.json();
                 
@@ -1280,6 +1324,10 @@ const token = localStorage.getItem('token');
 
                 const res = await fetch(`https://changes-sample.onrender.com/api/admin/nfts/${id}`,{
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                 });
                 const nft = await res.json();
                 
@@ -1316,6 +1364,10 @@ const token = localStorage.getItem('token');
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                     body: JSON.stringify(data)
                 });
 
@@ -1344,7 +1396,11 @@ const token = localStorage.getItem('token');
 const token = localStorage.getItem('token'); 
     if (!token) throw new Error('No token found');
 
-                    const res = await fetch(`https://changes-sample.onrender.com/api/admin/nfts/${id}`, { method: 'DELETE', credentials:"include", });
+                    const res = await fetch(`https://changes-sample.onrender.com/api/admin/nfts/${id}`, { method: 'DELETE', credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      } });
                     if (res.ok) {
                         Swal.fire({ icon: 'success', title: 'Deleted', confirmButtonColor: '#5d8df4' });
                         loadNfts(currentPage.nfts);
@@ -1375,6 +1431,10 @@ const token = localStorage.getItem('token');
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                     body: JSON.stringify({ buyerEmail, price })
                 });
 
@@ -1399,6 +1459,10 @@ const token = localStorage.getItem('token');
 
                 const res = await fetch(`https://changes-sample.onrender.com/api/admin/collections?page=${page}&search=${search}`,{
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                 });
                 const data = await res.json();
                 
@@ -1440,6 +1504,10 @@ const token = localStorage.getItem('token');
 
                 const res = await fetch(`https://changes-sample.onrender.com/api/admin/collections?page=1`,{
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                 });
                 const data = await res.json();
                 const col = data.collections.find(c => c._id === id);
@@ -1474,6 +1542,10 @@ const token = localStorage.getItem('token');
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                     body: JSON.stringify(data)
                 });
 
@@ -1502,7 +1574,11 @@ const token = localStorage.getItem('token');
 const token = localStorage.getItem('token'); 
     if (!token) throw new Error('No token found');
 
-                    await fetch(`https://changes-sample.onrender.com/api/admin/collections/${id}`, { method: 'DELETE' , credentials:"include",});
+                    await fetch(`https://changes-sample.onrender.com/api/admin/collections/${id}`, { method: 'DELETE' , credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }});
                     Swal.fire({ icon: 'success', title: 'Deleted', confirmButtonColor: '#5d8df4' });
                     loadCollections(currentPage.collections);
                 } catch (err) {
@@ -1522,6 +1598,10 @@ const token = localStorage.getItem('token');
 
                 const res = await fetch(`https://changes-sample.onrender.com/api/admin/financial-requests?page=${page}&type=deposit&status=${status}`,{
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                 });
                 const data = await res.json();
                 
@@ -1562,6 +1642,10 @@ const token = localStorage.getItem('token');
 
                 const res = await fetch(`https://changes-sample.onrender.com/api/admin/financial-requests?page=${page}&type=withdrawal&status=${status}`,{
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                 });
                 const data = await res.json();
                 
@@ -1614,6 +1698,10 @@ const token = localStorage.getItem('token');
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                     body: JSON.stringify({ adminNote })
                 });
 
@@ -1643,6 +1731,10 @@ const token = localStorage.getItem('token');
 
                 const res = await fetch(`https://changes-sample.onrender.com/api/admin/transactions?page=${page}&type=${type}`,{
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                 });
                 const data = await res.json();
                 
@@ -1675,6 +1767,10 @@ const token = localStorage.getItem('token');
 
                 const res = await fetch(`https://changes-sample.onrender.com/api/admin/sales?page=${page}&status=${status}`,{
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                 });
                 const data = await res.json();
                 
@@ -1706,6 +1802,10 @@ const token = localStorage.getItem('token');
 
                 const res = await fetch(`https://changes-sample.onrender.com/api/admin/auctions?page=${page}&status=${status}`,{
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                 });
                 const data = await res.json();
                 
@@ -1740,6 +1840,10 @@ const token = localStorage.getItem('token');
 
                 const res = await fetch('https://changes-sample.onrender.com/api/admin/admins',{
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                 });
                 const admins = await res.json();
                 
@@ -1793,6 +1897,10 @@ const token = localStorage.getItem('token');
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                      credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
                     body: JSON.stringify(data)
                 });
 
@@ -1823,7 +1931,11 @@ const token = localStorage.getItem('token');
 const token = localStorage.getItem('token'); 
     if (!token) throw new Error('No token found');
 
-                    await fetch(`https://changes-sample.onrender.com/api/admin/admins/${id}`, { method: 'DELETE', credentials:"include", });
+                    await fetch(`https://changes-sample.onrender.com/api/admin/admins/${id}`, { method: 'DELETE', credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      } });
                     Swal.fire({ icon: 'success', title: 'Deleted', confirmButtonColor: '#5d8df4' });
                     loadAdmins();
                 } catch (err) {
