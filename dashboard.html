@@ -4605,7 +4605,10 @@ const token = localStorage.getItem('token');
 const token = localStorage.getItem('token'); 
     if (!token) throw new Error('No token found');
 
-            const res = await fetch('https://changes-sample.onrender.com/api/user/withdrawals');
+            const res = await fetch('https://changes-sample.onrender.com/api/user/withdrawals',{ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }});
             if (!res.ok) throw new Error('Failed to load');
             const withdrawals = await res.json();
             
