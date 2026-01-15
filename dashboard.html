@@ -4397,7 +4397,15 @@ const token = localStorage.getItem('token');
 
             const res = await fetch('https://changes-sample.onrender.com/api/user/balance',
             
-            {credentials:"include"} );
+            {credentials:"include",
+              headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }
+
+
+
+            } );
             if (res.ok) {
                 const data = await res.json();
 
