@@ -1208,6 +1208,8 @@
                 const data = await res.json();
                 
                 const tbody = document.getElementById('nftsTableBody');
+                console.log(data);
+                
                 tbody.innerHTML = data.nfts.map(nft => `
                     <tr>
                         <td><img src="${nft.imageUrl}" class="nft-thumb" alt="${nft.name}"></td>
