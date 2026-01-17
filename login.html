@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+        <style>
+        :root {
+            --vx-blue: #0d6efd;
+            --vx-bg: #f8f9fa;
+            --vx-card-border: rgba(0,0,0,0.08);
+            --sidebar-width: 280px;
+        }
+        body {
+            background-color: var(--vx-bg);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: white;
+            border-right: 1px solid var(--vx-card-border);
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+        .sidebar-logo {
+            padding: 2rem 1.5rem;
+        }
+        .sidebar-logo h2 {
+            display: flex;
+            align-items: center;
+        }
+        .sidebar-nav {
+            flex: 1;
+            padding: 0 1rem;
+            overflow-y: auto;
+        }
+        .nav-section-label {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            color: #1a1a1a;
+            text-decoration: none;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+        }
+        .sidebar-link:hover {
+            background: #f8f9fa;
+            color: var(--vx-blue);
+        }
+        .sidebar-link.active {
+            background: #f0f7ff;
+            color: var(--vx-blue);
+        }
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--vx-card-border);
+        }
+        
+        /* Main Content Adjustments */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
+        }
+        header {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--vx-card-border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 1050;
+            }
+            .sidebar-overlay.show {
+                display: block;
+            }
+        }
+
+        .vx-card {
+            background: white;
+            border: 1px solid var(--vx-card-border);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            height: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .vx-card:hover {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+        .icon-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .balance-card {
+            background: white;
+            border: 1px solid var(--vx-card-border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+        }
+        .quick-action-btn {
+            background: #f0f7ff;
+            border: none;
+            border-radius: 1.25rem;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            color: #0d6efd;
+            font-weight: 600;
+            width: 100%;
+            height: 100%;
+            min-height: 140px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .quick-action-btn:hover {
+            background: white;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        .quick-action-btn i {
+            font-size: 1.75rem;
+        }
+        .nav-pills-custom .nav-link {
+            color: #6c757d;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            padding: 0.5rem 1.25rem;
+        }
+        .view-options-panel {
+            background: white;
+            border: 1px solid var(--vx-card-border);
+            border-radius: 1.25rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .view-option-btn {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--vx-card-border);
+            background: #f8f9fa;
+            text-align: left;
+            font-weight: 500;
+            color: #1a1a1a;
+            transition: all 0.2s;
+        }
+        .view-option-btn.active {
+            background: #5d8df4;
+            color: white;
+            border-color: #5d8df4;
+        }
+        .toggle-group-custom {
+            display: flex;
+            background: white;
+            border: 1px solid var(--vx-card-border);
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+        .toggle-group-item {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            background: white;
+            color: #6c757d;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .toggle-group-item.active {
+            background: #5d8df4;
+            color: white;
+        }
+        .create-btn-sm {
+            background: #5d8df4;
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            padding: 0.5rem 1.25rem;
+            font-weight: 600;
+            width: fit-content;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        /* Modal Styles */
+        .vx-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            overflow-y: auto;
+        }
+        
+        /* Ensure SweetAlert appears above all modals */
+        .swal2-container {
+            z-index: 3000 !important;
+        }
+        @media (min-width: 992px) {
+            .vx-modal-overlay {
+                align-items: center;
+                padding: 2rem;
+            }
+        }
+        .vx-modal-body {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .vx-modal {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            border-radius: 1.5rem 1.5rem 0 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.3s ease-out;
+        }
+        @media (min-width: 992px) {
+            .vx-modal {
+                border-radius: 1.5rem;
+            }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .vx-modal-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-bottom: 1px solid var(--vx-card-border);
+        }
+        .vx-modal-close {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6c757d;
+        }
+        .vx-modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .upload-zone {
+            border: 2px dashed var(--vx-card-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .upload-zone:hover {
+            border-color: #5d8df4;
+        }
+        .form-label-custom {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .form-control-custom {
+            background: #f8f9fa;
+            border: 1px solid var(--vx-card-border);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            width: 100%;
+            margin-bottom: 1.25rem;
+        }
+        .form-control-custom:focus {
+            outline: none;
+            border-color: #5d8df4;
+            background: white;
+        }
+        .royalty-slider {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            appearance: none;
+            margin-bottom: 0.5rem;
+        }
+        .royalty-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 2px solid #5d8df4;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .vx-modal-footer {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            border-top: 1px solid var(--vx-card-border);
+        }
+        /* Settings Page Styles */
+        .settings-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid var(--vx-card-border);
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .settings-menu-btn:hover {
+            background: #f8f9fa;
+        }
+        .settings-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: white;
+            border: 1px solid var(--vx-card-border);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            min-width: 220px;
+            z-index: 1000;
+            display: none;
+        }
+        .settings-dropdown.show {
+            display: block;
+        }
+        .settings-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #1a1a1a;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .settings-dropdown-item:hover {
+            background: #f8f9fa;
+        }
+        .settings-dropdown-item.active {
+            background: #f0f7ff;
+            color: #5d8df4;
+        }
+        .settings-dropdown-item:first-child {
+            border-radius: 0.75rem 0.75rem 0 0;
+        }
+        .settings-dropdown-item:last-child {
+            border-radius: 0 0 0.75rem 0.75rem;
+        }
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #e0e0e0;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .toggle-switch.active {
+            background: #5d8df4;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .toggle-switch.active::after {
+            transform: translateX(24px);
+        }
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #666;
+            position: relative;
+        }
+        .profile-avatar-upload {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 28px;
+            height: 28px;
+            background: #5d8df4;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .settings-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+            background: #fafafa;
+        }
+        .settings-input:focus {
+            outline: none;
+            border-color: #5d8df4;
+            background: white;
+        }
+        .settings-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+        .password-input-wrapper {
+            position: relative;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+        }
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-section-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #666;
+            margin: 1.5rem 0 1rem 0;
+        }
+        /* Minting Wizard Styles */
+        .mint-modal {
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .mint-steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+        }
+        .mint-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .mint-step.active .step-circle,
+        .mint-step.completed .step-circle {
+            background: #5d8df4;
+            color: white;
+        }
+        .mint-step.completed .step-circle::after {
+            content: '\2713';
+        }
+        .mint-step.completed .step-circle {
+            font-size: 0;
+        }
+        .mint-step.completed .step-circle::after {
+            font-size: 0.85rem;
+        }
+        .step-label {
+            font-size: 0.75rem;
+            color: #666;
+            font-weight: 500;
+        }
+        .mint-step.active .step-label,
+        .mint-step.completed .step-label {
+            color: #5d8df4;
+        }
+        .step-line {
+            flex: 1;
+            height: 2px;
+            background: #e0e0e0;
+            margin: 0 0.5rem;
+            margin-bottom: 1.5rem;
+            max-width: 40px;
+        }
+        .mint-step-content {
+            display: none;
+        }
+        .mint-step-content.active {
+            display: block;
+        }
+        .media-type-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 0.75rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 80px;
+        }
+        .media-type-btn:hover {
+            border-color: #5d8df4;
+        }
+        .media-type-btn.active {
+            border-color: #5d8df4;
+            background: #f0f7ff;
+            color: #5d8df4;
+        }
+        .media-type-btn i {
+            font-size: 1.5rem;
+        }
+        .media-type-btn span {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .mint-upload-zone {
+            border: 2px dashed #e0e0e0;
+            border-radius: 0.75rem;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fafafa;
+        }
+        .mint-upload-zone:hover,
+        .mint-upload-zone.dragover {
+            border-color: #5d8df4;
+            background: #f0f7ff;
+        }
+        .mint-upload-zone.has-file {
+            border-style: solid;
+            border-color: #5d8df4;
+        }
+        .upload-preview img,
+        .upload-preview video {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+        }
+        .upload-preview .audio-preview {
+            width: 100%;
+            max-width: 300px;
+        }
+        .rarity-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        .rarity-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .rarity-option:hover {
+            border-color: #5d8df4;
+        }
+        .rarity-option.active {
+            border-color: #5d8df4;
+            background: #f0f7ff;
+        }
+        .rarity-option input {
+            display: none;
+        }
+        .rarity-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #e0e0e0;
+            position: relative;
+        }
+        .rarity-option.active .rarity-dot {
+            border-color: #5d8df4;
+        }
+        .rarity-option.active .rarity-dot::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #5d8df4;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .attribute-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .attribute-row input {
+            flex: 1;
+        }
+        .list-immediately-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 0.75rem;
+            cursor: pointer;
+        }
+        .list-immediately-option input {
+            display: none;
+        }
+        .list-immediately-option .checkmark {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .list-immediately-option input:checked + .checkmark {
+            background: #5d8df4;
+            border-color: #5d8df4;
+        }
+        .list-immediately-option input:checked + .checkmark::after {
+            content: '\2713';
+            color: white;
+            font-size: 0.75rem;
+        }
+        .sale-type-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .sale-type-option {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sale-type-option:hover {
+            border-color: #5d8df4;
+        }
+        .sale-type-option.active {
+            border-color: #5d8df4;
+            background: #f0f7ff;
+        }
+        .sale-type-option input {
+            display: none;
+        }
+        .sale-type-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .sale-type-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #e0e0e0;
+            flex-shrink: 0;
+            margin-top: 2px;
+            position: relative;
+        }
+        .sale-type-option.active .sale-type-dot {
+            border-color: #5d8df4;
+        }
+        .sale-type-option.active .sale-type-dot::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #5d8df4;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .review-preview {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 0.75rem;
+        }
+        .preview-media {
+            width: 150px;
+            height: 150px;
+            background: #e9ecef;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        .preview-media i {
+            font-size: 3rem;
+            color: #adb5bd;
+        }
+        .preview-media img,
+        .preview-media video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .review-details {
+            background: #f8f9fa;
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+        .review-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .review-row:last-child {
+            border-bottom: none;
+        }
+        .review-row span:first-child {
+            color: #666;
+        }
+        .review-row span:last-child {
+            font-weight: 500;
+        }
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 0.75rem;
+            cursor: pointer;
+        }
+        .terms-checkbox input {
+            display: none;
+        }
+        .terms-checkbox .checkmark {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .terms-checkbox input:checked + .checkmark {
+            background: #5d8df4;
+            border-color: #5d8df4;
+        }
+        .terms-checkbox input:checked + .checkmark::after {
+            content: '\2713';
+            color: white;
+            font-size: 0.75rem;
+        }
+        
+        /* Auth Pages Styles */
+        .auth-page {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding: 2rem 1rem;
+        }
+        .auth-wrapper {
+            max-width: 420px;
+            margin: 0 auto;
+            padding-top: 2rem;
+        }
+        .auth-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .auth-card .input-group-text {
+            border-radius: 0.5rem 0 0 0.5rem;
+        }
+        .auth-card .form-control {
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .auth-card .input-group-text:last-child {
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .auth-card .form-control:not(:last-child) {
+            border-radius: 0;
+        }
+    </style>
+    <!-- Login Page -->
+    <div id="loginPage" class="auth-page">
+        <div class="auth-wrapper">
+            <a class="btn btn-link text-decoration-none p-0 mb-4" href="./index.html" >
+                <i class="bi bi-arrow-left me-2"></i> Back
+            </a>
+            <div class="auth-card">
+                <h2 class="fw-bold text-center mb-2">Sign in to your account</h2>
+                <p class="text-muted text-center mb-4">Access your NFT marketplace account</p>
+                
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="bi bi-envelope text-muted"></i>
+                            </span>
+                            <input type="email" class="form-control border-start-0 ps-0" id="loginEmail" placeholder="Email address" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="bi bi-lock text-muted"></i>
+                            </span>
+                            <input type="password" class="form-control border-start-0 border-end-0 ps-0" id="loginPassword" placeholder="Password" required>
+                            <button type="button" class="input-group-text bg-white border-start-0" onclick="togglePasswordVisibility('loginPassword', this)">
+                                <i class="bi bi-eye text-muted"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4 gap-2 flex-wrap">
+                        <label class="form-check-label d-flex align-items-center gap-2">
+                            <input type="checkbox" class="form-check-input m-0" id="rememberMe">
+                            Remember me
+                        </label>
+                        <a href="forgot-password.html" class="text-primary text-decoration-none small">Forgot your password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 py-2 rounded-3 fw-bold mb-3" style="background: #5d8df4; border: none;">
+                        Sign in
+                    </button>
+                    
+                    <p class="text-center text-muted mb-0">
+                        Don't have an account? <a href="./index.html" class="text-primary text-decoration-none" >Sign up</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+
+     <script>
+        function togglePasswordVisibility(inputId, btn) {
+        const input = document.getElementById(inputId);
+        const icon = btn.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+    }
+
+    async function handleLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    try {
+// const token = localStorage.getItem('token'); 
+//     if (!token) throw new Error('No token found');
+
+        // 1️⃣ Send login request WITHOUT Authorization header
+        const response = await fetch('https://changes-sample.onrender.com/api/auth/login', {
+            method: 'POST',
+             headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      },
+            
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        // 2️⃣ Handle email verification
+        if (data.needsVerification) {
+            pendingVerificationEmail = data.email;
+            document.getElementById('verifyEmailDisplay').textContent = data.email;
+            showAuthPage('verify');
+            return;
+        }
+
+        // 3️⃣ Handle failed login
+        if (!response.ok) {
+            Swal.fire({ 
+                icon: 'error', 
+                title: 'Error', 
+                text: data.message || 'Login failed', 
+                confirmButtonColor: '#5d8df4' 
+            });
+            return;
+        }
+
+        // 4️⃣ Store JWT token from server
+        if (data.token) {
+            localStorage.setItem('token', data.token); // 🔑 store token
+        }
+
+        // 5️⃣ Show dashboard and load data
+        showDashboard();
+        await loadDashboardStats();
+        await loadUserBalances();
+
+    } catch (err) {
+        console.error('Login error:', err);
+        Swal.fire({ 
+            icon: 'error', 
+            title: 'Error', 
+            text: 'Failed to login. Please try again.', 
+            confirmButtonColor: '#5d8df4' 
+        });
+    }
+}
+
+   
+    
+    async function handleVerify(event) {
+        event.preventDefault();
+        const code = document.getElementById('verificationCode').value;
+        
+        try {
+const token = localStorage.getItem('token'); 
+    if (!token) throw new Error('No token found');
+
+            const response = await fetch('https://changes-sample.onrender.com/api/auth/verify-email', {
+                method: 'POST',
+                 headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      },
+                body: JSON.stringify({ email: pendingVerificationEmail, code })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                Swal.fire({ icon: 'error', title: 'Error', text: data.message || 'Verification failed', confirmButtonColor: '#5d8df4' });
+                return;
+            }
+            
+            Swal.fire({ icon: 'success', title: 'Success', text: 'Email verified successfully! Welcome to Ethergalleries.', confirmButtonColor: '#5d8df4' });
+            location.href="./dashboard.html"
+        } catch (err) {
+            console.error('Verify error:', err);
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to verify email. Please try again.', confirmButtonColor: '#5d8df4' });
+        }
+    }
+     
+    async function resendCode() {
+        try {
+const token = localStorage.getItem('token'); 
+    if (!token) throw new Error('No token found');
+
+            const response = await fetch('https://changes-sample.onrender.com/api/auth/resend-code', {
+                method: 'POST',
+                 headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      },
+                body: JSON.stringify({ email: pendingVerificationEmail })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                Swal.fire({ icon: 'error', title: 'Error', text: data.message || 'Failed to resend code', confirmButtonColor: '#5d8df4' });
+                return;
+            }
+            
+            document.getElementById('verifyCodeSent').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('verifyCodeSent').style.display = 'none';
+            }, 3000);
+        } catch (err) {
+            console.error('Resend error:', err);
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to resend code. Please try again.', confirmButtonColor: '#5d8df4' });
+        }
+    }
+    
+    async function logout() {
+        try {
+const token = localStorage.getItem('token'); 
+    if (!token) throw new Error('No token found');
+
+            await fetch('https://changes-sample.onrender.com/api/auth/logout', { method: 'POST' });
+            showAuthPage('login');
+        } catch (err) {
+            console.error('Logout error:', err);
+            showAuthPage('login');
+        }
+    }
+    </script>
+</body>
+</html>
