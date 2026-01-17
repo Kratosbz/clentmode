@@ -1027,7 +1027,7 @@ const token = localStorage.getItem('token');
             document.getElementById('verifyEmailDisplay').textContent = data.email;
             document.getElementById('verifyCodeSent').style.display = 'block';
             location.href="./dashboard.html"
-            showAuthPage('verify');
+            
         } catch (err) {
             console.error('Signup error:', err);
             Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to create account. Please try again.', confirmButtonColor: '#5d8df4' });
