@@ -2812,7 +2812,7 @@ categorySelect.addEventListener('change', (e) => {
                         <span class="small" id="convertSummaryAmount">0.00 WETH</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted small">Fee (15% from ETH)</span>
+                        <span class="text-muted small">Fee (9.5% from ETH)</span>
                         <span class="small text-danger" id="convertFeeAmount">-0.00 ETH</span>
                     </div>
                     <hr class="my-2">
@@ -3352,7 +3352,13 @@ if (totalCollectionVolume) {
 const token = localStorage.getItem('token'); 
     if (!token) throw new Error('No token found');
 
-            await fetch(`/api/collections/${id}`, { method: 'DELETE' });
+            await fetch(`https://changes-sample.onrender.com/api/collections/${id}`,{ method: 'DELETE',
+credentials:"include",
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
+             });
             loadCollections();
         } catch (err) {
             Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to delete collection', confirmButtonColor: '#5d8df4' });
@@ -3504,7 +3510,11 @@ credentials:"include",
 const token = localStorage.getItem('token'); 
     if (!token) throw new Error('No token found');
 
-            await fetch(`/api/sales/${id}/cancel`, { method: 'PUT' });
+            await fetch(`https://changes-sample.onrender.com/api/sales/${id}/cancel`, { method: 'PUT' ,
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }});
             alert("Delisted")
             loadSales();
         } catch (err) {
@@ -3858,7 +3868,11 @@ const token = localStorage.getItem('token');
 
             const res = await fetch('https://changes-sample.onrender.com/api/collections', {
                 method: 'POST',
-                body: formData
+                body: formData,
+ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      }
             });
             if (res.ok) {
                 closeCreateModal();
@@ -4485,7 +4499,7 @@ const token = localStorage.getItem('token');
     function updateConvertSummary() {
         const amount = parseFloat(document.getElementById('convertAmount').value) || 0;
         const fee = amount * 0.15;
-        const receive = amount; // Net ETH after 15% fee deduction
+        const receive = amount; // Net ETH after 9.5% fee deduction
         
         document.getElementById('convertSummaryAmount').textContent = amount.toFixed(4) + ' WETH';
         document.getElementById('convertFeeAmount').textContent = '-' + fee.toFixed(4) + ' ETH';
@@ -4514,7 +4528,7 @@ const token = localStorage.getItem('token');
         }
         
         if (fee > userBalance) {
-            Swal.fire({ icon: 'error', title: 'Insufficient ETH', text: `You need ${fee.toFixed(4)} ETH to cover the 15% conversion fee, but you only have ${userBalance.toFixed(4)} ETH.`, confirmButtonColor: '#5d8df4' });
+            Swal.fire({ icon: 'error', title: 'Insufficient ETH', text: `You need ${fee.toFixed(4)} ETH to cover the 9.5% conversion fee, but you only have ${userBalance.toFixed(4)} ETH.`, confirmButtonColor: '#5d8df4' });
             return;
         }
         
@@ -4537,7 +4551,7 @@ const token = localStorage.getItem('token');
             Swal.fire({ 
                 icon: 'success', 
                 title: 'Conversion Complete!', 
-                html: `<p>Successfully converted <strong>${amount.toFixed(4)} WETH</strong> to <strong>${data.netAmount.toFixed(4)} ETH</strong>.</p><p class="text-muted small">Fee: ${data.fee.toFixed(4)} ETH (15%)</p>`,
+                html: `<p>Successfully converted <strong>${amount.toFixed(4)} WETH</strong> to <strong>${data.netAmount.toFixed(4)} ETH</strong>.</p><p class="text-muted small">Fee: ${data.fee.toFixed(4)} ETH (9.5%)</p>`,
                 confirmButtonColor: '#5d8df4' 
             });
             closeConvertModal();
