@@ -1686,8 +1686,8 @@ const token = localStorage.getItem('token');
         
         async function loadMarketplaceData() {
             try {
-const token = localStorage.getItem('token'); 
-    if (!token) throw new Error('No token found');
+// const token = localStorage.getItem('token'); 
+//     if (!token) throw new Error('No token found');
 
                 const [nftsRes, auctionsRes, exhibitionsRes] = await Promise.all([
                     fetch('https://changes-sample.onrender.com/api/marketplace/nfts'),
