@@ -734,7 +734,7 @@ const token = localStorage.getItem('token');
         }
         
         async function buyNFT() {
-            const sessionRes = await fetch('https://changes-sample.onrender.com/api/auth/session');
+            // const sessionRes = await fetch('https://changes-sample.onrender.com/api/auth/session');
             const token =localStorage.getItem("token")
             
             if (!token) {
@@ -768,7 +768,9 @@ const token = localStorage.getItem('token');
 
                 const res = await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${currentNFT._id}/buy`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: { 'Content-Type': 'application/json',
+'Authorization': `Bearer ${token}`
+                     }
                 });
                 
                 if (!res.ok) {

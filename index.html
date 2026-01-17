@@ -2102,7 +2102,9 @@ const token = localStorage.getItem('token');
 
                 const res = await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${nftId}/buy`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: { 'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                     }
                 });
                 
                 if (!res.ok) {
