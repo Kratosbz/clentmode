@@ -3538,6 +3538,8 @@ const token = localStorage.getItem('token');
 });
             const data = await res.json();
             auctions = data.auctions || [];
+            console.log(data);
+            
             renderAuctions(data.stats);
         } catch (err) {
             console.error('Failed to load auctions:', err);
@@ -3989,32 +3991,52 @@ const token = localStorage.getItem('token');
     }
 
     async function createExhibition(form) {
-        const formData = new FormData(form);
-        try {
-const token = localStorage.getItem('token'); 
+  const formData = new FormData(form);
+
+  try {
+    const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
 
-            const res = await fetch('https://changes-sample.onrender.com/api/exhibitions', {
-                method: 'POST',
-                body: formData,
-                credentials:"include",
- headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // ✅ Send JWT
-      },
-});
-            if (res.ok) {
-                closeCreateExhibitionModal();
-                loadExhibitions();
-                Swal.fire({ icon: 'success', title: 'Success', text: 'Exhibition created successfully!', confirmButtonColor: '#5d8df4' });
-            } else {
-                const err = await res.json();
-                Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Failed to create exhibition', confirmButtonColor: '#5d8df4' });
-            }
-        } catch (err) {
-            Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to create exhibition', confirmButtonColor: '#5d8df4' });
+    const res = await fetch(
+      'https://changes-sample.onrender.com/api/exhibitions',
+      {
+        method: 'POST',
+        body: formData,
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${token}` // ✅ ONLY this header
         }
+      }
+    );
+
+    if (res.ok) {
+      closeCreateExhibitionModal();
+      loadExhibitions();
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Exhibition created successfully!',
+        confirmButtonColor: '#5d8df4'
+      });
+    } else {
+      const err = await res.json();
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: err.message || 'Failed to create exhibition',
+        confirmButtonColor: '#5d8df4'
+      });
     }
+  } catch (err) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: err.message || 'Failed to create exhibition',
+      confirmButtonColor: '#5d8df4'
+    });
+  }
+}
+
 
     // Settings Page Functions
     let userSettings = {
@@ -5446,34 +5468,16 @@ const token = localStorage.getItem('token');
     }
     
     async function logout() {
-        try {
-localStorage.removeItem('token'); 
-location.href="./login.html"
-    // if (!token) throw new Error('No token found');
-
-        //     await fetch('https://changes-sample.onrender.com/api/auth/logout', { method: 'POST' });
-        //     showAuthPage('login');
-        // } catch (err) {
-        //     console.error('Logout error:', err);
-        //     showAuthPage('login');
-        }
-    }
-    
-  function checkAuthStatus() {
-  const token = localStorage.getItem('token');
-
-  // ❌ No token → not authenticated
-  if (!token) {
-    console.log('No token found');
-    dontshowDashboard();
-    showAuthPage('login');
-    return;
+  try {
+    localStorage.removeItem('token'); // ✅ Remove JWT
+    // dontshowDashboard();
+    window.location.href = "./login.html"; // ✅ Redirect
+  } catch (err) {
+    console.error("Logout failed:", err);
+    window.location.href = "./login.html";
   }
-
-  // ✅ Token exists → assume authenticated
-  showDashboard();
-  loadDashboardStats();
 }
+
 
 
 
