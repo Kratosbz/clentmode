@@ -506,6 +506,8 @@ const token = localStorage.getItem('token');
     const avatarUrl =
       avatarData?.profileImage ||
       "https://via.placeholder.com/150?text=Avatar";
+const initial = artistName[0].toUpperCase();
+console.log(avatarUrl);
 
     const totalLikes = artistNFTs.reduce(
       (sum, n) => sum + (n.likes || 0),
@@ -524,7 +526,7 @@ const token = localStorage.getItem('token');
 
       <div class="vx-profile-header">
         <div class="vx-profile-avatar">
-          <img src="${avatarUrl}" alt="${artistName} avatar" />
+          <img src="${avatarUrl}" alt="${initial} avatar" />
         </div>
 
         <div class="vx-profile-info">
