@@ -473,60 +473,58 @@ const token = localStorage.getItem('token');
                 `;
             }
         }
-        
-        async function loadArtistProfileAvatar() {
+ async function loadArtistProfileAvatar() {
   try {
-    const token = localStorage.getItem('token');
-    if (!token) throw new Error('No token found');
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found");
 
     const res = await fetch(
-      'https://changes-sample.onrender.com/api/user/avatar',
+      "https://changes-sample.onrender.com/api/user/avatar",
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Authorization': `Bearer ${token}`, // ✅ JWT
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
-    if (!res.ok) throw new Error('Failed to load avatar');
+    if (!res.ok) throw new Error("Failed to load avatar");
 
-    return await res.json();
+    const data = await res.json();
+    return data.profileImage; // ✅ STRING ONLY
   } catch (err) {
-    console.error('Load avatar error:', err);
+    console.error("Avatar load error:", err);
     return null;
   }
 }
 
+
+
         
         async function renderProfile() {
   try {
-    const avatarData = await loadArtistProfileAvatar();
-    const avatarUrl =
-      avatarData?.profileImage ||
-      "https://via.placeholder.com/150?text=Avatar";
-const initial = artistName[0].toUpperCase();
-console.log(avatarUrl);
+    const avatarUrl = await loadArtistProfileAvatar();
+    const initial = artistName[0]?.toUpperCase() || "?";
 
-    const totalLikes = artistNFTs.reduce(
-      (sum, n) => sum + (n.likes || 0),
-      0
-    );
-    const totalViews = artistNFTs.reduce(
-      (sum, n) => sum + (n.views || 0),
-      0
-    );
+    console.log("Avatar URL:", avatarUrl);
+
+    const totalLikes = artistNFTs.reduce((sum, n) => sum + (n.likes || 0), 0);
+    const totalViews = artistNFTs.reduce((sum, n) => sum + (n.views || 0), 0);
     const listedNFTs = artistNFTs.filter(n => n.status === "listed");
 
     document.getElementById("pageContent").innerHTML = `
       <div class="vx-profile-banner">
-        <img src="https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=1600&auto=format&fit=crop" alt="Banner">
+        <img src="https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=1600&auto=format&fit=crop">
       </div>
 
       <div class="vx-profile-header">
         <div class="vx-profile-avatar">
-          <img src="${avatarUrl}" alt="${initial} avatar" />
+          ${
+            avatarUrl
+              ? `<img src="${avatarUrl}" alt="${initial}" />`
+              : `<div class="vx-avatar-fallback">${initial}</div>`
+          }
         </div>
 
         <div class="vx-profile-info">
@@ -536,27 +534,19 @@ console.log(avatarUrl);
 
           <h1 class="vx-profile-name">${artistName}</h1>
 
-          <p class="vx-profile-bio">
-            Digital artist creating unique NFT artworks. Exploring the boundaries
-            of digital creativity and blockchain technology.
-          </p>
-
           <div class="vx-profile-stats">
             <div class="vx-profile-stat">
               <div class="vx-profile-stat-value">${artistNFTs.length}</div>
               <div class="vx-profile-stat-label">Artworks</div>
             </div>
-
             <div class="vx-profile-stat">
               <div class="vx-profile-stat-value">${listedNFTs.length}</div>
               <div class="vx-profile-stat-label">For Sale</div>
             </div>
-
             <div class="vx-profile-stat">
               <div class="vx-profile-stat-value">${totalLikes}</div>
               <div class="vx-profile-stat-label">Total Likes</div>
             </div>
-
             <div class="vx-profile-stat">
               <div class="vx-profile-stat-value">${totalViews}</div>
               <div class="vx-profile-stat-label">Total Views</div>
@@ -564,22 +554,12 @@ console.log(avatarUrl);
           </div>
         </div>
       </div>
-
-      <main class="vx-main">
-        ${renderFeaturedSection()}
-
-        <section>
-          <h2 class="vx-section-title">All Artworks by ${artistName}</h2>
-          <div class="vx-nft-grid" id="nftGrid">
-            ${artistNFTs.map(nft => renderNFTCard(nft)).join("")}
-          </div>
-        </section>
-      </main>
     `;
   } catch (err) {
     console.error("Render profile failed:", err);
   }
 }
+
 
         function renderFeaturedSection() {
             if (!featuredNFT) return '';
