@@ -440,7 +440,16 @@ const token = localStorage.getItem('token');
                 if (!res.ok) throw new Error('Failed to load');
                 
                 const allNFTs = await res.json();
+
+
                 artistNFTs = allNFTs.filter(n => n.creator === artistName);
+
+
+                 const res = await fetch('https://changes-sample.onrender.com/api/user/avatar', headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ Send JWT
+      });
+                if (!res.ok) throw new Error('Failed to load');
                 
                 if (artistNFTs.length === 0) {
                     document.getElementById('pageContent').innerHTML = `
