@@ -504,7 +504,7 @@ const token = localStorage.getItem('token');
   try {
     const avatarData = await loadArtistProfileAvatar();
     const avatarUrl =
-      avatarData?.avatarUrl ||
+      avatarData?.profileImage ||
       "https://via.placeholder.com/150?text=Avatar";
 
     const totalLikes = artistNFTs.reduce(
