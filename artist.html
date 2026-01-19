@@ -482,7 +482,7 @@ const params = new URLSearchParams(window.location.search);
             username = params.get('name');
 
     const res = await fetch(
-      `https://changes-sample.onrender.com/api/user/avatar${username}`,
+      `https://changes-sample.onrender.com/api/user/avatar/${username}`,
       {
         method: "GET",
         headers: {
