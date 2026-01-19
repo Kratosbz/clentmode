@@ -478,8 +478,11 @@ const token = localStorage.getItem('token');
     const token = localStorage.getItem("token");
     if (!token) throw new Error("No token found");
 
+const params = new URLSearchParams(window.location.search);
+            username = params.get('name');
+
     const res = await fetch(
-      "https://changes-sample.onrender.com/api/user/avatar",
+      `https://changes-sample.onrender.com/api/user/avatar${username}`,
       {
         method: "GET",
         headers: {
