@@ -456,7 +456,7 @@
 <body>
     <header class="vx-header">
         <div class="vx-header-inner">
-            <a href="/marketplace.html" class="vx-logo">
+            <a href="/index.html" class="vx-logo">
                 <div class="vx-logo-icon">
                    
                 </div>
@@ -499,7 +499,7 @@
                     <div class="vx-loading">
                         <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
                         <h4>Artwork not found</h4>
-                        <a href="/marketplace.html" class="vx-buy-btn" style="display: inline-block; margin-top: 1rem;">Back to Marketplace</a>
+                        <a href="/index.html" class="vx-buy-btn" style="display: inline-block; margin-top: 1rem;">Back to Marketplace</a>
                     </div>
                 `;
             }
@@ -534,7 +534,7 @@ const token = localStorage.getItem('token');
                     <div class="vx-loading">
                         <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
                         <h4>Error loading artwork</h4>
-                        <a href="/marketplace.html" class="vx-buy-btn" style="display: inline-block; margin-top: 1rem;">Back to Marketplace</a>
+                        <a href="/index.html" class="vx-buy-btn" style="display: inline-block; margin-top: 1rem;">Back to Marketplace</a>
                     </div>
                 `;
             }
@@ -568,7 +568,7 @@ const token = localStorage.getItem('token');
             
             document.getElementById('mainContent').innerHTML = `
                 <nav class="vx-breadcrumb">
-                    <a href="/marketplace.html">Marketplace</a>
+                    <a href="/index.html">Marketplace</a>
                     <i class="bi bi-chevron-right"></i>
                     <a href="category.html?category=${encodeURIComponent(currentNFT.category || 'Art')}">${currentNFT.category || 'Art'}</a>
                     <i class="bi bi-chevron-right"></i>

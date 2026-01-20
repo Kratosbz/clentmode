@@ -1100,7 +1100,7 @@
     <!-- Header -->
     <header class="vx-header">
         <div class="vx-header-inner">
-            <a href="/marketplace.html" class="vx-logo">
+            <a href="/index.html" class="vx-logo">
                 <div class="vx-logo-icon">
                    
                 </div>
@@ -1131,22 +1131,20 @@
         </div>
     </header>
     
-    <!-- Hero Section -->
-    <section class="vx-hero">
-        <div class="vx-hero-bg"></div>
-        <div class="vx-hero-content">
-            <h1>Discover Rare Digital Art</h1>
-            <p>Explore, collect, and trade exclusive NFTs from emerging artists and established creators</p>
-            <div class="vx-hero-btns">
-                <a href="#marketplace" class="vx-btn-outline">Explore Marketplace</a>
-                <a href="#collections" class="vx-btn-green">View Collections</a>
-            </div>
-        </div>
-    </section>
     
-    <!-- Explore by Category -->
+    
+        
+    
+    <!-- Marketplace Section -->
+    <section class="vx-section" id="marketplace">
+        
+        <h2 class="vx-section-title" style="margin-bottom: 2rem;">
+            <span><i class="bi bi-shop me-2"></i></span>Marketplace
+        </h2>
+        
+        <!-- Explore by Category -->
     <section class="vx-section" id="categories">
-        <h2 class="vx-section-title" style="text-align: center; margin-bottom: 2rem;">Explore by Category</h2>
+       
         
         <div class="vx-categories-grid" id="categoriesContainer">
             <div class="vx-category-card active" data-category="all">
@@ -1226,78 +1224,7 @@
         </div>
     </section>
     
-    <!-- Featured Drops -->
-    <section class="vx-section" id="collections" style="background: #f8fafc; margin: 0; max-width: 100%; padding-left: calc((100% - 1280px) / 2 + 1.5rem); padding-right: calc((100% - 1280px) / 2 + 1.5rem);">
-        <div class="vx-section-header">
-            <div class="vx-section-label">
-                <i class="bi bi-lightning-charge-fill"></i>
-                TRENDING COLLECTIONS
-            </div>
-            <h2 class="vx-section-title">Featured <span>Drops</span></h2>
-            <p class="vx-section-subtitle">Curated selection of this week's most promising NFT collections</p>
-        </div>
-        
-        <!-- Featured Drops Carousel -->
-        <div class="vx-carousel-container" id="featuredDropsCarousel">
-            <button class="vx-carousel-btn vx-carousel-prev" onclick="slideFeaturedDrops(-1)" data-testid="button-featured-prev">
-                <i class="bi bi-chevron-left"></i>
-            </button>
-            <div class="vx-carousel-track" id="featuredDropsTrack">
-                <div class="vx-carousel-loading">
-                    <i class="bi bi-hourglass-split"></i> Loading featured drops...
-                </div>
-            </div>
-            <button class="vx-carousel-btn vx-carousel-next" onclick="slideFeaturedDrops(1)" data-testid="button-featured-next">
-                <i class="bi bi-chevron-right"></i>
-            </button>
-        </div>
-        
-        <div class="text-center mb-4">
-            <a href="#marketplace" class="vx-btn-outline" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-                View All Collections <i class="bi bi-arrow-right"></i>
-            </a>
-        </div>
-    </section>
     
-    <!-- Explore Categories Section -->
-    <section class="vx-section">
-        <div class="vx-section-header">
-            <div class="vx-section-label">
-                <i class="bi bi-lightning-charge-fill"></i>
-                TRENDING BY CATEGORY
-            </div>
-            <h2 class="vx-section-title">Explore <span>Categories</span></h2>
-            <p class="vx-section-subtitle">Discover trending NFTs across different categories and find your next digital asset</p>
-        </div>
-        
-        <!-- Categories Art Carousel -->
-        <div class="vx-carousel-container" id="categoriesCarousel">
-            <button class="vx-carousel-btn vx-carousel-prev" onclick="slideCategoryArt(-1)" data-testid="button-category-prev">
-                <i class="bi bi-chevron-left"></i>
-            </button>
-            <div class="vx-carousel-track" id="categoriesArtTrack">
-                <div class="vx-carousel-loading">
-                    <i class="bi bi-hourglass-split"></i> Loading category art...
-                </div>
-            </div>
-            <button class="vx-carousel-btn vx-carousel-next" onclick="slideCategoryArt(1)" data-testid="button-category-next">
-                <i class="bi bi-chevron-right"></i>
-            </button>
-        </div>
-        
-        <div class="text-center">
-            <a href="#categories" class="vx-btn-all-categories">
-                <i class="bi bi-lightning-charge"></i>
-                All Categories
-            </a>
-        </div>
-    </section>
-    
-    <!-- Marketplace Section -->
-    <section class="vx-section" id="marketplace">
-        <h2 class="vx-section-title" style="margin-bottom: 2rem;">
-            <span><i class="bi bi-shop me-2"></i></span>Marketplace
-        </h2>
         
         <div class="vx-tabs">
             <button class="vx-tab active" data-tab="all">All Items</button>
@@ -1330,21 +1257,7 @@
         </div>
     </section>
     
-    <!-- Live Auctions -->
-    <section class="vx-section" id="auctions">
-        <h3 class="vx-section-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">
-            <span><i class="bi bi-lightning-charge me-2"></i>Live Auctions</span>
-        </h3>
-        <div class="row g-4" id="auctionsGrid"></div>
-    </section>
     
-    <!-- Exhibitions -->
-    <section class="vx-section" id="exhibitions">
-        <h3 class="vx-section-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">
-            <span><i class="bi bi-building me-2"></i>Exhibitions</span>
-        </h3>
-        <div class="row g-4" id="exhibitionsGrid"></div>
-    </section>
     
     <!-- Footer -->
     <footer class="vx-footer">
@@ -1360,7 +1273,7 @@
                 <div class="col-md-4 mb-4">
                     <h6 class="mb-3">Quick Links</h6>
                     <div>
-                        <a href="/marketplace.html">Explore</a>
+                        <a href="/index.html">Explore</a>
                         <a href="/dashboard.html">Dashboard</a>
                     </div>
                 </div>
