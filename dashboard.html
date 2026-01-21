@@ -3325,6 +3325,9 @@ if (totalCollectionVolume) {
         }
         
         container.innerHTML = collections.map(c => `
+         <button class="btn btn-primary rounded-3 px-4" onclick="openCreateModal()" style="background: #5d8df4; border: none;">
+                        <i class="bi bi-plus-lg me-2"></i>Create Collection
+                    </button>
             <div class="col-6 col-md-4 col-lg-3">
                 <div class="vx-card h-100 position-relative">
                     ${c.imageUrl ? `<img src="${c.imageUrl}" class="w-100 rounded-3 mb-3" style="height: 150px; object-fit: cover;">` : '<div class="w-100 rounded-3 mb-3 bg-light d-flex align-items-center justify-content-center" style="height: 150px;"><i class="bi bi-image text-muted fs-1"></i></div>'}
