@@ -1401,7 +1401,7 @@
                 <div class="d-flex gap-2 mb-4 overflow-auto pb-2" id="transactionTabs">
                     <button class="btn btn-light btn-sm border rounded-3 px-3 active" onclick="filterTransactions('all', this)">All</button>
                     <button class="btn btn-light btn-sm border rounded-3 px-3" onclick="filterTransactions('purchase', this)">Buys</button>
-                    <button class="btn btn-light btn-sm border rounded-3 px-3" onclick="filterTransactions('sale', this)">Sales</button>
+                    <button class="btn btn-light btn-sm border rounded-3 px-3" onclick="filterTransactions('sold', this)">Sales</button>
                     <button class="btn btn-light btn-sm border rounded-3 px-3" onclick="filterTransactions('conversion', this)">Conversions</button>
                     <button class="btn btn-light btn-sm border rounded-3 px-3" onclick="filterTransactions('other', this)">Other</button>
                 </div>
@@ -3753,7 +3753,7 @@ const token = localStorage.getItem('token');
         if (type === 'all') return transactions;
         return transactions.filter(t => {
             if (type === 'purchase') return t.type === 'purchase' || t.type === 'buy';
-            if (type === 'sale') return t.type === 'sale';
+            if (type === 'sold') return t.type === 'sold';
             if (type === 'conversion') return t.type === 'conversion';
             return t.type !== 'sale' && t.type !== 'purchase' && t.type !== 'buy' && t.type !== 'conversion';
         });
