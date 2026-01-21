@@ -477,8 +477,8 @@ const token = localStorage.getItem('token');
                 
                 const allNFTs = await res.json();
 
-
-                artistNFTs = allNFTs.filter(n => n.creator === artistName);
+const creatorEmail=localStorage.getItem("creatorEmail")
+                artistNFTs = allNFTs.filter(n => n.owner === creatorEmail);
 
 
                  
