@@ -547,7 +547,7 @@ const token = localStorage.getItem('token');
     const encodedEmail = encodeURIComponent(email.trim().toLowerCase());
 
     const res = await fetch(
-      `https://strategylive-server-zqqa.onrender.com/api/user/by-email/${encodedEmail}`,
+      `https://changes-sample.onrender.com/api/user/by-email/${encodedEmail}`,
       {
         method: "GET",
         credentials: "include", // keep if you use cookies/session
@@ -575,6 +575,7 @@ const token = localStorage.getItem('token');
       async  function renderArtwork() {
 
             const username = await getUsernameFromEmail(currentNFT.owner);
+console.log(username);
 
             const isLiked = likedNFTs.includes(currentNFT._id);
             const creatorInitial = (username || 'User')[0].toUpperCase();
@@ -630,7 +631,7 @@ const token = localStorage.getItem('token');
                         <a href="artist.html?name=${creatorSlug}" class="vx-creator-link" data-testid="link-artist">
                             <div class="vx-creator-avatar">${creatorInitial}</div>
                             <div class="vx-creator-info">
-                                <h6>${currentNFT.creator || 'Unknown Artist'}</h6>
+                                <h6>${username|| 'Unknown Artist'}</h6>
                                 <small>Click to view artist profile</small>
                             </div>
                             <i class="bi bi-chevron-right ms-auto"></i>
