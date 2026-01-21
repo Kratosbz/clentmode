@@ -3372,7 +3372,7 @@ credentials:"include",
 const token = localStorage.getItem('token'); 
     if (!token) throw new Error('No token found');
 
-            const res = await fetch('https://changes-sample.onrender.com/api/nfts', { headers: {
+            const res = await fetch('https://changes-sample.onrender.com/api/nfts/user', { headers: {
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json'
   }});
