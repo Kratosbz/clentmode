@@ -540,13 +540,65 @@ const params = new URLSearchParams(window.location.search);
 
 
 
+
+
+
+
+
+async function loadArtistBio() {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found");
+
+const params = new URLSearchParams(window.location.search);
+            username = params.get('name');
+
+    const res = await fetch(
+      `https://changes-sample.onrender.com/api/user/bio/${username}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) throw new Error("Failed to load avatar");
+
+    const data = await res.json();
+    return data.profileImage; // ✅ STRING ONLY
+  } catch (err) {
+    console.error("Avatar load error:", err);
+    return null;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
         
         async function renderProfile() {
   try {
     const avatarUrl = await loadArtistProfileAvatar();
+
+    const bio = await loadArtistBio();
+    
+
     const initial = artistName[0]?.toUpperCase() || "?";
 
+
     console.log("Avatar URL:", avatarUrl);
+
 
     const totalLikes = artistNFTs.reduce((sum, n) => sum + (n.likes || 0), 0);
     const totalViews = artistNFTs.reduce((sum, n) => sum + (n.views || 0), 0);
@@ -572,7 +624,10 @@ const params = new URLSearchParams(window.location.search);
           </a>
 
           <h1 class="vx-profile-name">${artistName}</h1>
-
+<div class="vx-profile-stat">
+              <div class="vx-profile-stat-value">${bio}</div>
+              <div class="vx-profile-stat-label">Bio</div>
+            </div>
           <div class="vx-profile-stats">
             <div class="vx-profile-stat">
               <div class="vx-profile-stat-value">${artistNFTs.length}</div>
