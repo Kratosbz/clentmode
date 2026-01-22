@@ -959,6 +959,15 @@
                             </button>
                         </div>
                     </div>
+
+                     <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="bi bi-wallet text-muted"></i>
+                            </span>
+                            <input type="email" class="form-control border-start-0 ps-0" id="walletAddress" placeholder="ETH Wallet address" required>
+                        </div>
+                    </div>
                     
                     <button type="submit" class="btn btn-primary w-100 py-2 rounded-3 fw-bold mb-3" style="background: #5d8df4; border: none;">
                         Create Account
@@ -992,6 +1001,7 @@
         const email = document.getElementById('signupEmail').value;
         const password = document.getElementById('signupPassword').value;
         const confirmPassword = document.getElementById('signupConfirmPassword').value;
+        const walletAddress = document.getElementById('walletAddress').value;
         
         if (password !== confirmPassword) {
             Swal.fire({ icon: 'error', title: 'Error', text: 'Passwords do not match', confirmButtonColor: '#5d8df4' });
@@ -1000,6 +1010,11 @@
         
         if (password.length < 6) {
             Swal.fire({ icon: 'warning', title: 'Warning', text: 'Password must be at least 6 characters', confirmButtonColor: '#5d8df4' });
+            return;
+        }
+
+        if (!walletAddress) {
+            Swal.fire({ icon: 'warning', title: 'Warning', text: 'Please input wallet valis ETH wallet address', confirmButtonColor: '#5d8df4' });
             return;
         }
         
@@ -1011,7 +1026,7 @@
         'Content-Type': 'application/json',
          // ✅ Send JWT
       },
-                body: JSON.stringify({ email, password, username })
+                body: JSON.stringify({ email, password, username,walletAddress })
             });
             
             const data = await response.json();
