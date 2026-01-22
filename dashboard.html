@@ -2995,7 +2995,7 @@ categorySelect.addEventListener('change', (e) => {
       try {
 const token = localStorage.getItem('token'); 
     if (!token) throw new Error('No token found');
-console.log(token);
+// console.log(token);
 
     const res = await fetch('https://changes-sample.onrender.com/api/stats', {
   method: 'GET',
@@ -4212,7 +4212,7 @@ const token = localStorage.getItem('token');
     }
 
     function shareProfile() {
-        const url = window.location.origin + '/user/' + userSettings.username;
+        const url = window.location.origin + '/client/artist.html?name=' + userSettings.username;
         if (navigator.share) {
             navigator.share({
                 title: userSettings.fullName + ' - Ethergalleries',
