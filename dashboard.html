@@ -5204,11 +5204,12 @@ const token = localStorage.getItem('token');
                 body: JSON.stringify(nftData)
             });
             
-            if (!nftRes.ok) {
-                throw new Error(data.message||'Failed to create NFT');
-            }
-            
-            const nftResult = await nftRes.json();
+           const nftResult = await nftRes.json(); // 👈 ALWAYS parse JSON first
+
+if (!nftRes.ok) {
+    throw new Error(nftResult.message || 'Failed to create NFT');
+}
+
             
             // If listing immediately, create a sale
             if (mintData.listImmediately && mintData.price > 0) {
