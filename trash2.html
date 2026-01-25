@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Marketplace - Home</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f7;
+        }
+
+        .section {
+            padding: 60px 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .section-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-dark {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .btn-dark:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #5b7cfa 0%, #4dd4f7 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(91, 124, 250, 0.3);
+        }
+
+        .btn-sm {
+            padding: 8px 20px;
+            font-size: 14px;
+        }
+
+        /* Collections Section */
+        .collections {
+            background: white;
+        }
+
+        .collections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .collection-card {
+            background: #f9fafb;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .collection-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+        }
+
+        .collection-images {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 8px;
+            padding: 16px;
+            background: white;
+        }
+
+        .small-images {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .small-images img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .main-image {
+            grid-row: 1 / -1;
+        }
+
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .collection-info {
+            padding: 20px;
+        }
+
+        .collection-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .collection-title-row h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 0;
+        }
+
+        .collection-likes {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #3dd5e1;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .collection-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .creator-mini {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .creator-mini img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .creator-mini span {
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        .creator-avatar-small {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .cta-text {
+            color: white;
+        }
+
+        .cta-text h2 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .cta-text p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .cta-visual {
+            position: relative;
+            height: 400px;
+        }
+
+        .cta-shape {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+        }
+
+        .cta-shape img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .floating-avatars {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .float-avatar {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            animation: floatAvatar 8s ease-in-out infinite;
+        }
+
+        .float-avatar.a1 {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .float-avatar.a2 {
+            top: 20%;
+            right: 15%;
+            animation-delay: 1s;
+        }
+
+        .float-avatar.a3 {
+            bottom: 30%;
+            left: 5%;
+            animation-delay: 2s;
+        }
+
+        .float-avatar.a4 {
+            bottom: 15%;
+            right: 10%;
+            animation-delay: 3s;
+        }
+
+        .float-avatar.a5 {
+            top: 50%;
+            left: 25%;
+            animation-delay: 1.5s;
+        }
+
+        .float-avatar.a6 {
+            top: 60%;
+            right: 20%;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes floatAvatar {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(5deg); }
+            50% { transform: translateY(-10px) rotate(-5deg); }
+            75% { transform: translateY(-20px) rotate(3deg); }
+        }
+
+        @media (max-width: 768px) {
+            .collections-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .cta-text h2 {
+                font-size: 32px;
+            }
+
+            .cta-visual {
+                height: 300px;
+            }
+
+            .float-avatar {
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        .vx-loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Collections Section -->
+    <section class="section collections">
+        <div class="container">
+            <div class="section-header">
+                <h2>Collections</h2>
+                <a href="collections.html" class="btn btn-dark btn-sm">View All</a>
+            </div>
+            <div class="collections-grid" id="collectionsGrid">
+                <div class="vx-loading">
+                    <i class="bi bi-hourglass-split" style="font-size: 3rem;"></i>
+                    <h4>Loading collections...</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <div class="cta-text">
+                    <h2>Start your own collection today</h2>
+                    <p>Blocktoart is a shared liquidity NFT market smart contract which is used by multiple websites to provide the users the best possible experience.</p>
+                    <a href="#" class="btn btn-primary">Start Collecting</a>
+                </div>
+                <div class="cta-visual">
+                    <div class="cta-shape">
+                        <img src="https://ext.same-assets.com/1749930335/2469846649.png" alt="Collection Shape">
+                    </div>
+                    <div class="floating-avatars">
+                        <img src="https://ext.same-assets.com/1749930335/1560789857.png" alt="Avatar" class="float-avatar a1">
+                        <img src="https://ext.same-assets.com/1749930335/1100283812.png" alt="Avatar" class="float-avatar a2">
+                        <img src="https://ext.same-assets.com/1749930335/3998142795.png" alt="Avatar" class="float-avatar a3">
+                        <img src="https://ext.same-assets.com/1749930335/213542248.png" alt="Avatar" class="float-avatar a4">
+                        <img src="https://ext.same-assets.com/1749930335/4080727939.png" alt="Avatar" class="float-avatar a5">
+                        <img src="https://ext.same-assets.com/1749930335/1129154559.png" alt="Avatar" class="float-avatar a6">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let allNFTs = [];
+        let allCollections = [];
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCollections();
+        });
+        
+        async function loadCollections() {
+            try {
+                const res = await fetch('https://changes-sample.onrender.com/api/marketplace/nfts');
+                if (!res.ok) throw new Error('Failed to load NFTs');
+                
+                allNFTs = await res.json();
+                
+                // Group NFTs by collectionId
+                const collectionMap = {};
+                
+                allNFTs.forEach(nft => {
+                    const collectionId = nft.collectionId || 'uncategorized';
+                    
+                    if (!collectionMap[collectionId]) {
+                        collectionMap[collectionId] = [];
+                    }
+                    
+                    collectionMap[collectionId].push(nft);
+                });
+                
+                // Convert map to array (display all collections regardless of size)
+                allCollections = Object.entries(collectionMap)
+                    .map(([id, nfts]) => {
+                        const totalLikes = nfts.reduce((sum, nft) => sum + (nft.likes || 0), 0);
+                        
+                        return {
+                            id: id,
+                            nfts: nfts.slice(0, 4), // Take up to 4 for display
+                            allNfts: nfts, // Store all for collections page
+                            title: nfts[0].category ? `${nfts[0].category} Collection` : 'Art Collection',
+                            creator: nfts[0].creator || 'Unknown Artist',
+                            itemCount: nfts.length,
+                            totalLikes: totalLikes
+                        };
+                    });
+                
+                console.log('Collections loaded:', allCollections);
+                renderCollections();
+            } catch (err) {
+                console.error('Failed to load collections:', err);
+                document.getElementById('collectionsGrid').innerHTML = `
+                    <div class="vx-loading">
+                        <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
+                        <h4>Error loading collections</h4>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderCollections() {
+            const grid = document.getElementById('collectionsGrid');
+            
+            if (allCollections.length === 0) {
+                grid.innerHTML = `
+                    <div class="vx-loading">
+                        <i class="bi bi-image" style="font-size: 3rem;"></i>
+                        <h4>No collections available</h4>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Show only first 3 collections on landing page
+            const displayCollections = allCollections.slice(0, 3);
+            
+            grid.innerHTML = displayCollections.map(collection => {
+                // Handle collections with less than 4 items
+                const displayNFTs = collection.nfts;
+                const mainNFT = displayNFTs[0];
+                const smallNFTs = displayNFTs.slice(1);
+                
+                // Fill empty slots if less than 4 items
+                const emptySlots = Math.max(0, 3 - smallNFTs.length);
+                
+                const creatorInitial = (collection.creator || 'U')[0].toUpperCase();
+                
+                return `
+                    <div class="collection-card" onclick="openCollection('${collection.id}')" data-testid="collection-${collection.id}">
+                        <div class="collection-images">
+                            <div class="small-images">
+                                ${smallNFTs.map(nft => `
+                                    <img src="${nft.imageUrl}" alt="${nft.name}">
+                                `).join('')}
+                                ${Array(emptySlots).fill('').map(() => `
+                                    <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%); border-radius: 12px;"></div>
+                                `).join('')}
+                            </div>
+                            <div class="main-image">
+                                <img src="${mainNFT.imageUrl}" alt="${collection.title}">
+                            </div>
+                        </div>
+                        <div class="collection-info">
+                            <div class="collection-title-row">
+                                <h4>${collection.title}</h4>
+                                <span class="collection-likes">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#3dd5e1">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                    </svg>
+                                    ${formatNumber(collection.totalLikes)}
+                                </span>
+                            </div>
+                            <div class="collection-meta">
+                                <span>${collection.itemCount} items • Created by</span>
+                                <div class="creator-mini">
+                                    <div class="creator-avatar-small">
+                                        ${creatorInitial}
+                                    </div>
+                                    <span>@${collection.creator.substring(0, 12)}${collection.creator.length > 12 ? '..' : ''}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function openCollection(collectionId) {
+            // Log collection ID
+            console.log('Opening collection:', collectionId);
+            
+            // Store collection ID in localStorage
+            localStorage.setItem('selectedCollectionId', collectionId);
+            
+            // Also store the full collection data for the collections page
+            const collection = allCollections.find(c => c.id === collectionId);
+            if (collection) {
+                localStorage.setItem('selectedCollection', JSON.stringify(collection));
+                console.log('Stored collection data:', collection);
+            }
+            
+            // Redirect to collections page
+            window.location.href = 'collections.html';
+        }
+        
+        function formatNumber(num) {
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'k';
+            }
+            return num.toString();
+        }
+    </script>
+</body>
+</html>

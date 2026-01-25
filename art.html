@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Artwork Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f7;
+            padding: 20px;
+        }
+
+        .vx-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .vx-breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .vx-breadcrumb a:hover {
+            color: #1a2b49;
+        }
+
+        .vx-artwork-detail {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .vx-artwork-image-container {
+            position: relative;
+        }
+
+        .vx-artwork-image {
+            width: 100%;
+            border-radius: 20px;
+            aspect-ratio: 1;
+            object-fit: cover;
+        }
+
+        .vx-artwork-actions {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .vx-action-icon {
+            background: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+
+        .vx-action-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .vx-action-icon.liked {
+            color: #e74c3c;
+        }
+
+        .vx-artwork-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .vx-artwork-title {
+            font-size: 36px;
+            color: #1a2b49;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .vx-artwork-category {
+            display: inline-block;
+            padding: 6px 16px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #666;
+            width: fit-content;
+        }
+
+        .vx-creator-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+        }
+
+        .vx-creator-link:hover {
+            background: #f0f0f0;
+        }
+
+        .vx-creator-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .vx-creator-info h6 {
+            margin: 0;
+            font-size: 16px;
+            color: #1a2b49;
+        }
+
+        .vx-creator-info small {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .vx-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .vx-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .vx-stat i {
+            color: #e74c3c;
+        }
+
+        .vx-artwork-description {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+            color: #555;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .vx-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .vx-meta-item {
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 12px;
+        }
+
+        .vx-meta-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .vx-meta-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a2b49;
+        }
+
+        .vx-price-section {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .vx-price-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .vx-price-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a2b49;
+        }
+
+        .vx-buy-section {
+            display: flex;
+            gap: 15px;
+        }
+
+        .vx-buy-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, #5b7cfa 0%, #4dd4f7 100%);
+            color: white;
+            transition: transform 0.2s;
+        }
+
+        .vx-buy-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .vx-buy-btn.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .vx-share-section {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .vx-share-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .vx-share-link {
+            display: flex;
+            gap: 10px;
+        }
+
+        .vx-share-link input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .vx-share-link button {
+            padding: 12px 20px;
+            background: #1a2b49;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .vx-section {
+            max-width: 1400px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .vx-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .vx-section-title {
+            font-size: 24px;
+            color: #1a2b49;
+            font-weight: 700;
+        }
+
+        .vx-see-all {
+            color: #5b7cfa;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vx-carousel {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
+        .vx-carousel-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+            border: 1px solid #f0f0f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .vx-carousel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .vx-carousel-image {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            background: linear-gradient(135deg, #e96ba8 0%, #b794f6 50%, #7ec8e3 100%);
+        }
+
+        .vx-carousel-content {
+            padding: 16px;
+        }
+
+        .vx-carousel-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a2b49;
+            margin: 0 0 8px 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .vx-carousel-creator {
+            font-size: 13px;
+            color: #666;
+            margin: 0 0 12px 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .vx-carousel-price {
+            font-size: 15px;
+            font-weight: 700;
+            color: #5b7cfa;
+        }
+
+        .vx-loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .vx-artwork-detail {
+                grid-template-columns: 1fr;
+                padding: 20px;
+                gap: 30px;
+            }
+
+            .vx-artwork-title {
+                font-size: 28px;
+            }
+
+            .vx-meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .vx-carousel {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="mainContent">
+        <div class="vx-loading">
+            <i class="bi bi-hourglass-split" style="font-size: 3rem;"></i>
+            <h4>Loading artwork...</h4>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let currentNFT = null;
+        let artistNFTs = [];
+        let categoryNFTs = [];
+        let likedNFTs = JSON.parse(localStorage.getItem('likedNFTs') || '[]');
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const nftId = params.get('id');
+            if (nftId) {
+                loadArtwork(nftId);
+            } else {
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="vx-loading">
+                        <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
+                        <h4>Artwork not found</h4>
+                        <a href="/index.html" class="vx-buy-btn" style="display: inline-block; margin-top: 1rem;">Back to Marketplace</a>
+                    </div>
+                `;
+            }
+        });
+        
+        async function loadArtwork(nftId) {
+            try {
+                const res = await fetch('https://changes-sample.onrender.com/api/marketplace/nfts');
+                if (!res.ok) throw new Error('Failed to load');
+                
+                const allNFTs = await res.json();
+                currentNFT = allNFTs.find(n => n._id === nftId);
+                
+                if (!currentNFT) {
+                    throw new Error('Artwork not found');
+                }
+                
+                document.title = `${currentNFT.name} - Ethergalleries`;
+                
+                await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${nftId}/view`, { method: 'POST' });
+                
+                artistNFTs = allNFTs.filter(n => n.creator === currentNFT.creator && n._id !== nftId);
+                categoryNFTs = allNFTs.filter(n => n.category === currentNFT.category && n._id !== nftId && n.creator !== currentNFT.creator);
+                
+                renderArtwork();
+            } catch (err) {
+                console.error(err);
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="vx-loading">
+                        <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
+                        <h4>Error loading artwork</h4>
+                        <a href="/index.html" class="vx-buy-btn" style="display: inline-block; margin-top: 1rem;">Back to Marketplace</a>
+                    </div>
+                `;
+            }
+        }
+
+        async function getUsernameFromEmail(email) {
+            try {
+                if (!email) throw new Error("Email is required");
+                const encodedEmail = encodeURIComponent(email.trim().toLowerCase());
+                const res = await fetch(
+                    `https://changes-sample.onrender.com/api/user/by-email/${encodedEmail}`,
+                    {
+                        method: "GET",
+                        credentials: "include",
+                        headers: { "Accept": "application/json" }
+                    }
+                );
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.message || "Failed to fetch username");
+                }
+                const data = await res.json();
+                return data.username;
+            } catch (err) {
+                console.error("getUsernameFromEmail error:", err.message);
+                return null;
+            }
+        }
+
+        async function renderArtwork() {
+            const username = await getUsernameFromEmail(currentNFT.owner);
+            localStorage.setItem("creatorEmail", currentNFT.owner);
+
+            const isLiked = likedNFTs.includes(currentNFT._id);
+            const creatorInitial = (username || 'User')[0].toUpperCase();
+            const creatorSlug = encodeURIComponent(username || 'unknown');
+            
+            let buyButtonHTML = '';
+            if (currentNFT.status === 'listed') {
+                buyButtonHTML = `
+                    <button class="vx-buy-btn" onclick="buyNFT()" data-testid="button-buy-artwork">
+                        <i class="bi bi-cart me-2"></i>Buy Now for ${currentNFT.price} ${currentNFT.currency || 'ETH'}
+                    </button>
+                `;
+            } else if (currentNFT.status === 'auction') {
+                buyButtonHTML = `
+                    <button class="vx-buy-btn" onclick="placeBid()" data-testid="button-bid-artwork">
+                        <i class="bi bi-hammer me-2"></i>Place Bid
+                    </button>
+                `;
+            } else {
+                buyButtonHTML = `
+                    <button class="vx-buy-btn disabled" disabled>
+                        <i class="bi bi-lock me-2"></i>Not Available for Sale
+                    </button>
+                `;
+            }
+            
+            document.getElementById('mainContent').innerHTML = `
+                <nav class="vx-breadcrumb">
+                    <a href="/index.html">Marketplace</a>
+                    <i class="bi bi-chevron-right"></i>
+                    <a href="category.html?category=${encodeURIComponent(currentNFT.category || 'Art')}">${currentNFT.category || 'Art'}</a>
+                    <i class="bi bi-chevron-right"></i>
+                    <span>${currentNFT.name}</span>
+                </nav>
+                
+                <div class="vx-artwork-detail">
+                    <div class="vx-artwork-image-container">
+                        <img src="${currentNFT.imageUrl}" alt="${currentNFT.name}" class="vx-artwork-image">
+                        <div class="vx-artwork-actions">
+                            <button class="vx-action-icon ${isLiked ? 'liked' : ''}" onclick="toggleLike()" data-testid="button-like-artwork">
+                                <i class="bi bi-heart${isLiked ? '-fill' : ''}"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="vx-artwork-info">
+                        <h1 class="vx-artwork-title">${currentNFT.name}</h1>
+                        <span class="vx-artwork-category">${currentNFT.category || 'Art'}</span>
+                        
+                        <a href="artist.html?name=${creatorSlug}" class="vx-creator-link" data-testid="link-artist">
+                            <div class="vx-creator-avatar">${creatorInitial}</div>
+                            <div class="vx-creator-info">
+                                <h6>${username || 'Unknown Artist'}</h6>
+                                <small>Click to view profile</small>
+                            </div>
+                            <i class="bi bi-chevron-right ms-auto"></i>
+                        </a>
+                        
+                        <div class="vx-stats">
+                            <div class="vx-stat">
+                                <i class="bi bi-heart-fill"></i>
+                                <span>${currentNFT.likes || 0} likes</span>
+                            </div>
+                            <div class="vx-stat">
+                                <i class="bi bi-eye-fill"></i>
+                                <span>${currentNFT.views || 0} views</span>
+                            </div>
+                        </div>
+                        
+                        <p class="vx-artwork-description">${currentNFT.description || 'No description available for this artwork.'}</p>
+                        
+                        <div class="vx-meta-grid">
+                            <div class="vx-meta-item">
+                                <div class="vx-meta-label">Rarity</div>
+                                <div class="vx-meta-value">${currentNFT.rarity || 'Common'}</div>
+                            </div>
+                            <div class="vx-meta-item">
+                                <div class="vx-meta-label">Token ID</div>
+                                <div class="vx-meta-value">#${currentNFT.tokenId || currentNFT._id.slice(-6)}</div>
+                            </div>
+                            <div class="vx-meta-item">
+                                <div class="vx-meta-label">Created</div>
+                                <div class="vx-meta-value">${new Date(currentNFT.createdAt).toLocaleDateString()}</div>
+                            </div>
+                            <div class="vx-meta-item">
+                                <div class="vx-meta-label">Creator</div>
+                                <div class="vx-meta-value">${currentNFT.creator || 'Unknown'}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="vx-price-section">
+                            <div class="vx-price-label">Current Price</div>
+                            <div class="vx-price-value">${currentNFT.price ? currentNFT.price.toFixed(4) + ' ' + (currentNFT.currency || 'ETH') : 'Not for sale'}</div>
+                        </div>
+                        
+                        <div class="vx-buy-section">
+                            ${buyButtonHTML}
+                        </div>
+                        
+                        <div class="vx-share-section">
+                            <div class="vx-share-label">Share this artwork</div>
+                            <div class="vx-share-link">
+                                <input type="text" id="shareLink" value="${window.location.href}" readonly>
+                                <button onclick="copyLink()" data-testid="button-copy-link"><i class="bi bi-copy"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                ${renderArtistSection()}
+                ${renderCategorySection()}
+            `;
+        }
+        
+        function renderArtistSection() {
+            if (artistNFTs.length === 0) return '';
+            
+            return `
+                <section class="vx-section">
+                    <div class="vx-section-header">
+                        <h2 class="vx-section-title">More from ${currentNFT.creator || 'this artist'}</h2>
+                        <a href="artist.html?name=${encodeURIComponent(currentNFT.creator || 'unknown')}" class="vx-see-all">View All <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                    <div class="vx-carousel">
+                        ${artistNFTs.slice(0, 10).map(nft => renderCarouselCard(nft)).join('')}
+                    </div>
+                </section>
+            `;
+        }
+        
+        function renderCategorySection() {
+            if (categoryNFTs.length === 0) return '';
+            
+            return `
+                <section class="vx-section">
+                    <div class="vx-section-header">
+                        <h2 class="vx-section-title">More in ${currentNFT.category || 'Art'}</h2>
+                        <a href="category.html?category=${encodeURIComponent(currentNFT.category || 'Art')}" class="vx-see-all">View All <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                    <div class="vx-carousel">
+                        ${categoryNFTs.slice(0, 10).map(nft => renderCarouselCard(nft)).join('')}
+                    </div>
+                </section>
+            `;
+        }
+        
+        function renderCarouselCard(nft) {
+            return `
+                <a href="artwork.html?id=${nft._id}" class="vx-carousel-card" data-testid="card-carousel-${nft._id}">
+                    <img src="${nft.imageUrl}" alt="${nft.name}" class="vx-carousel-image">
+                    <div class="vx-carousel-content">
+                        <h6 class="vx-carousel-title">${nft.name}</h6>
+                        <p class="vx-carousel-creator">by ${nft.creator || 'Unknown'}</p>
+                        <div class="vx-carousel-price">${nft.price ? nft.price.toFixed(2) + ' ' + (nft.currency || 'ETH') : 'Not listed'}</div>
+                    </div>
+                </a>
+            `;
+        }
+        
+        async function toggleLike() {
+            if (!currentNFT) return;
+            
+            const isLiked = likedNFTs.includes(currentNFT._id);
+            if (isLiked) {
+                likedNFTs = likedNFTs.filter(id => id !== currentNFT._id);
+            } else {
+                likedNFTs.push(currentNFT._id);
+            }
+            localStorage.setItem('likedNFTs', JSON.stringify(likedNFTs));
+            
+            currentNFT.likes = isLiked ? Math.max(0, (currentNFT.likes || 0) - 1) : (currentNFT.likes || 0) + 1;
+            renderArtwork();
+            
+            try {
+                const token = localStorage.getItem('token'); 
+                if (!token) throw new Error('No token found');
+
+                await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${currentNFT._id}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ unlike: isLiked })
+                });
+            } catch (err) {
+                console.error('Like sync error:', err);
+            }
+        }
+        
+        async function buyNFT() {
+            const token = localStorage.getItem("token");
+            
+            if (!token) {
+                const result = await Swal.fire({
+                    icon: 'warning',
+                    title: 'Login Required',
+                    text: 'You need to login to purchase NFTs. Go to login page?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Go to Login',
+                    confirmButtonColor: '#3b82f6'
+                });
+                if (result.isConfirmed) {
+                    window.location.href = '/dashboard.html';
+                }
+                return;
+            }
+            
+            const result = await Swal.fire({
+                icon: 'question',
+                title: 'Confirm Purchase',
+                text: `Are you sure you want to buy "${currentNFT.name}" for ${currentNFT.price} ${currentNFT.currency || 'ETH'}?`,
+                showCancelButton: true,
+                confirmButtonText: 'Buy Now',
+                confirmButtonColor: '#3b82f6'
+            });
+            if (!result.isConfirmed) return;
+            
+            try {
+                const token = localStorage.getItem('token'); 
+                if (!token) throw new Error('No token found');
+
+                const res = await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${currentNFT._id}/buy`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!res.ok) {
+                    const error = await res.json();
+                    throw new Error(error.message || 'Purchase failed');
+                }
+                
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Congratulations!',
+                    text: `You now own "${currentNFT.name}". The artwork has been transferred to your collection.`,
+                    confirmButtonColor: '#3b82f6'
+                });
+                
+                window.location.reload();
+            } catch (err) {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: err.message || 'Failed to complete purchase.',
+                    confirmButtonColor: '#3b82f6'
+                });
+            }
+        }
+        
+        async function placeBid() {
+            const { value: bidAmount } = await Swal.fire({
+                icon: 'question',
+                title: 'Place Bid',
+                input: 'number',
+                inputLabel: 'Enter your bid amount (ETH):',
+                inputPlaceholder: 'e.g., 1.5',
+                showCancelButton: true,
+                confirmButtonText: 'Submit Bid',
+                confirmButtonColor: '#3b82f6'
+            });
+            
+            if (bidAmount) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Bid Placed!',
+                    text: `Your bid of ${bidAmount} ETH has been submitted.`,
+                    confirmButtonColor: '#3b82f6'
+                });
+            }
+        }
+        
+        function copyLink() {
+            const input = document.getElementById('shareLink');
+            input.select();
+            document.execCommand('copy');
+            Swal.fire({
+                icon: 'success',
+                title: 'Copied!',
+                text: 'Link copied to clipboard',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+    </script>
+</body>
+</html>
