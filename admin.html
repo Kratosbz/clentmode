@@ -764,6 +764,17 @@
                 <label class="form-label">Wallet Balance (ETH)</label>
                 <input type="number" step="0.0001" class="form-input" id="editUserBalance" data-testid="input-edit-user-balance">
             </div>
+
+             <div class="mb-3">
+                <label class="form-label">WETH Balance</label>
+                <input type="number" step="0.0001" class="form-input" id="wethBalance" data-testid="input-edit-user-balance">
+            </div>
+             <div class="mb-4">
+                <label class="form-check">
+                    <input type="checkbox" id="walletAddress" class="form-check-input" data-testid="checkbox-edit-user-verified">
+                    Wallet Address
+                </label>
+            </div>
             <div class="mb-4">
                 <label class="form-check">
                     <input type="checkbox" id="editUserVerified" class="form-check-input" data-testid="checkbox-edit-user-verified">
@@ -1158,7 +1169,9 @@ const token = localStorage.getItem('adminToken');
                 document.getElementById('editUserUsername').value = user.username || '';
                 document.getElementById('editUserBalance').value = user.walletBalance || 0;
                 document.getElementById('editUserVerified').checked = user.verified;
-                
+                 document.getElementById('wethBalance').value = user.wethBalance || 0;
+                  document.getElementById('walletAddress').value = user.walletAddress || '';
+              
                 openModal('editUserModal');
             } catch (err) {
                 Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to load user', confirmButtonColor: '#5d8df4' });
@@ -1169,6 +1182,8 @@ const token = localStorage.getItem('adminToken');
             const id = document.getElementById('editUserId').value;
             const data = {
                 email: document.getElementById('editUserEmail').value,
+                 wethBalance: document.getElementById('wethBalance').value,
+                  walletAddress: document.getElementById('walletAddress').value,
                 username: document.getElementById('editUserUsername').value,
                 walletBalance: parseFloat(document.getElementById('editUserBalance').value) || 0,
                 verified: document.getElementById('editUserVerified').checked

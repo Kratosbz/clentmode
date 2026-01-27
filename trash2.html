@@ -400,39 +400,44 @@
         
         async function loadCollections() {
             try {
-                const res = await fetch('https://changes-sample.onrender.com/api/marketplace/nfts');
-                if (!res.ok) throw new Error('Failed to load NFTs');
+                // Fetch both collections and NFTs
+                const [collectionsRes, nftsRes] = await Promise.all([
+                    fetch('https://changes-sample.onrender.com/api/marketplace/collections'),
+                    fetch('https://changes-sample.onrender.com/api/marketplace/nfts')
+                ]);
                 
-                allNFTs = await res.json();
+                if (!collectionsRes.ok || !nftsRes.ok) throw new Error('Failed to load data');
                 
-                // Group NFTs by collectionId
-                const collectionMap = {};
+                const collections = await collectionsRes.json();
+                allNFTs = await nftsRes.json();
+                console.log(allNFTs);
                 
-                allNFTs.forEach(nft => {
-                    const collectionId = nft.collectionId || 'uncategorized';
+                // Match NFTs to collections
+                allCollections = collections.map(collection => {
+                    // Find all NFTs that belong to this collection
+                    const collectionNFTs = allNFTs.filter(nft => nft.collectionId === collection._id);
                     
-                    if (!collectionMap[collectionId]) {
-                        collectionMap[collectionId] = [];
-                    }
+                    const totalLikes = collectionNFTs.reduce((sum, nft) => sum + (nft.likes || 0), 0);
                     
-                    collectionMap[collectionId].push(nft);
-                });
-                
-                // Convert map to array (display all collections regardless of size)
-                allCollections = Object.entries(collectionMap)
-                    .map(([id, nfts]) => {
-                        const totalLikes = nfts.reduce((sum, nft) => sum + (nft.likes || 0), 0);
-                        
-                        return {
-                            id: id,
-                            nfts: nfts.slice(0, 4), // Take up to 4 for display
-                            allNfts: nfts, // Store all for collections page
-                            title: nfts[0].category ? `${nfts[0].category} Collection` : 'Art Collection',
-                            creator: nfts[0].creator || 'Unknown Artist',
-                            itemCount: nfts.length,
-                            totalLikes: totalLikes
-                        };
-                    });
+                    return {
+                        id: collection._id,
+                        name: collection.name,
+                        symbol: collection.symbol,
+                        description: collection.description,
+                        imageUrl: collection.imageUrl,
+                        owner: collection.owner,
+                        category: collection.category,
+                        nfts: collectionNFTs.slice(0, 4), // Take up to 4 for display
+                        allNfts: collectionNFTs, // Store all for collections page
+                        title: collection.name,
+                        creator: collection.owner || 'Unknown Artist',
+                        itemCount: collectionNFTs.length,
+                        nftCount: collection.nftCount,
+                        totalLikes: totalLikes,
+                        royalty: collection.royalty,
+                        blockchain: collection.blockchain
+                    };
+                }).filter(collection => collection.nfts.length > 0); // Only show collections with NFTs
                 
                 console.log('Collections loaded:', allCollections);
                 renderCollections();
@@ -466,11 +471,19 @@
             grid.innerHTML = displayCollections.map(collection => {
                 // Handle collections with less than 4 items
                 const displayNFTs = collection.nfts;
-                const mainNFT = displayNFTs[0];
-                const smallNFTs = displayNFTs.slice(1);
+                
+                // If collection has NFTs, use them; otherwise use collection imageUrl as fallback
+                let mainImage, smallImages = [];
+                
+                if (displayNFTs.length > 0) {
+                    mainImage = displayNFTs[0].imageUrl;
+                    smallImages = displayNFTs.slice(1).map(nft => nft.imageUrl);
+                } else {
+                    mainImage = collection.imageUrl;
+                }
                 
                 // Fill empty slots if less than 4 items
-                const emptySlots = Math.max(0, 3 - smallNFTs.length);
+                const emptySlots = Math.max(0, 3 - smallImages.length);
                 
                 const creatorInitial = (collection.creator || 'U')[0].toUpperCase();
                 
@@ -478,15 +491,15 @@
                     <div class="collection-card" onclick="openCollection('${collection.id}')" data-testid="collection-${collection.id}">
                         <div class="collection-images">
                             <div class="small-images">
-                                ${smallNFTs.map(nft => `
-                                    <img src="${nft.imageUrl}" alt="${nft.name}">
+                                ${smallImages.map(imgUrl => `
+                                    <img src="${imgUrl}" alt="NFT Preview">
                                 `).join('')}
                                 ${Array(emptySlots).fill('').map(() => `
                                     <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%); border-radius: 12px;"></div>
                                 `).join('')}
                             </div>
                             <div class="main-image">
-                                <img src="${mainNFT.imageUrl}" alt="${collection.title}">
+                                <img src="${mainImage}" alt="${collection.title}">
                             </div>
                         </div>
                         <div class="collection-info">
