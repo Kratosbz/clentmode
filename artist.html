@@ -467,48 +467,75 @@
             }
         });
         
-        async function loadArtistProfile() {
-            try {
-// const token = localStorage.getItem('token'); 
-//     if (!token) throw new Error('No token found');
+       async function loadArtistProfile() {
+  try {
+    const pageContent = document.getElementById('pageContent');
 
-                const res = await fetch('https://changes-sample.onrender.com/api/marketplace/nfts');
-                if (!res.ok) throw new Error('Failed to load');
-                
-                const allNFTs = await res.json();
+    // 1️⃣ Fetch all NFTs
+    const resNFTs = await fetch('https://changes-sample.onrender.com/api/marketplace/nfts');
+    if (!resNFTs.ok) throw new Error('Failed to load NFTs');
 
-const creatorEmail=localStorage.getItem("creatorEmail")
-                artistNFTs = allNFTs.filter(n => n.owner === creatorEmail);
+    const allNFTs = await resNFTs.json();
 
+    // 2️⃣ Determine artist email
+    const creatorEmail = localStorage.getItem('creatorEmail');
+    let artistNFTs = [];
 
-                 
-                if (artistNFTs.length === 0) {
-                    document.getElementById('pageContent').innerHTML = `
-                        <div class="vx-loading">
-                            <i class="bi bi-person-x" style="font-size: 3rem;"></i>
-                            <h4>No artworks found for this artist</h4>
-                            <a href="/index.html" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background: #3b82f6; color: white; text-decoration: none; border-radius: 8px;">Back to Marketplace</a>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                const randomIndex = Math.floor(Math.random() * artistNFTs.length);
-                featuredNFT = artistNFTs[randomIndex];
-                
-                document.title = `${artistName} - Ethergalleries`;
-                renderProfile();
-            } catch (err) {
-                console.error(err);
-                document.getElementById('pageContent').innerHTML = `
-                    <div class="vx-loading">
-                        <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
-                        <h4>Error loading artist profile</h4>
-                        <a href="/index.html" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background: #3b82f6; color: white; text-decoration: none; border-radius: 8px;">Back to Marketplace</a>
-                    </div>
-                `;
-            }
+    if (!creatorEmail) {
+      const params = new URLSearchParams(window.location.search);
+      const username = params.get('name');
+
+      if (!username) throw new Error('No artist specified');
+
+      const resUser = await fetch(
+        `https://changes-sample.onrender.com/api/user/avatar/${username}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
+      );
+
+      if (!resUser.ok) throw new Error('Failed to load artist');
+
+      const data = await resUser.json();
+      artistNFTs = allNFTs.filter(nft => nft.owner === data.email);
+    } else {
+      artistNFTs = allNFTs.filter(nft => nft.owner === creatorEmail);
+    }
+
+    // 3️⃣ Handle empty artist
+    if (!artistNFTs.length) {
+      pageContent.innerHTML = `
+        <div class="vx-loading">
+          <i class="bi bi-person-x" style="font-size: 3rem;"></i>
+          <h4>No artworks found for this artist</h4>
+          <a href="/index.html" class="vx-btn-primary">Back to Marketplace</a>
+        </div>
+      `;
+      return;
+    }
+
+    // 4️⃣ Pick featured NFT
+    const randomIndex = Math.floor(Math.random() * artistNFTs.length);
+    featuredNFT = artistNFTs[randomIndex];
+
+    // 5️⃣ Render profile
+    document.title = `${artistName} - Ethergalleries`;
+    renderProfile();
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById('pageContent').innerHTML = `
+      <div class="vx-loading">
+        <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
+        <h4>Error loading artist profile</h4>
+        <a href="/index.html" class="vx-btn-primary">Back to Marketplace</a>
+      </div>
+    `;
+  }
+}
  async function loadArtistProfileAvatar() {
   try {
     // const token = localStorage.getItem("token");
