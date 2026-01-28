@@ -2000,7 +2000,20 @@ document
                     const matchingArtists = uniqueArtists.filter(artist => 
                         artist.toLowerCase().includes(queryLower)
                     ).slice(0, 3);
-                    
+                   // Extract unique creators + owners
+// const uniqueArtists = [
+//   ...new Set(
+//     results
+//       .flatMap(nft => [nft.creator, nft.owner])
+//       .filter(Boolean)
+//   )
+// ];
+
+// const queryLower = query.toLowerCase();
+
+// const matchingArtists = uniqueArtists
+//   .filter(name => name.toLowerCase().includes(queryLower))
+//   .slice(0, 3); 
                     let html = '';
                     
                     // Show matching artists first
