@@ -486,6 +486,7 @@
       const username = params.get('name');
 
       if (!username) throw new Error('No artist specified');
+console.log(username);
 
       const resUser = await fetch(
         `https://changes-sample.onrender.com/api/user/avatar/${username}`,
@@ -500,6 +501,8 @@
       if (!resUser.ok) throw new Error('Failed to load artist');
 
       const data = await resUser.json();
+      console.log(data);
+      
       artistNFTs = allNFTs.filter(nft => nft.owner === data.email);
     } else {
       artistNFTs = allNFTs.filter(nft => nft.owner === creatorEmail);
