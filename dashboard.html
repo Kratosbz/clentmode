@@ -5171,7 +5171,12 @@ const token = localStorage.getItem('token');
 
 
     async function submitMint() {
+        
+ const btn = document.getElementById('mintSubmitBtn');
 
+  // change text to "Minting..."
+  btn.textContent = 'Minting...';
+  btn.disabled = true;
       
 function getSelectedTags() {
   return [...document.querySelectorAll('.mint-tag.active')]
