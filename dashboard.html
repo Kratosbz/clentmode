@@ -5171,7 +5171,7 @@ const token = localStorage.getItem('token');
 
 
     async function submitMint() {
-        
+
  const btn = document.getElementById('mintSubmitBtn');
 
   // change text to "Minting..."
@@ -5237,6 +5237,8 @@ const token = localStorage.getItem('token');
 
 if (!nftRes.ok) {
     throw new Error(nftResult.message || 'Failed to create NFT');
+    btn.textContent = 'Minting NFT';
+  btn.disabled = false;
 }
 
             
