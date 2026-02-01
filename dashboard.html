@@ -5378,7 +5378,7 @@ if (!nftRes.ok) {
             document.getElementById('successPreview').innerHTML = `
                 <div class="preview-media mx-auto mb-3">
                     ${mintData.mediaType === 'video' ? 
-                        `<video src="${mintData.fileUrl}" muted loop></video>` :
+                        `<video src="${mintData.fileUrl}" muted loop autoplay></video>` :
                         mintData.mediaType === 'audio' ?
                         `<i class="bi bi-music-note-beamed"></i>` :
                         `<img src="${mintData.fileUrl}" alt="${mintData.name}">`
