@@ -655,24 +655,60 @@ async function loadArtistBio() {
             if (!featuredNFT) return '';
             
             return `
-                <section class="vx-featured-section">
-                    <h2 class="vx-section-title"><i class="bi bi-star-fill text-warning me-2"></i>Featured Artwork</h2>
-                    <div class="vx-featured-artwork">
-                        <img src="${featuredNFT.imageUrl}" alt="${featuredNFT.name}" class="vx-featured-image">
-                        <div class="vx-featured-info">
-                            <span class="vx-featured-badge"><i class="bi bi-lightning-charge-fill me-1"></i>Random Pick</span>
-                            <h3 class="vx-featured-title">${featuredNFT.name}</h3>
-                            <p class="vx-featured-description">${featuredNFT.description || 'A unique digital artwork by ' + artistName}</p>
-                            <div class="vx-featured-price">
-                                ${featuredNFT.price ? featuredNFT.price.toFixed(2) + ' ' + (featuredNFT.currency || 'ETH') : 'Not for sale'}
-                            </div>
-                            <a href="artwork.html?id=${featuredNFT._id}" class="vx-featured-btn" data-testid="button-view-featured">
-                                View Artwork <i class="bi bi-arrow-right ms-2"></i>
-                            </a>
-                        </div>
-                    </div>
-                </section>
-            `;
+    <section class="vx-featured-section">
+        <h2 class="vx-section-title">
+            <i class="bi bi-star-fill text-warning me-2"></i>Featured Artwork
+        </h2>
+
+        <div class="vx-featured-artwork">
+            ${
+                featuredNFT.mediaType === "video"
+                ? `
+                    <video
+                        src="${featuredNFT.imageUrl}"
+                        class="vx-featured-image"
+                        autoplay
+                        loop
+                        muted
+                        playsinline
+                    ></video>
+                `
+                : `
+                    <img
+                        src="${featuredNFT.imageUrl}"
+                        alt="${featuredNFT.name}"
+                        class="vx-featured-image"
+                    >
+                `
+            }
+
+            <div class="vx-featured-info">
+                <span class="vx-featured-badge">
+                    <i class="bi bi-lightning-charge-fill me-1"></i>Random Pick
+                </span>
+
+                <h3 class="vx-featured-title">${featuredNFT.name}</h3>
+
+                <p class="vx-featured-description">
+                    ${featuredNFT.description || 'A unique digital artwork by ' + artistName}
+                </p>
+
+                <div class="vx-featured-price">
+                    ${featuredNFT.price
+                        ? featuredNFT.price.toFixed(2) + ' ' + (featuredNFT.currency || 'ETH')
+                        : 'Not for sale'}
+                </div>
+
+                <a href="artwork.html?id=${featuredNFT._id}"
+                   class="vx-featured-btn"
+                   data-testid="button-view-featured">
+                    View Artwork <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+`;
+
         }
         
         function renderNFTCard(nft) {

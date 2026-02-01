@@ -1599,15 +1599,40 @@
             }
             
             track.innerHTML = featuredDropsItems.map(nft => `
-                <div class="vx-carousel-card" onclick="window.location.href='artwork.html?id=${nft._id}'" data-testid="card-featured-${nft._id}">
-                    <img src="${nft.imageUrl || '/placeholder-nft.svg'}" alt="${nft.name}" class="vx-carousel-card-img" loading="lazy">
-                    <div class="vx-carousel-card-body">
-                        <div class="vx-carousel-card-title">${nft.name}</div>
-                        <div class="vx-carousel-card-artist">by ${nft.creator || 'Unknown Artist'}</div>
-                        <div class="vx-carousel-card-price">${nft.price || 0} ETH</div>
-                    </div>
-                </div>
-            `).join('');
+    <div class="vx-carousel-card"
+         onclick="window.location.href='artwork.html?id=${nft._id}'"
+         data-testid="card-featured-${nft._id}">
+
+        ${
+            nft.mediaType === "video"
+            ? `
+                <video
+                    src="${nft.imageUrl}"
+                    class="vx-carousel-card-img"
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                ></video>
+            `
+            : `
+                <img
+                    src="${nft.imageUrl || '/placeholder-nft.svg'}"
+                    alt="${nft.name}"
+                    class="vx-carousel-card-img"
+                    loading="lazy"
+                >
+            `
+        }
+
+        <div class="vx-carousel-card-body">
+            <div class="vx-carousel-card-title">${nft.name}</div>
+            <div class="vx-carousel-card-artist">by ${nft.creator || 'Unknown Artist'}</div>
+            <div class="vx-carousel-card-price">${nft.price || 0} ETH</div>
+        </div>
+    </div>
+`).join('');
+
             
             updateCarouselPosition('featured');
         }
@@ -1799,39 +1824,60 @@
             nft.status === 'auction' ? 'Auction' :
             nft.status === 'listed' ? 'For Sale' : '';
 
-        return `
-            <a href="artwork.html?id=${nft._id}" class="vx-nft-card"
-               data-testid="card-nft-${nft._id}"
-               style="text-decoration: none; color: inherit; display: block;">
+       return `
+    <a href="artwork.html?id=${nft._id}" class="vx-nft-card"
+       data-testid="card-nft-${nft._id}"
+       style="text-decoration: none; color: inherit; display: block;">
+        
+        <div class="vx-nft-image-container">
+            ${
+                nft.mediaType === "video"
+                ? `
+                    <video
+                        src="${nft.imageUrl}"
+                        class="vx-nft-image"
+                        autoplay
+                        loop
+                        muted
+                        playsinline
+                    ></video>
+                `
+                : `
+                    <img
+                        src="${nft.imageUrl}"
+                        alt="${nft.name}"
+                        class="vx-nft-image"
+                    >
+                `
+            }
+
+            ${statusBadge ? `<span class="vx-nft-badge">${statusBadge}</span>` : ''}
+
+            <button class="vx-nft-like ${isLiked ? 'liked' : ''}"
+                onclick="event.preventDefault(); event.stopPropagation(); toggleLike('${nft._id}')"
+                data-testid="button-like-${nft._id}">
                 
-                <div class="vx-nft-image-container">
-                    <img src="${nft.imageUrl}" alt="${nft.name}" class="vx-nft-image">
-                    ${statusBadge ? `<span class="vx-nft-badge">${statusBadge}</span>` : ''}
-                    
-                    <button class="vx-nft-like ${isLiked ? 'liked' : ''}"
-                        onclick="event.preventDefault(); event.stopPropagation(); toggleLike('${nft._id}')"
-                        data-testid="button-like-${nft._id}">
-                        
-                        <i class="bi bi-heart${isLiked ? '-fill' : ''}"></i>
-                        <div class="vx-likes-count">${nft.likes || 0}</div>
-                    </button>
-                </div>
+                <i class="bi bi-heart${isLiked ? '-fill' : ''}"></i>
+                <div class="vx-likes-count">${nft.likes || 0}</div>
+            </button>
+        </div>
 
-                <div class="vx-nft-content">
-                    <h6 class="vx-nft-title">${nft.name}</h6>
-                    <p class="vx-nft-creator">by ${nft.creator || 'Unknown'}</p>
+        <div class="vx-nft-content">
+            <h6 class="vx-nft-title">${nft.name}</h6>
+            <p class="vx-nft-creator">by ${nft.creator || 'Unknown'}</p>
 
-                    <div class="vx-nft-footer">
-                        <div class="vx-nft-price">
-                            ${nft.price
-                                ? nft.price.toFixed(2) + ' ' + (nft.currency || 'ETH')
-                                : 'Not listed'}
-                            <small>Current Price</small>
-                        </div>
-                    </div>
+            <div class="vx-nft-footer">
+                <div class="vx-nft-price">
+                    ${nft.price
+                        ? nft.price.toFixed(2) + ' ' + (nft.currency || 'ETH')
+                        : 'Not listed'}
+                    <small>Current Price</small>
                 </div>
-            </a>
-        `;
+            </div>
+        </div>
+    </a>
+`;
+
     })
     .join('');
         }

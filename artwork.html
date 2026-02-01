@@ -603,93 +603,134 @@ console.log(username);
                 `;
             }
             
-            document.getElementById('mainContent').innerHTML = `
-                <nav class="vx-breadcrumb">
-                    <a href="/index.html">Marketplace</a>
-                    <i class="bi bi-chevron-right"></i>
-                    <a href="category.html?category=${encodeURIComponent(currentNFT.category || 'Art')}">${currentNFT.category || 'Art'}</a>
-                    <i class="bi bi-chevron-right"></i>
-                    <span>${currentNFT.name}</span>
-                </nav>
-                
-                <div class="vx-artwork-detail">
-                    <div class="vx-artwork-image-container">
-                        <img src="${currentNFT.imageUrl}" alt="${currentNFT.name}" class="vx-artwork-image">
-                        <div class="vx-artwork-actions">
-                            <button class="vx-action-icon ${isLiked ? 'liked' : ''}" onclick="toggleLike()" data-testid="button-like-artwork">
-                                <i class="bi bi-heart${isLiked ? '-fill' : ''}"></i>
-                            </button>
-                            
-                        </div>
-                    </div>
-                    
-                    <div class="vx-artwork-info">
-                        <h1 class="vx-artwork-title">${currentNFT.name}</h1>
-                        <span class="vx-artwork-category">${currentNFT.category || 'Art'}</span>
-                        
-                        <a href="artist.html?name=${creatorSlug}" class="vx-creator-link" data-testid="link-artist">
-                            <div class="vx-creator-avatar">${creatorInitial}</div>
-                            <div class="vx-creator-info">
-                                <h6>${username|| 'Unknown Artist'}</h6>
-                                <small>Click to view profile</small>
-                            </div>
-                            <i class="bi bi-chevron-right ms-auto"></i>
-                        </a>
-                        
-                        <div class="vx-stats">
-                            <div class="vx-stat">
-                                <i class="bi bi-heart-fill"></i>
-                                <span>${currentNFT.likes || 0} likes</span>
-                            </div>
-                            <div class="vx-stat">
-                                <i class="bi bi-eye-fill"></i>
-                                <span>${currentNFT.views || 0} views</span>
-                            </div>
-                        </div>
-                        
-                        <p class="vx-artwork-description">${currentNFT.description || 'No description available for this artwork.'}</p>
-                        
-                        <div class="vx-meta-grid">
-                            <div class="vx-meta-item">
-                                <div class="vx-meta-label">Rarity</div>
-                                <div class="vx-meta-value">${currentNFT.rarity || 'Common'}</div>
-                            </div>
-                            <div class="vx-meta-item">
-                                <div class="vx-meta-label">Token ID</div>
-                                <div class="vx-meta-value">#${currentNFT.tokenId || currentNFT._id.slice(-6)}</div>
-                            </div>
-                            <div class="vx-meta-item">
-                                <div class="vx-meta-label">Created</div>
-                                <div class="vx-meta-value">${new Date(currentNFT.createdAt).toLocaleDateString()}</div>
-                            </div>
-                            <div class="vx-meta-item">
-                                <div class="vx-meta-label">Creator</div>
-                                <div class="vx-meta-value">${ currentNFT.creator || 'Unknown'}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="vx-price-section">
-                            <div class="vx-price-label">Current Price</div>
-                            <div class="vx-price-value">${currentNFT.price ? currentNFT.price.toFixed(4) + ' ' + (currentNFT.currency || 'ETH') : 'Not for sale'}</div>
-                        </div>
-                        
-                        <div class="vx-buy-section">
-                            ${buyButtonHTML}
-                        </div>
-                        
-                        <div class="vx-share-section">
-                            <div class="vx-share-label">Share this artwork</div>
-                            <div class="vx-share-link">
-                                <input type="text" id="shareLink" value="${window.location.href}" readonly>
-                                <button onclick="copyLink()" data-testid="button-copy-link"><i class="bi bi-copy"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                ${renderArtistSection()}
-                ${renderCategorySection()}
-            `;
+            const artworkMediaHTML =
+  currentNFT.mediaType === 'video'
+    ? `
+      <video
+  src="${currentNFT.imageUrl}"
+  class="vx-artwork-image"
+  muted
+  autoplay
+  loop
+  controls
+  playsinline
+></video>
+
+    `
+    : `
+      <img
+        src="${currentNFT.imageUrl}"
+        alt="${currentNFT.name}"
+        class="vx-artwork-image"
+      />
+    `;
+
+document.getElementById('mainContent').innerHTML = `
+  <nav class="vx-breadcrumb">
+    <a href="/index.html">Marketplace</a>
+    <i class="bi bi-chevron-right"></i>
+    <a href="category.html?category=${encodeURIComponent(currentNFT.category || 'Art')}">
+      ${currentNFT.category || 'Art'}
+    </a>
+    <i class="bi bi-chevron-right"></i>
+    <span>${currentNFT.name}</span>
+  </nav>
+  
+  <div class="vx-artwork-detail">
+    <div class="vx-artwork-image-container">
+      ${artworkMediaHTML}
+
+      <div class="vx-artwork-actions">
+        <button
+          class="vx-action-icon ${isLiked ? 'liked' : ''}"
+          onclick="toggleLike()"
+          data-testid="button-like-artwork"
+        >
+          <i class="bi bi-heart${isLiked ? '-fill' : ''}"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="vx-artwork-info">
+      <h1 class="vx-artwork-title">${currentNFT.name}</h1>
+      <span class="vx-artwork-category">${currentNFT.category || 'Art'}</span>
+      
+      <a href="artist.html?name=${creatorSlug}" class="vx-creator-link" data-testid="link-artist">
+        <div class="vx-creator-avatar">${creatorInitial}</div>
+        <div class="vx-creator-info">
+          <h6>${username || 'Unknown Artist'}</h6>
+          <small>Click to view profile</small>
+        </div>
+        <i class="bi bi-chevron-right ms-auto"></i>
+      </a>
+      
+      <div class="vx-stats">
+        <div class="vx-stat">
+          <i class="bi bi-heart-fill"></i>
+          <span>${currentNFT.likes || 0} likes</span>
+        </div>
+        <div class="vx-stat">
+          <i class="bi bi-eye-fill"></i>
+          <span>${currentNFT.views || 0} views</span>
+        </div>
+      </div>
+      
+      <p class="vx-artwork-description">
+        ${currentNFT.description || 'No description available for this artwork.'}
+      </p>
+      
+      <div class="vx-meta-grid">
+        <div class="vx-meta-item">
+          <div class="vx-meta-label">Rarity</div>
+          <div class="vx-meta-value">${currentNFT.rarity || 'Common'}</div>
+        </div>
+        <div class="vx-meta-item">
+          <div class="vx-meta-label">Token ID</div>
+          <div class="vx-meta-value">#${currentNFT.tokenId || currentNFT._id.slice(-6)}</div>
+        </div>
+        <div class="vx-meta-item">
+          <div class="vx-meta-label">Created</div>
+          <div class="vx-meta-value">
+            ${new Date(currentNFT.createdAt).toLocaleDateString()}
+          </div>
+        </div>
+        <div class="vx-meta-item">
+          <div class="vx-meta-label">Creator</div>
+          <div class="vx-meta-value">${currentNFT.creator || 'Unknown'}</div>
+        </div>
+      </div>
+      
+      <div class="vx-price-section">
+        <div class="vx-price-label">Current Price</div>
+        <div class="vx-price-value">
+          ${
+            currentNFT.price
+              ? currentNFT.price.toFixed(4) + ' ' + (currentNFT.currency || 'ETH')
+              : 'Not for sale'
+          }
+        </div>
+      </div>
+      
+      <div class="vx-buy-section">
+        ${buyButtonHTML}
+      </div>
+      
+      <div class="vx-share-section">
+        <div class="vx-share-label">Share this artwork</div>
+        <div class="vx-share-link">
+          <input type="text" id="shareLink" value="${window.location.href}" readonly>
+          <button onclick="copyLink()" data-testid="button-copy-link">
+            <i class="bi bi-copy"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  ${renderArtistSection()}
+  ${renderCategorySection()}
+`;
+
         }
         
         function renderArtistSection() {
