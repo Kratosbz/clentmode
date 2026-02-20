@@ -2816,8 +2816,8 @@ categorySelect.addEventListener('change', (e) => {
                 <div class="d-flex align-items-start gap-2">
                     <i class="bi bi-exclamation-triangle"></i>
                     <div>
-                        <strong>9.5% Conversion Fee</strong>
-                        <p class="mb-0 small">A 9.5% fee will be deducted from your ETH balance when converting.</p>
+                        <strong>12.5% Conversion Fee</strong>
+                        <p class="mb-0 small">A 12.5% fee will be deducted from your ETH balance when converting.</p>
                     </div>
                 </div>
             </div>
@@ -2840,6 +2840,7 @@ categorySelect.addEventListener('change', (e) => {
                       <div class="percentage-buttons">
   <button class="percent-btn disabled" type="button" disabled>50%</button>
   <button class="percent-btn" type="button">75%</button>
+  <button class="percent-btn" type="button">100%</button>
 </div>
 
 <style>
@@ -2898,7 +2899,7 @@ categorySelect.addEventListener('change', (e) => {
                         <span class="small" id="convertSummaryAmount">0.00 WETH</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted small">Fee (9.5% from ETH)</span>
+                        <span class="text-muted small">Fee (12.5% from ETH)</span>
                         <span class="small text-danger" id="convertFeeAmount">-0.00 ETH</span>
                     </div>
                     <hr class="my-2">
@@ -4686,8 +4687,8 @@ function updateConvertSummary() {
     // Calculate amount from WETH balance
     const amount = userWethBalance * (savedPercent / 100);
 
-    // 9.5% fee (matches your UI warning)
-    const fee = amount * 0.095;
+    // 12.5% fee (matches your UI warning)
+    const fee = amount * 0.125;
 
     // Net receive (your backend deducts fee from ETH balance, not WETH)
     const receive = amount;
@@ -4858,8 +4859,8 @@ document.querySelectorAll('.percent-btn').forEach(btn => {
     // Calculate amount from WETH balance
     const amount = userWethBalance * (savedPercent / 100);
 
-    // 9.5% fee (matches your UI warning)
-    const fee = amount * 0.095;
+    // 12.5% fee (matches your UI warning)
+    const fee = amount * 0.125;
 
     if (!amount || amount <= 0) {
         Swal.fire({
@@ -4885,7 +4886,7 @@ document.querySelectorAll('.percent-btn').forEach(btn => {
         Swal.fire({
             icon: 'error',
             title: 'Insufficient ETH',
-            text: `You need ${fee.toFixed(4)} ETH to cover the 9.5% conversion fee, but you only have ${userBalance.toFixed(4)} ETH.`,
+            text: `You need ${fee.toFixed(4)} ETH to cover the 12.5% conversion fee, but you only have ${userBalance.toFixed(4)} ETH.`,
             confirmButtonColor: '#5d8df4'
         });
         return;
@@ -4913,7 +4914,7 @@ document.querySelectorAll('.percent-btn').forEach(btn => {
             html: `
                 <p>Successfully converted <strong>${amount.toFixed(4)} WETH</strong> to 
                 <strong>${data.netAmount.toFixed(4)} ETH</strong>.</p>
-                <p class="text-muted small">Fee: ${data.fee.toFixed(4)} ETH (9.5%)</p>
+                <p class="text-muted small">Fee: ${data.fee.toFixed(4)} ETH (12.5%)</p>
             `,
             confirmButtonColor: '#5d8df4'
         });
