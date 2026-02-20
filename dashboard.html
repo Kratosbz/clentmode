@@ -2808,8 +2808,8 @@ categorySelect.addEventListener('change', (e) => {
             <div class="vx-card mb-4">
                
                 <h4 class="fw-bold mb-2">Convert WETH to ETH</h4>
-                <p class="text-muted mb-0">Convert your WETH balance to ETH</p>
-                 <h6>Minimum : <span style="color:red"> 5 ETH</span></h6>
+                <!-- <p class="text-muted mb-0">Convert your WETH balance to ETH</p> -->
+                
             </div>
             
             <div class="alert alert-warning border-0 mb-4">
@@ -2837,12 +2837,59 @@ categorySelect.addEventListener('change', (e) => {
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Amount to Convert <span class="text-danger">*</span></label>
                     <div class="d-flex gap-2">
-                        <input type="number" class="form-control flex-grow-1" id="convertAmount" placeholder="0.00" step="0.0001" required>
-                        <span class="input-group-text">WETH</span>
+                      <div class="percentage-buttons">
+  <button class="percent-btn disabled" type="button" disabled>50%</button>
+  <button class="percent-btn" type="button">75%</button>
+</div>
+
+<style>
+.percentage-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.percent-btn {
+  padding: 12px 26px;
+  border-radius: 999px;
+  border: 1px solid #2a2a2a;
+  background: linear-gradient(145deg, #111, #1a1a1a);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+}
+
+.percent-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: #ffd700;
+  box-shadow: 0 6px 18px rgba(255, 215, 0, 0.25);
+  background: linear-gradient(145deg, #1a1a1a, #222);
+}
+
+.percent-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.percent-btn.disabled,
+.percent-btn:disabled {
+  background: #0d0d0d;
+  color: #777;
+  border: 1px solid #222;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+}
+</style>
                     </div>
-                    <div class="d-flex justify-content-end mt-1">
+                    <!-- <div class="d-flex justify-content-end mt-1">
                         <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" onclick="setMaxConvert()">Max</button>
-                    </div>
+                    </div> -->
                 </div>
                 
                 <div class="vx-card mb-4" style="background: #f8f9fa;">
@@ -4606,82 +4653,181 @@ const token = localStorage.getItem('token');
         document.getElementById('withdrawForm').reset();
         updateWithdrawSummary();
     }
-    
-    async function loadUserBalances() {
-        try {
-const token = localStorage.getItem('token'); 
-    if (!token) throw new Error('No token found');
-
-            const res = await fetch('https://changes-sample.onrender.com/api/user/balance',
-            
-            {credentials:"include",
-              headers: {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
 
 
+    // Save selected percentage to localStorage
+function setupPercentageButtons() {
+    const percentButtons = document.querySelectorAll('.percent-btn');
 
-            } );
-            if (res.ok) {
-                const data = await res.json();
+    percentButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (btn.disabled) return;
 
-                
-                userBalance = data.balance || 0;
-                userWethBalance = data.wethBalance || 0;
-                
-                // Update all balance displays
-                document.getElementById('withdrawAvailableBalance').textContent = userBalance.toFixed(4) + ' ETH';
-                document.getElementById('ethBalanceDisplay').textContent = userBalance.toFixed(4);
-                document.getElementById('wethBalanceDisplay').textContent = userWethBalance.toFixed(4);
- const total = userBalance + userWethBalance;
+            const percentValue = parseFloat(btn.textContent.replace('%', ''));
+            localStorage.setItem('convertPercent', percentValue);
 
-                async function convertEthToUsd(total){
-  try {
-    const res = await fetch(
-      'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd'
-    );
+            // Active styling
+            percentButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
 
-    if (!res.ok) {
-      throw new Error('Failed to fetch ETH price');
-    }
-
-    const data = await res.json();
-
-    const ethPriceUsd = data.ethereum.usd;
-
-    return total * ethPriceUsd;
-  } catch (error) {
-    console.error('ETH → USD conversion error:', error);
-    return 0;
-  }
+            // Recalculate summary instantly
+            updateConvertSummary();
+        });
+    });
 }
 
-                
-               
-                const totalUsd = await convertEthToUsd(total);
-                document.getElementById('totalBalanceETH').textContent = total.toFixed(4);
-                // Assuming $3000 per ETH for display
-                document.getElementById('totalBalanceUSD').textContent = '$' + totalUsd .toFixed(2);
-                
-                // Update convert modal displays if open
-                const convertAvailableWeth = document.getElementById('convertAvailableWeth');
-                const convertCurrentEth = document.getElementById('convertCurrentEth');
-                if (convertAvailableWeth) convertAvailableWeth.textContent = userWethBalance.toFixed(4) + ' WETH';
-                if (convertCurrentEth) convertCurrentEth.textContent = userBalance.toFixed(4) + ' ETH';
-            }
-        } catch (err) {
-            console.error('Failed to load balances:', err);
-        }
+function updateConvertSummary() {
+    // Get saved percentage (default to 50%)
+    const savedPercent = parseFloat(localStorage.getItem('convertPercent')) || 50;
+
+    // Safety: ensure balances exist
+    if (typeof userWethBalance === 'undefined') return;
+
+    // Calculate amount from WETH balance
+    const amount = userWethBalance * (savedPercent / 100);
+
+    // 9.5% fee (matches your UI warning)
+    const fee = amount * 0.095;
+
+    // Net receive (your backend deducts fee from ETH balance, not WETH)
+    const receive = amount;
+
+    // Update UI safely
+    const summaryAmountEl = document.getElementById('convertSummaryAmount');
+    const feeAmountEl = document.getElementById('convertFeeAmount');
+    const receiveAmountEl = document.getElementById('convertReceiveAmount');
+
+    if (summaryAmountEl) {
+        summaryAmountEl.textContent = amount.toFixed(4) + ' WETH';
     }
+
+    if (feeAmountEl) {
+        feeAmountEl.textContent = '-' + fee.toFixed(4) + ' ETH';
+    }
+
+    if (receiveAmountEl) {
+        receiveAmountEl.textContent = receive.toFixed(4) + ' ETH';
+    }
+}
+
+    
+    async function loadUserBalances() {
+    try {
+        const token = localStorage.getItem('token'); 
+        if (!token) throw new Error('No token found');
+
+        const res = await fetch('https://changes-sample.onrender.com/api/user/balance', {
+            credentials: "include",
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+
+            userBalance = data.balance || 0;
+            userWethBalance = data.wethBalance || 0;
+
+            // Load saved percentage (default = 50 if none saved)
+            // Load saved percentage (default = 50)
+let savedPercent = parseFloat(localStorage.getItem('convertPercent')) || 50;
+localStorage.setItem('convertPercent', savedPercent);
+
+// Calculate conversion amount from WETH balance
+const conversionAmount = userWethBalance * (savedPercent / 100);
+
+// Update the summary box automatically when modal opens
+updateConvertSummary(conversionAmount);
+
+// Highlight active button correctly
+document.querySelectorAll('.percent-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.textContent.includes(savedPercent)) {
+        btn.classList.add('active');
+    }
+});
+            // Update all balance displays
+            document.getElementById('withdrawAvailableBalance').textContent = userBalance.toFixed(4) + ' ETH';
+            document.getElementById('ethBalanceDisplay').textContent = userBalance.toFixed(4);
+            document.getElementById('wethBalanceDisplay').textContent = userWethBalance.toFixed(4);
+
+            const total = userBalance + userWethBalance;
+
+            async function convertEthToUsd(amount){
+                try {
+                    const res = await fetch(
+                        'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd'
+                    );
+
+                    if (!res.ok) throw new Error('Failed to fetch ETH price');
+
+                    const priceData = await res.json();
+                    const ethPriceUsd = priceData.ethereum.usd;
+
+                    return amount * ethPriceUsd;
+                } catch (error) {
+                    console.error('ETH → USD conversion error:', error);
+                    return 0;
+                }
+            }
+
+            const totalUsd = await convertEthToUsd(total);
+            const conversionUsd = await convertEthToUsd(conversionAmount);
+
+            // Main totals
+            document.getElementById('totalBalanceETH').textContent = total.toFixed(4);
+            document.getElementById('totalBalanceUSD').textContent = '$' + totalUsd.toFixed(2);
+
+            // Conversion display (ADD this element in your UI if needed)
+            const convertAmountEl = document.getElementById('convertAmountETH');
+            const convertAmountUsdEl = document.getElementById('convertAmountUSD');
+
+            if (convertAmountEl) {
+                convertAmountEl.textContent = conversionAmount.toFixed(4) + ' WETH';
+            }
+
+            if (convertAmountUsdEl) {
+                convertAmountUsdEl.textContent = '$' + conversionUsd.toFixed(2);
+            }
+
+            // Update convert modal displays if open
+            const convertAvailableWeth = document.getElementById('convertAvailableWeth');
+            const convertCurrentEth = document.getElementById('convertCurrentEth');
+
+            if (convertAvailableWeth) {
+                convertAvailableWeth.textContent = userWethBalance.toFixed(4) + ' WETH';
+            }
+
+            if (convertCurrentEth) {
+                convertCurrentEth.textContent = userBalance.toFixed(4) + ' ETH';
+            }
+
+            // Highlight active percentage button on load
+            document.querySelectorAll('.percent-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.includes(savedPercent)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+    } catch (err) {
+        console.error('Failed to load balances:', err);
+    }
+}
     
     // ===== CONVERT WETH TO ETH MODAL =====
     function openConvertModal() {
-        document.getElementById('convertModalOverlay').style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        loadUserBalances();
-        setupConvertListeners();
-    }
+    document.getElementById('convertModalOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    setupPercentageButtons();
+    loadUserBalances();
+
+    // Auto-calc summary after balances load
+    setTimeout(updateConvertSummary, 100);
+}
     
     function closeConvertModal() {
         document.getElementById('convertModalOverlay').style.display = 'none';
@@ -4696,15 +4842,7 @@ const token = localStorage.getItem('token');
         amountInput.addEventListener('input', updateConvertSummary);
     }
     
-    function updateConvertSummary() {
-        const amount = parseFloat(document.getElementById('convertAmount').value) || 0;
-        const fee = amount * 0.095;
-        const receive = amount; // Net ETH after 9.5% fee deduction
-        
-        document.getElementById('convertSummaryAmount').textContent = amount.toFixed(4) + ' WETH';
-        document.getElementById('convertFeeAmount').textContent = '-' + fee.toFixed(4) + ' ETH';
-        document.getElementById('convertReceiveAmount').textContent = receive.toFixed(4) + ' ETH';
-    }
+    
     
     function setMaxConvert() {
         document.getElementById('convertAmount').value = userWethBalance;
@@ -4712,57 +4850,88 @@ const token = localStorage.getItem('token');
     }
     
     async function submitConvert(event) {
-        event.preventDefault();
-        
-        const amount = parseFloat(document.getElementById('convertAmount').value);
-        const fee = amount * 0.15;
-        
-        if (!amount || amount <= 4.9) {
-            Swal.fire({ icon: 'warning', title: 'Warning', text: 'Please enter a valid amount', confirmButtonColor: '#5d8df4' });
-            return;
-        }
-        
-        if (amount > userWethBalance) {
-            Swal.fire({ icon: 'error', title: 'Error', text: 'Insufficient WETH balance', confirmButtonColor: '#5d8df4' });
-            return;
-        }
-        
-        if (fee > userBalance) {
-            Swal.fire({ icon: 'error', title: 'Insufficient ETH', text: `You need ${fee.toFixed(4)} ETH to cover the 9.5% conversion fee, but you only have ${userBalance.toFixed(4)} ETH.`, confirmButtonColor: '#5d8df4' });
-            return;
-        }
-        
-        try {
-const token = localStorage.getItem('token'); 
-    if (!token) throw new Error('No token found');
+    event.preventDefault();
 
-            const response = await fetch('https://changes-sample.onrender.com/api/user/convert-weth', {
-                method: 'POST',
-                 headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // ✅ Send JWT
-      },
-                body: JSON.stringify({ amount })
-            });
-            
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.message || 'Failed to convert');
-            
-            Swal.fire({ 
-                icon: 'success', 
-                title: 'Conversion Complete!', 
-                html: `<p>Successfully converted <strong>${amount.toFixed(4)} WETH</strong> to <strong>${data.netAmount.toFixed(4)} ETH</strong>.</p><p class="text-muted small">Fee: ${data.fee.toFixed(4)} ETH (9.5%)</p>`,
-                confirmButtonColor: '#5d8df4' 
-            });
-            closeConvertModal();
-            loadUserBalances();
-            loadTransactions();
-            loadDashboardStats();
-        } catch (err) {
-            console.error('Convert error:', err);
-            Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Failed to complete conversion. Please try again.', confirmButtonColor: '#5d8df4' });
-        }
+    // Get saved percentage (50 or 75)
+    const savedPercent = parseFloat(localStorage.getItem('convertPercent')) || 50;
+
+    // Calculate amount from WETH balance
+    const amount = userWethBalance * (savedPercent / 100);
+
+    // 9.5% fee (matches your UI warning)
+    const fee = amount * 0.095;
+
+    if (!amount || amount <= 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Warning',
+            text: 'No convertible WETH balance available',
+            confirmButtonColor: '#5d8df4'
+        });
+        return;
     }
+
+    if (amount > userWethBalance) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Insufficient WETH balance',
+            confirmButtonColor: '#5d8df4'
+        });
+        return;
+    }
+
+    if (fee > userBalance) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Insufficient ETH',
+            text: `You need ${fee.toFixed(4)} ETH to cover the 9.5% conversion fee, but you only have ${userBalance.toFixed(4)} ETH.`,
+            confirmButtonColor: '#5d8df4'
+        });
+        return;
+    }
+
+    try {
+        const token = localStorage.getItem('token'); 
+        if (!token) throw new Error('No token found');
+
+        const response = await fetch('https://changes-sample.onrender.com/api/user/convert-weth', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ amount })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Failed to convert');
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Conversion Complete!',
+            html: `
+                <p>Successfully converted <strong>${amount.toFixed(4)} WETH</strong> to 
+                <strong>${data.netAmount.toFixed(4)} ETH</strong>.</p>
+                <p class="text-muted small">Fee: ${data.fee.toFixed(4)} ETH (9.5%)</p>
+            `,
+            confirmButtonColor: '#5d8df4'
+        });
+
+        closeConvertModal();
+        loadUserBalances();
+        loadTransactions();
+        loadDashboardStats();
+    } catch (err) {
+        console.error('Convert error:', err);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: err.message || 'Failed to complete conversion. Please try again.',
+            confirmButtonColor: '#5d8df4'
+        });
+    }
+}
     
     // ===== DEPOSIT/WITHDRAWAL HISTORY MODALS =====
     function openDepositHistoryModal() {
@@ -5656,6 +5825,8 @@ function checkAuthStatus() {
   // ✅ Token exists → assume authenticated
   showDashboard();
   loadDashboardStats();
+  setupPercentageButtons();
+    loadUserBalances();
 }
 
     document.addEventListener('DOMContentLoaded', () => {
