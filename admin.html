@@ -760,6 +760,11 @@
                 <label class="form-label">Username</label>
                 <input type="text" class="form-input" id="editUserUsername" data-testid="input-edit-user-username">
             </div>
+
+            <div class="mb-3">
+                <label class="form-label">Account Level</label>
+                <input type="text" class="form-input" id="accountLevel" data-testid="input-edit-user-username">
+            </div>
             <div class="mb-3">
                 <label class="form-label">Wallet Balance (ETH)</label>
                 <input type="number" step="0.0001" class="form-input" id="editUserBalance" data-testid="input-edit-user-balance">
@@ -1169,6 +1174,7 @@ const token = localStorage.getItem('adminToken');
                 document.getElementById('editUserId').value = id;
                 document.getElementById('editUserEmail').value = user.email;
                 document.getElementById('editUserUsername').value = user.username || '';
+                 document.getElementById('accountLevel').value = user.level || '';
                 document.getElementById('editUserBalance').value = user.walletBalance || 0;
                 document.getElementById('editUserVerified').checked = user.verified;
                  document.getElementById('wethBalance').value = user.wethBalance || 0;
@@ -1187,6 +1193,7 @@ const token = localStorage.getItem('adminToken');
                  wethBalance: document.getElementById('wethBalance').value,
                   walletAddress: document.getElementById('walletAddress').value,
                 username: document.getElementById('editUserUsername').value,
+                 level: document.getElementById('accountLevel').value,
                 walletBalance: parseFloat(document.getElementById('editUserBalance').value) || 0,
                 verified: document.getElementById('editUserVerified').checked
             };

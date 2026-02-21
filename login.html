@@ -1021,6 +1021,8 @@ const token = localStorage.getItem('token');
         if (data.token) {
             localStorage.setItem('token', data.token); // 🔑 store token
         }
+
+        localStorage.setItem("userEmail",data.email)
 location.href="./dashboard.html"
         // 5️⃣ Show dashboard and load data
         // showDashboard();

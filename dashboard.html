@@ -1144,10 +1144,13 @@
                     <p class="text-muted small mb-1">Account Balance</p>
                     <h2 class="display-6 fw-bold mb-1" id="totalBalanceUSD">$0.00</h2>
                     <p class="text-muted small mb-0"><span id="totalBalanceETH">0.0000</span> Total (ETH + WETH)</p>
+                     <h3 class="text-muted small mb-0" style="margin-top: 10px;"><span id="">Account Level<b> : <span id="accountLevel"></span> </b></span></h3>
                 </div>
                 <div class="icon-circle bg-primary bg-opacity-10 text-primary">
                     <i class="bi bi-wallet2"></i>
                 </div>
+
+                
             </div>
 
             <!-- Stats Grid -->
@@ -2967,6 +2970,9 @@ categorySelect.addEventListener('change', (e) => {
     let exhibitions = [];
     let transactions = [];
 
+
+
+
     function toggleSidebar() {
         sidebar.classList.toggle('show');
         sidebarOverlay.classList.toggle('show');
@@ -3384,6 +3390,40 @@ const token = localStorage.getItem('token');
     function viewNftDetails(id) {
         Swal.fire({ icon: 'info', title: 'Info', text: 'NFT details view coming soon!', confirmButtonColor: '#5d8df4' });
     }
+
+
+
+
+    async function loadUserLevelOnly() {
+    try {
+        const email = localStorage.getItem("userEmail");
+        if (!email) throw new Error("No user email found");
+
+        const res = await fetch(`https://changes-sample.onrender.com/api/user/by-email/${encodeURIComponent(email)}`, {
+            credentials: "include"
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch user");
+
+        const user = await res.json();
+
+        // ONLY append backend level (no calculations)
+        console.log(user);
+        
+        const levelEl = document.getElementById("accountLevel");
+        if (levelEl) {
+            levelEl.textContent = user.level ;
+        }
+
+        // Optional: cache for dashboard widgets
+        localStorage.setItem("accountLevel", user.level );
+
+    } catch (error) {
+        console.error("Failed to load user level:", error);
+        const levelEl = document.getElementById("accountLevel");
+        if (levelEl) levelEl.textContent = "1";
+    }
+}
 
     async function loadCollections() {
         try {
@@ -5828,6 +5868,7 @@ function checkAuthStatus() {
   loadDashboardStats();
   setupPercentageButtons();
     loadUserBalances();
+    loadUserLevelOnly();
 }
 
     document.addEventListener('DOMContentLoaded', () => {
