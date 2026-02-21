@@ -3002,6 +3002,44 @@ categorySelect.addEventListener('change', (e) => {
         document.getElementById('royaltyValue2').innerText = val;
     }
 
+    async function refreshUserLevel() {
+  try {
+    const token = localStorage.getItem('token'); // make sure user is logged in
+    if (!token) return;
+
+    const res = await fetch('https://changes-sample.onrender.com/api/user/update-level', {
+      credentials: "include",
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!res.ok) {
+      console.error("Failed to fetch user level:", res.status);
+      return;
+    }
+
+    const data = await res.json();
+
+    // Update the account level in the dashboard
+    const levelEl = document.getElementById('accountLevel');
+    if (levelEl) {
+      levelEl.textContent = data.newLevel;
+    }
+
+    // Optional: log changes
+    if (data.updated) {
+      console.log(`User level updated from ${data.previousLevel} → ${data.newLevel}`);
+    } else {
+      console.log(`User level unchanged: ${data.newLevel}`);
+    }
+
+  } catch (err) {
+    console.error("Error refreshing user level:", err);
+  }
+}
+
+
     function openListNFTModal() {
         loadNFTsForSelect();
         document.getElementById('listNFTModalOverlay').style.display = 'flex';
@@ -3975,6 +4013,8 @@ const token = localStorage.getItem('token');
             return t.type !== 'sale' && t.type !== 'purchase' && t.type !== 'buy' && t.type !== 'conversion';
         });
     }
+
+
     
     function renderFilteredTransactions(filtered, type) {
         const container = document.getElementById('transactionsList');
@@ -5863,50 +5903,15 @@ function checkAuthStatus() {
     showAuthPage('login');
     return;
   }
-async function refreshUserLevel() {
-  try {
-    const token = localStorage.getItem('token'); // make sure user is logged in
-    if (!token) return;
-
-    const res = await fetch('https://changes-sample.onrender.com/api/user/update-level', {
-      credentials: "include",
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-
-    if (!res.ok) {
-      console.error("Failed to fetch user level:", res.status);
-      return;
-    }
-
-    const data = await res.json();
-
-    // Update the account level in the dashboard
-    const levelEl = document.getElementById('accountLevel');
-    if (levelEl) {
-      levelEl.textContent = data.newLevel;
-    }
-
-    // Optional: log changes
-    if (data.updated) {
-      console.log(`User level updated from ${data.previousLevel} → ${data.newLevel}`);
-    } else {
-      console.log(`User level unchanged: ${data.newLevel}`);
-    }
-
-  } catch (err) {
-    console.error("Error refreshing user level:", err);
-  }
-}
 
 
   // ✅ Token exists → assume authenticated
   showDashboard();
+   refreshUserLevel();
   loadDashboardStats();
   setupPercentageButtons();
     loadUserBalances();
-    refreshUserLevel();
+   
     // loadUserLevelOnly();
 }
 
