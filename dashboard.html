@@ -1760,7 +1760,7 @@
 
                 <div class="mb-3">
                     <label class="settings-label">Username</label>
-                    <input type="text" class="settings-input" id="settingsUsername" placeholder="Enter your username" data-testid="input-username">
+                    <input type="text" class="settings-input" readonly id="settingsUsername" placeholder="Enter your username" data-testid="input-username">
                     <p class="text-muted small mt-1">This will be your public profile URL: /user/<span id="usernamePreview">username</span></p>
                 </div>
 
@@ -5863,12 +5863,50 @@ function checkAuthStatus() {
     showAuthPage('login');
     return;
   }
+async function refreshUserLevel() {
+  try {
+    const token = localStorage.getItem('token'); // make sure user is logged in
+    if (!token) return;
+
+    const res = await fetch('https://changes-sample.onrender.com/api/user/update-level', {
+      credentials: "include",
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!res.ok) {
+      console.error("Failed to fetch user level:", res.status);
+      return;
+    }
+
+    const data = await res.json();
+
+    // Update the account level in the dashboard
+    const levelEl = document.getElementById('accountLevel');
+    if (levelEl) {
+      levelEl.textContent = data.newLevel;
+    }
+
+    // Optional: log changes
+    if (data.updated) {
+      console.log(`User level updated from ${data.previousLevel} → ${data.newLevel}`);
+    } else {
+      console.log(`User level unchanged: ${data.newLevel}`);
+    }
+
+  } catch (err) {
+    console.error("Error refreshing user level:", err);
+  }
+}
+
 
   // ✅ Token exists → assume authenticated
   showDashboard();
   loadDashboardStats();
   setupPercentageButtons();
     loadUserBalances();
+    refreshUserLevel();
     // loadUserLevelOnly();
 }
 
