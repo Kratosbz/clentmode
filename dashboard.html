@@ -3099,6 +3099,7 @@ const token = localStorage.getItem('token');
 
     document.getElementById('statTotalNfts').innerText = data.totalNfts || 0;
     document.getElementById('statListedNfts').innerText = data.listedNfts || 0;
+ document.getElementById('accountLevel').innerText = data.level || 0;
 
     if (document.getElementById('statTotalSales')) {
         document.getElementById('statTotalSales').innerText = data.totalSales || 0;
@@ -3394,36 +3395,36 @@ const token = localStorage.getItem('token');
 
 
 
-    async function loadUserLevelOnly() {
-    try {
-        const email = localStorage.getItem("userEmail");
-        if (!email) throw new Error("No user email found");
+//     async function loadUserLevelOnly() {
+//     try {
+//         const email = localStorage.getItem("userEmail");
+//         if (!email) throw new Error("No user email found");
 
-        const res = await fetch(`https://changes-sample.onrender.com/api/user/by-email/${encodeURIComponent(email)}`, {
-            credentials: "include"
-        });
+//         const res = await fetch(`https://changes-sample.onrender.com/api/user/by-email/${encodeURIComponent(email)}`, {
+//             credentials: "include"
+//         });
 
-        if (!res.ok) throw new Error("Failed to fetch user");
+//         if (!res.ok) throw new Error("Failed to fetch user");
 
-        const user = await res.json();
+//         const user = await res.json();
 
-        // ONLY append backend level (no calculations)
-        console.log(user);
+//         // ONLY append backend level (no calculations)
+//         console.log(user);
         
-        const levelEl = document.getElementById("accountLevel");
-        if (levelEl) {
-            levelEl.textContent = user.level ;
-        }
+//         const levelEl = document.getElementById("accountLevel");
+//         if (levelEl) {
+//             levelEl.textContent = user.level ;
+//         }
 
-        // Optional: cache for dashboard widgets
-        localStorage.setItem("accountLevel", user.level );
+//         // Optional: cache for dashboard widgets
+//         localStorage.setItem("accountLevel", user.level );
 
-    } catch (error) {
-        console.error("Failed to load user level:", error);
-        const levelEl = document.getElementById("accountLevel");
-        if (levelEl) levelEl.textContent = "1";
-    }
-}
+//     } catch (error) {
+//         console.error("Failed to load user level:", error);
+//         const levelEl = document.getElementById("accountLevel");
+//         if (levelEl) levelEl.textContent = "1";
+//     }
+// }
 
     async function loadCollections() {
         try {
@@ -5868,7 +5869,7 @@ function checkAuthStatus() {
   loadDashboardStats();
   setupPercentageButtons();
     loadUserBalances();
-    loadUserLevelOnly();
+    // loadUserLevelOnly();
 }
 
     document.addEventListener('DOMContentLoaded', () => {
