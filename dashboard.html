@@ -3030,6 +3030,7 @@ categorySelect.addEventListener('change', (e) => {
     // Optional: log changes
     if (data.updated) {
       console.log(`User level updated from ${data.previousLevel} → ${data.newLevel}`);
+       levelEl.textContent = data.newLevel;
     } else {
       console.log(`User level unchanged: ${data.newLevel}`);
     }
