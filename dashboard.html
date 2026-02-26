@@ -2842,7 +2842,7 @@ categorySelect.addEventListener('change', (e) => {
                     <div class="d-flex gap-2">
                       <div class="percentage-buttons">
   <button class="percent-btn disabled" type="button" disabled>50%</button>
-  <button class="percent-btn disabled" type="button">75%</button>
+  <button class="percent-btn2 disabled" type="button">75%</button>
   <button class="percent-btn" type="button">100%</button>
 </div>
 
@@ -2868,6 +2868,20 @@ categorySelect.addEventListener('change', (e) => {
   transition: all 0.25s ease;
   box-shadow: 0 4px 14px rgba(0,0,0,0.4);
 }
+.percent-btn2 {
+  padding: 12px 26px;
+  border-radius: 999px;
+  border: 1px solid #2a2a2a;
+  background: linear-gradient(145deg, #111, #1a1a1a);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+}
+
 
 .percent-btn:hover:not(:disabled) {
   transform: translateY(-2px);
@@ -2876,12 +2890,29 @@ categorySelect.addEventListener('change', (e) => {
   background: linear-gradient(145deg, #1a1a1a, #222);
 }
 
+
+.percent-btn2:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: #ffd700;
+  box-shadow: 0 6px 18px rgba(255, 215, 0, 0.25);
+  background: linear-gradient(145deg, #1a1a1a, #222);
+}
 .percent-btn:active:not(:disabled) {
   transform: scale(0.97);
 }
 
 .percent-btn.disabled,
 .percent-btn:disabled {
+  background: #0d0d0d;
+  color: #777;
+  border: 1px solid #222;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.percent-btn2.disabled,
+.percent-btn2:disabled {
   background: #0d0d0d;
   color: #777;
   border: 1px solid #222;
