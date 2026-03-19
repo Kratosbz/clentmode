@@ -1,749 +1,517 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Support & FAQ - Ethergalleries</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        :root {
-            --vx-primary: #22c55e;
-            --vx-primary-hover: #16a34a;
-            --vx-blue: #3b82f6;
-            --vx-dark: #1e293b;
-            --vx-text: #334155;
-            --vx-text-muted: #64748b;
-            --vx-border: #e2e8f0;
-            --vx-light: #f8fafc;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--vx-light);
-            color: var(--vx-text);
-            min-height: 100vh;
-        }
-        
-        /* Header */
-        .vx-header {
-            background: white;
-            border-bottom: 1px solid var(--vx-border);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .vx-header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .vx-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            color: var(--vx-dark);
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
-        
-        .vx-logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--vx-primary), var(--vx-blue));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-        
-        .vx-nav {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-        
-        .vx-nav a {
-            color: var(--vx-text);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-        
-        .vx-nav a:hover {
-            color: var(--vx-primary);
-        }
-        
-        /* Hero Section */
-        .vx-hero {
-            background: linear-gradient(135deg, var(--vx-dark) 0%, #0f172a 100%);
-            color: white;
-            padding: 4rem 2rem;
-            text-align: center;
-        }
-        
-        .vx-hero h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        
-        .vx-hero p {
-            font-size: 1.25rem;
-            opacity: 0.8;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        /* Main Content */
-        .vx-main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
-        }
-        
-        /* Contact Cards */
-        .vx-contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 4rem;
-        }
-        
-        .vx-contact-card {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            text-align: center;
-            border: 1px solid var(--vx-border);
-            transition: all 0.3s;
-        }
-        
-        .vx-contact-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-        
-        .vx-contact-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--vx-primary), var(--vx-blue));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            color: white;
-            font-size: 1.5rem;
-        }
-        
-        .vx-contact-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .vx-contact-card p {
-            color: var(--vx-text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-        
-        .vx-contact-link {
-            color: var(--vx-primary);
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .vx-contact-link:hover {
-            text-decoration: underline;
-        }
-        
-        /* FAQ Section */
-        .vx-section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .vx-faq-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .vx-faq-item {
-            background: white;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            border: 1px solid var(--vx-border);
-            overflow: hidden;
-        }
-        
-        .vx-faq-question {
-            padding: 1.25rem 1.5rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-        
-        .vx-faq-question:hover {
-            background: var(--vx-light);
-        }
-        
-        .vx-faq-question i {
-            transition: transform 0.3s;
-            color: var(--vx-text-muted);
-        }
-        
-        .vx-faq-item.active .vx-faq-question i {
-            transform: rotate(180deg);
-        }
-        
-        .vx-faq-answer {
-            padding: 0 1.5rem;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.3s;
-            color: var(--vx-text-muted);
-            line-height: 1.7;
-        }
-        
-        .vx-faq-item.active .vx-faq-answer {
-            padding: 0 1.5rem 1.5rem;
-            max-height: 500px;
-        }
-        
-        /* Categories */
-        .vx-faq-categories {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .vx-faq-category {
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
-            border: 1px solid var(--vx-border);
-            background: white;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-        
-        .vx-faq-category:hover,
-        .vx-faq-category.active {
-            background: var(--vx-primary);
-            color: white;
-            border-color: var(--vx-primary);
-        }
-        
-        /* Contact Form Section */
-        .vx-form-section {
-            background: white;
-            border-radius: 20px;
-            padding: 3rem;
-            margin-top: 4rem;
-            border: 1px solid var(--vx-border);
-        }
-        
-        .vx-form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-        
-        @media (max-width: 768px) {
-            .vx-form-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .vx-form-group {
-            margin-bottom: 1rem;
-        }
-        
-        .vx-form-group.full-width {
-            grid-column: 1 / -1;
-        }
-        
-        .vx-form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--vx-text);
-        }
-        
-        .vx-form-input,
-        .vx-form-select,
-        .vx-form-textarea {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            border: 1px solid var(--vx-border);
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        
-        .vx-form-input:focus,
-        .vx-form-select:focus,
-        .vx-form-textarea:focus {
-            outline: none;
-            border-color: var(--vx-primary);
-            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
-        }
-        
-        .vx-form-textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-        
-        .vx-submit-btn {
-            background: var(--vx-primary);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .vx-submit-btn:hover {
-            background: var(--vx-primary-hover);
-        }
-        
-        /* Footer */
-        .vx-footer {
-            background: var(--vx-dark);
-            color: white;
-            padding: 3rem 2rem;
-            margin-top: 4rem;
-        }
-        
-        .vx-footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .vx-footer-links {
-            display: flex;
-            gap: 2rem;
-        }
-        
-        .vx-footer-links a {
-            color: rgba(255,255,255,0.7);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        
-        .vx-footer-links a:hover {
-            color: white;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support & FAQ — Ethergalleries</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root {
+      --p:#22c55e; --pl:#4ade80; --pg:rgba(34,197,94,.18); --pgs:rgba(34,197,94,.09);
+      --blue:#3b82f6; --purple:#8b5cf6; --pink:#ec4899; --teal:#14b8a6; --amber:#f59e0b;
+      --bg:#08090d; --bg2:#0e1018; --bg3:#131720;
+      --s1:#191e2b; --s2:#1e2436; --s3:#242c42;
+      --b1:rgba(255,255,255,.06); --b2:rgba(255,255,255,.11); --b3:rgba(255,255,255,.18);
+      --tx:#eef2ff; --tx2:#8896b3; --tx3:#4a5568;
+      --ease:cubic-bezier(.4,0,.2,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;-webkit-font-smoothing:antialiased;}
+    a{color:inherit;text-decoration:none;}
+    img{display:block;max-width:100%;}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px 200px;}
+
+    /* ── HEADER ── */
+    .hdr{position:sticky;top:0;z-index:900;background:#fff;border-bottom:1px solid #e2e8f0;}
+    .hdr-in{max-width:1280px;margin:0 auto;padding:0 1.25rem;height:58px;display:flex;align-items:center;gap:1rem;}
+    .hdr-logo{flex-shrink:0;display:flex;align-items:center;}
+    .hdr-logo img{width:110px;height:36px;object-fit:contain;}
+    .hdr-srch{flex:1;max-width:460px;position:relative;}
+    .hdr-srch input{width:100%;padding:.55rem 2.75rem .55rem 2.4rem;border:1px solid #e2e8f0;border-radius:8px;font-size:.875rem;font-family:inherit;background:#f8fafc;color:#1e293b;transition:all .2s;outline:none;}
+    .hdr-srch input:focus{border-color:var(--p);background:#fff;box-shadow:0 0 0 3px rgba(34,197,94,.1);}
+    .hdr-srch input::placeholder{color:#94a3b8;}
+    .srch-ic{position:absolute;left:.825rem;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.875rem;pointer-events:none;}
+    .hdr-nav{display:flex;align-items:center;gap:.5rem;margin-left:auto;flex-shrink:0;}
+    .btn-ghost{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .875rem;border:none;background:transparent;color:#1e293b;font-family:inherit;font-size:.875rem;font-weight:500;cursor:pointer;text-decoration:none;transition:color .2s;white-space:nowrap;}
+    .btn-ghost:hover{color:#0f172a;}
+    .btn-primary-sm{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem 1.1rem;border-radius:8px;border:none;background:var(--p);color:#fff;font-family:inherit;font-size:.875rem;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap;transition:background .2s,transform .2s;}
+    .btn-primary-sm:hover{background:var(--pl);color:#fff;transform:translateY(-1px);}
+    @media(max-width:860px){.hdr-srch,.hdr-nav{display:none;}}
+
+    /* ── HERO ── */
+    .support-hero{
+      position:relative;overflow:hidden;
+      background:linear-gradient(145deg,#04060d 0%,#080e1f 50%,#0a1228 100%);
+      padding:5rem 2rem 4rem;text-align:center;
+    }
+    .support-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:52px 52px;}
+    .support-hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(34,197,94,.12) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 20% 80%,rgba(59,130,246,.08) 0%,transparent 55%);pointer-events:none;}
+    .hero-inner{position:relative;z-index:1;max-width:700px;margin:0 auto;}
+    .hero-pill{display:inline-flex;align-items:center;gap:.5rem;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.22);color:var(--p);font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.35rem 1.1rem;border-radius:50px;margin-bottom:1.5rem;animation:fadeUp .5s both;}
+    .hero-h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.03em;color:#fff;margin-bottom:1rem;line-height:1.05;animation:fadeUp .5s .08s both;}
+    .hero-h1 .grad{background:linear-gradient(135deg,var(--p),#a3f7c6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .hero-sub{font-size:1.05rem;color:var(--tx2);line-height:1.75;margin-bottom:2rem;animation:fadeUp .5s .15s both;}
+
+    /* Hero search */
+    .hero-search{
+      position:relative;max-width:520px;margin:0 auto 1.5rem;
+      animation:fadeUp .5s .22s both;
+    }
+    .hero-search input{
+      width:100%;padding:1rem 1.25rem 1rem 3rem;
+      background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+      border-radius:14px;color:var(--tx);font-family:inherit;font-size:.95rem;
+      outline:none;transition:all .2s;backdrop-filter:blur(8px);
+    }
+    .hero-search input:focus{background:rgba(255,255,255,.1);border-color:var(--p);box-shadow:0 0 0 3px rgba(34,197,94,.12);}
+    .hero-search input::placeholder{color:var(--tx3);}
+    .hero-srch-ic{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--tx3);font-size:1.05rem;pointer-events:none;}
+    .hero-srch-btn{
+      position:absolute;right:.5rem;top:50%;transform:translateY(-50%);
+      background:var(--p);color:#000;border:none;border-radius:9px;
+      padding:.55rem 1.25rem;font-size:.85rem;font-weight:700;font-family:inherit;cursor:pointer;
+      transition:background .2s;
+    }
+    .hero-srch-btn:hover{background:var(--pl);}
+
+    /* Quick links */
+    .quick-links{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;animation:fadeUp .5s .28s both;}
+    .quick-link{
+      display:inline-flex;align-items:center;gap:.4rem;
+      background:rgba(255,255,255,.05);border:1px solid var(--b2);
+      color:var(--tx2);font-size:.8rem;font-weight:500;
+      padding:.4rem 1rem;border-radius:50px;cursor:pointer;
+      transition:all .2s;
+    }
+    .quick-link:hover{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.25);color:var(--p);}
+
+    /* ── LAYOUT ── */
+    .wrap{max-width:1280px;margin:0 auto;padding:0 2rem;}
+    .sec{padding:5rem 0;}
+    .sec-alt{background:var(--bg2);border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);}
+    .sec-lbl{display:inline-flex;align-items:center;gap:.45rem;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--p);margin-bottom:.75rem;}
+    .sec-ttl{font-family:'Syne',sans-serif;font-size:clamp(1.75rem,3vw,2.4rem);font-weight:800;letter-spacing:-.025em;color:var(--tx);}
+    .sec-sub{color:var(--tx2);font-size:.975rem;line-height:1.7;max-width:520px;}
+    .sec-hd{text-align:center;margin-bottom:3rem;}
+    .sec-hd .sec-sub{margin:.6rem auto 0;}
+
+    /* ── CONTACT CARDS ── */
+    .contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1rem;}
+    @media(max-width:768px){.contact-grid{grid-template-columns:1fr;}}
+    .contact-card{
+      background:var(--s1);border:1px solid var(--b1);border-radius:20px;
+      padding:2rem 1.75rem;text-align:center;position:relative;overflow:hidden;
+      transition:all .3s var(--ease);cursor:pointer;
+    }
+    .contact-card::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:var(--card-orb,rgba(34,197,94,.06));pointer-events:none;}
+    .contact-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.5);border-color:var(--b2);}
+    .contact-ic{
+      width:56px;height:56px;border-radius:16px;margin:0 auto 1.25rem;
+      display:flex;align-items:center;justify-content:center;font-size:1.4rem;
+    }
+    .ic-green{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);color:var(--p);}
+    .ic-blue{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.2);color:#60a5fa;}
+    .ic-purple{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2);color:#a78bfa;}
+    .contact-card h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--tx);margin-bottom:.5rem;}
+    .contact-card p{font-size:.85rem;color:var(--tx2);line-height:1.6;margin-bottom:1.125rem;}
+    .contact-link{
+      display:inline-flex;align-items:center;gap:.4rem;
+      color:var(--p);font-size:.85rem;font-weight:600;
+      padding:.45rem 1.1rem;border-radius:50px;
+      background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.18);
+      transition:all .2s;
+    }
+    .contact-link.blue{color:#60a5fa;background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.18);}
+    .contact-link.purple{color:#a78bfa;background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.18);}
+    .contact-link:hover,.contact-link.blue:hover,.contact-link.purple:hover{transform:scale(1.04);}
+
+    /* ── FAQ CATEGORIES ── */
+    .faq-cats{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+    .faq-cat{
+      display:inline-flex;align-items:center;gap:.5rem;
+      padding:.5rem 1.25rem;border-radius:50px;
+      background:var(--s1);border:1px solid var(--b1);
+      color:var(--tx2);font-size:.85rem;font-weight:500;
+      cursor:pointer;transition:all .22s;
+    }
+    .faq-cat:hover{border-color:var(--p);color:var(--p);background:rgba(34,197,94,.08);}
+    .faq-cat.active{background:var(--p);border-color:var(--p);color:#000;font-weight:600;}
+    .faq-cat i{font-size:.9rem;}
+
+    /* ── FAQ ITEMS ── */
+    .faq-list{max-width:780px;margin:0 auto;}
+    .faq-item{
+      background:var(--s1);border:1px solid var(--b1);
+      border-radius:14px;margin-bottom:.75rem;overflow:hidden;
+      transition:border-color .2s;
+    }
+    .faq-item:hover{border-color:var(--b2);}
+    .faq-item.active{border-color:rgba(34,197,94,.25);}
+    .faq-q{
+      padding:1.25rem 1.5rem;cursor:pointer;
+      display:flex;justify-content:space-between;align-items:center;
+      gap:.875rem;transition:background .15s;
+    }
+    .faq-q:hover{background:rgba(255,255,255,.02);}
+    .faq-q-text{font-weight:600;font-size:.925rem;color:var(--tx);line-height:1.4;}
+    .faq-ic{
+      width:28px;height:28px;border-radius:8px;flex-shrink:0;
+      background:var(--s2);border:1px solid var(--b1);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--tx3);font-size:.85rem;transition:all .3s;
+    }
+    .faq-item.active .faq-ic{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.25);color:var(--p);transform:rotate(45deg);}
+    .faq-a{
+      padding:0 1.5rem;max-height:0;overflow:hidden;
+      transition:all .35s var(--ease);color:var(--tx2);font-size:.9rem;line-height:1.75;
+    }
+    .faq-item.active .faq-a{padding:0 1.5rem 1.5rem;max-height:600px;}
+    .faq-a-inner{padding-top:.25rem;border-top:1px solid var(--b1);}
+
+    /* ── STAT STRIP ── */
+    .stat-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--b1);border-radius:20px;overflow:hidden;background:var(--s1);}
+    @media(max-width:768px){.stat-strip{grid-template-columns:repeat(2,1fr);}}
+    .stat-item{padding:1.75rem 1.5rem;text-align:center;border-right:1px solid var(--b1);}
+    .stat-item:last-child{border-right:none;}
+    .stat-val{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--p);display:block;margin-bottom:.25rem;}
+    .stat-lbl{font-size:.75rem;color:var(--tx3);letter-spacing:.08em;text-transform:uppercase;}
+
+    /* ── FOOTER ── */
+    .footer{background:var(--bg2);border-top:1px solid var(--b1);padding:3rem 0 1.5rem;}
+    .ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2.5rem;margin-bottom:3rem;}
+    @media(max-width:768px){.ft-grid{grid-template-columns:1fr 1fr;gap:1.5rem;}}
+    .ft-brand img{height:32px;width:auto;margin-bottom:1rem;}
+    .ft-tag{color:var(--tx2);font-size:.875rem;line-height:1.7;max-width:240px;}
+    .ft-col h5{font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-bottom:1rem;}
+    .ft-links{list-style:none;display:flex;flex-direction:column;gap:.6rem;}
+    .ft-links li a{color:var(--tx2);font-size:.875rem;transition:color .2s;display:flex;align-items:center;gap:.4rem;}
+    .ft-links li a:hover{color:var(--p);}
+    .ft-bottom{padding-top:1.5rem;border-top:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+    .ft-copy{font-size:.8rem;color:var(--tx3);}
+    .ft-legal{display:flex;gap:1.25rem;}
+    .ft-legal a{font-size:.8rem;color:var(--tx3);transition:color .2s;}
+    .ft-legal a:hover{color:var(--tx2);}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="vx-header">
-        <div class="vx-header-content">
-            <a href="/index.html" class="vx-logo">
-                <div class="vx-logo-icon">
-                    
-                </div>
-               <img src="./logo.png" width="150" height="50" alt="">
-            </a>
-            <nav class="vx-nav">
-                <a href="./marketplace.html">Marketplace</a>
-                <!-- <a href="category.html">Explore</a>
-                <a href="support.html" class="text-primary">Support</a>
-                <a href="/dashboard.html">Dashboard</a> -->
-            </nav>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-in">
+    <a href="/index.html" class="hdr-logo">
+      <img src="./logo.png" width="150" height="50" alt="Ethergalleries" />
+    </a>
+    <div class="hdr-srch">
+      <i class="bi bi-search srch-ic"></i>
+      <input type="text" placeholder="Search collections, NFTs, creators..." />
+    </div>
+    <nav class="hdr-nav">
+      <a href="marketplace.html" class="btn-ghost"><i class="bi bi-shop"></i> Marketplace</a>
+      <a href="support.html" class="btn-ghost" style="color:var(--p);"><i class="bi bi-question-circle-fill"></i> Support</a>
+      <a href="/login.html" class="btn-ghost"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+      <a href="/signup.html" class="btn-primary-sm"><i class="bi bi-person-plus"></i> Sign Up</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="support-hero">
+  <div class="hero-inner">
+    <div class="hero-pill"><i class="bi bi-life-preserver"></i> Support Center</div>
+    <h1 class="hero-h1">How can we <span class="grad">help you?</span></h1>
+    <p class="hero-sub">Find answers instantly, browse our guides, or reach our team directly. We're here around the clock.</p>
+    <div class="hero-search">
+      <i class="bi bi-search hero-srch-ic"></i>
+      <input type="text" id="heroSearch" placeholder="Search for answers…" oninput="filterFAQ(this.value)" />
+      <button class="hero-srch-btn">Search</button>
+    </div>
+    <div class="quick-links">
+      <span class="quick-link" onclick="setCategory('getting-started')"><i class="bi bi-rocket-takeoff"></i> Getting Started</span>
+      <span class="quick-link" onclick="setCategory('buying')"><i class="bi bi-cart"></i> Buying</span>
+      <span class="quick-link" onclick="setCategory('selling')"><i class="bi bi-tag"></i> Selling</span>
+      <span class="quick-link" onclick="setCategory('wallet')"><i class="bi bi-wallet2"></i> Payments</span>
+      <span class="quick-link" onclick="setCategory('account')"><i class="bi bi-person"></i> Account</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT CARDS -->
+<section class="sec">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="contact-card" style="--card-orb:rgba(34,197,94,.06);">
+        <div class="contact-ic ic-green"><i class="bi bi-envelope"></i></div>
+        <h3>Email Support</h3>
+        <p>Get detailed help via email. Our team typically responds within 24 hours on business days.</p>
+        <a href="mailto:support@ethergalleries.com" class="contact-link">
+          <i class="bi bi-send"></i> Send email
+        </a>
+      </div>
+      <div class="contact-card" style="--card-orb:rgba(59,130,246,.06);">
+        <div class="contact-ic ic-blue"><i class="bi bi-chat-dots"></i></div>
+        <h3>Live Chat</h3>
+        <p>Chat with our support team in real-time. Available Monday–Friday, 9 AM–6 PM UTC.</p>
+        <a href="#" class="contact-link blue" onclick="openChat()">
+          <i class="bi bi-chat"></i> Start chat
+        </a>
+      </div>
+      <div class="contact-card" style="--card-orb:rgba(139,92,246,.06);">
+        <div class="contact-ic ic-purple"><i class="bi bi-twitter-x"></i></div>
+        <h3>Twitter / X</h3>
+        <p>Follow us for platform updates, announcements, and quick support via direct message.</p>
+        <a href="#" class="contact-link purple">
+          <i class="bi bi-box-arrow-up-right"></i> @Ethergalleries
+        </a>
+      </div>
+    </div>
+
+    <!-- Stat Strip -->
+    <div class="stat-strip">
+      <div class="stat-item"><span class="stat-val">&lt; 2h</span><div class="stat-lbl">Avg response</div></div>
+      <div class="stat-item"><span class="stat-val">98%</span><div class="stat-lbl">Satisfaction</div></div>
+      <div class="stat-item"><span class="stat-val">24/7</span><div class="stat-lbl">Email support</div></div>
+      <div class="stat-item"><span class="stat-val">50+</span><div class="stat-lbl">Help articles</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec sec-alt" id="faq">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="sec-lbl"><i class="bi bi-patch-question-fill"></i> Knowledge Base</div>
+      <h2 class="sec-ttl">Frequently Asked <span style="color:var(--blue)">Questions</span></h2>
+      <p class="sec-sub">Everything you need to know about buying, selling, and managing your NFTs on Ethergalleries.</p>
+    </div>
+
+    <div class="faq-cats">
+      <button class="faq-cat active" data-category="all" onclick="setCategory('all')"><i class="bi bi-grid-3x3-gap"></i> All Topics</button>
+      <button class="faq-cat" data-category="getting-started" onclick="setCategory('getting-started')"><i class="bi bi-rocket-takeoff"></i> Getting Started</button>
+      <button class="faq-cat" data-category="buying" onclick="setCategory('buying')"><i class="bi bi-cart"></i> Buying</button>
+      <button class="faq-cat" data-category="selling" onclick="setCategory('selling')"><i class="bi bi-tag"></i> Selling</button>
+      <button class="faq-cat" data-category="wallet" onclick="setCategory('wallet')"><i class="bi bi-wallet2"></i> Wallet & Payments</button>
+      <button class="faq-cat" data-category="account" onclick="setCategory('account')"><i class="bi bi-person"></i> Account</button>
+    </div>
+
+    <div class="faq-list" id="faqList">
+
+      <div class="faq-item" data-category="getting-started">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span class="faq-q-text">What is an NFT?</span>
+          <div class="faq-ic"><i class="bi bi-plus"></i></div>
         </div>
-    </header>
+        <div class="faq-a"><div class="faq-a-inner">An NFT (Non-Fungible Token) is a unique digital asset verified on the blockchain. Unlike cryptocurrencies such as ETH, each NFT is one-of-a-kind — it can represent art, music, video, collectibles, and more. Ownership is recorded on-chain, making it verifiable, transferable, and permanently attributed to its creator.</div></div>
+      </div>
 
-    <!-- Hero Section -->
-    <section class="vx-hero">
-        <h1>How can we help?</h1>
-        <p>Find answers to common questions or get in touch with our support team</p>
-    </section>
-
-    <!-- Main Content -->
-    <main class="vx-main">
-        <!-- Contact Options -->
-        <div class="vx-contact-grid">
-            <div class="vx-contact-card">
-                <div class="vx-contact-icon">
-                    <i class="bi bi-envelope"></i>
-                </div>
-                <h3>Email Support</h3>
-                <p>Get help via email. We typically respond within 24 hours.</p>
-                <a href="mailto:support@Ethergalleries.com" class="vx-contact-link">
-                    support@Ethergalleries.com <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
-            <div class="vx-contact-card">
-                <div class="vx-contact-icon">
-                    <i class="bi bi-chat-dots"></i>
-                </div>
-                <h3>Live Chat</h3>
-                <p>Chat with our support team in real-time during business hours.</p>
-                <a href="#contact-form" class="vx-contact-link">
-                    Start Chat <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
-            <!-- <div class="vx-contact-card">
-                <div class="vx-contact-icon">
-                    <i class="bi bi-discord"></i>
-                </div>
-                <h3>Discord Community</h3>
-                <p>Join our community for discussions and peer support.</p>
-                <a href="#" class="vx-contact-link">
-                    Join Discord <i class="bi bi-arrow-right"></i>
-                </a>
-            </div> -->
-            <div class="vx-contact-card">
-                <div class="vx-contact-icon">
-                    <i class="bi bi-twitter"></i>
-                </div>
-                <h3>Twitter</h3>
-                <p>Follow us for updates and quick support inquiries.</p>
-                <a href="#" class="vx-contact-link">
-                    @Ethergalleries <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
+      <div class="faq-item" data-category="getting-started">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span class="faq-q-text">How do I get started on Ethergalleries?</span>
+          <div class="faq-ic"><i class="bi bi-plus"></i></div>
         </div>
+        <div class="faq-a"><div class="faq-a-inner">Getting started is simple. Click Sign Up, fill in your details, and verify your email. Once in, you can browse the marketplace immediately. To buy or mint NFTs you'll need to deposit ETH into your account via the Dashboard — our team verifies deposits within 24 hours and credits your balance.</div></div>
+      </div>
 
-        <!-- FAQ Section -->
-        <h2 class="vx-section-title">Frequently Asked Questions</h2>
-        
-        <div class="vx-faq-categories">
-            <button class="vx-faq-category active" data-category="all" data-testid="button-faq-all">All</button>
-            <button class="vx-faq-category" data-category="getting-started" data-testid="button-faq-started">Getting Started</button>
-            <button class="vx-faq-category" data-category="buying" data-testid="button-faq-buying">Buying</button>
-            <button class="vx-faq-category" data-category="selling" data-testid="button-faq-selling">Selling</button>
-            <button class="vx-faq-category" data-category="wallet" data-testid="button-faq-wallet">Wallet & Payments</button>
-            <button class="vx-faq-category" data-category="account" data-testid="button-faq-account">Account</button>
+      <div class="faq-item" data-category="getting-started">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span class="faq-q-text">What file formats are supported?</span>
+          <div class="faq-ic"><i class="bi bi-plus"></i></div>
         </div>
+        <div class="faq-a"><div class="faq-a-inner">Ethergalleries supports JPG, PNG, GIF, SVG for images; MP4 and WEBM for video; and MP3 and WAV for audio. Maximum file size is 50 MB across all types. High-resolution images are recommended for the best presentation in marketplace listings.</div></div>
+      </div>
 
-        <div class="vx-faq-container">
-            <!-- Getting Started -->
-            <div class="vx-faq-item" data-category="getting-started">
-                <div class="vx-faq-question" data-testid="faq-what-is-nft">
-                    <span>What is an NFT?</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="vx-faq-answer">
-                    NFT stands for Non-Fungible Token. It's a unique digital asset that represents ownership of items like art, music, videos, and more on the blockchain. Unlike cryptocurrencies, each NFT is one-of-a-kind and cannot be exchanged on a one-to-one basis with another NFT.
-                </div>
-            </div>
-
-            <div class="vx-faq-item" data-category="getting-started">
-                <div class="vx-faq-question" data-testid="faq-how-to-start">
-                    <span>How do I get started on Ethergalleries?</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="vx-faq-answer">
-                    Getting started is easy! First, create an account by clicking "Sign Up" and verifying your email. Once logged in, you can browse the marketplace, create collections, mint NFTs, and participate in auctions. We recommend depositing some ETH to your account balance to start buying or minting NFTs.
-                </div>
-            </div>
-
-            <div class="vx-faq-item" data-category="getting-started">
-                <div class="vx-faq-question" data-testid="faq-supported-formats">
-                    <span>What file formats are supported for NFTs?</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="vx-faq-answer">
-                    Ethergalleries supports a variety of file formats including JPG, PNG, GIF, SVG for images, MP4 and WEBM for videos, and MP3 and WAV for audio. The maximum file size is 50MB for images and 50MB for video and audio files.
-                </div>
-            </div>
-
-            <!-- Buying -->
-            <div class="vx-faq-item" data-category="buying">
-                <div class="vx-faq-question" data-testid="faq-how-to-buy">
-                    <span>How do I buy an NFT?</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="vx-faq-answer">
-                    To buy an NFT, first make sure you have sufficient balance in your account. Browse the marketplace, find an NFT you like, and click "Buy Now" for fixed-price listings or place a bid for auction items. The NFT will be transferred to your collection once the purchase is complete.
-                </div>
-            </div>
-
-            <div class="vx-faq-item" data-category="buying">
-                <div class="vx-faq-question" data-testid="faq-auction-work">
-                    <span>How do auctions work?</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="vx-faq-answer">
-                    Auctions allow you to bid on NFTs within a specified time period. Each bid must be higher than the previous bid by the minimum increment set by the seller. When the auction ends, the highest bidder wins the NFT. If you're outbid, your funds will be returned to your account balance.
-                </div>
-            </div>
-
-            <!-- Selling -->
-            <div class="vx-faq-item" data-category="selling">
-                <div class="vx-faq-question" data-testid="faq-how-to-sell">
-                    <span>How do I list my NFT for sale?</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="vx-faq-answer">
-                    To list an NFT for sale, go to your Dashboard, navigate to "My NFTs" or "Sales" section, and click "List for Sale" on an unlisted NFT. Set your price and confirm. Listing is free - the minting fee was already paid when you created the NFT.
-                </div>
-            </div>
-
-            <div class="vx-faq-item" data-category="selling">
-                <div class="vx-faq-question" data-testid="faq-listing-fee">
-                    <span>What is the minting fee?</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="vx-faq-answer">
-                    Ethergalleries charges a minting fee of 0.4 ETH when you create (mint) a new NFT. This fee helps maintain the platform and covers blockchain transaction costs. The fee is deducted from your ETH balance at the time of minting. Listing your minted NFTs for sale is free.
-                </div>
-            </div>
-
-            <div class="vx-faq-item" data-category="selling">
-                <div class="vx-faq-question" data-testid="faq-royalties">
-                    <span>How do royalties work?</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="vx-faq-answer">
-                    Creators can set royalties when minting NFTs. Each time the NFT is resold on the marketplace, the original creator receives a percentage of the sale price as a royalty payment. This allows artists to benefit from the continued appreciation of their work.
-                </div>
-            </div>
-
-            <!-- Wallet & Payments -->
-            <div class="vx-faq-item" data-category="wallet">
-                <div class="vx-faq-question" data-testid="faq-deposit">
-                    <span>How do I deposit funds?</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="vx-faq-answer">
-                    To deposit funds, go to your Dashboard and click the "Deposit" button. You'll see our platform wallet address and a QR code. Send ETH to this address and enter the transaction details in the deposit form. An admin will verify your deposit and credit your account within 24 hours.
-                </div>
-            </div>
-
-            <div class="vx-faq-item" data-category="wallet">
-                <div class="vx-faq-question" data-testid="faq-withdraw">
-                    <span>How do I withdraw funds?</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="vx-faq-answer">
-                    To withdraw, click the "Withdraw" button in your Dashboard. Enter your wallet address and the amount you wish to withdraw. Withdrawal requests are processed within 1-3 business days after admin approval. 
-                </div>
-            </div>
-
-            <div class="vx-faq-item" data-category="wallet">
-                <div class="vx-faq-question" data-testid="faq-currencies">
-                    <span>What currencies are supported?</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="vx-faq-answer">
-                    Ethergalleries primarily supports ETH (Ethereum) and WETH (Wrapped Ethereum) for transactions. All account balances are displayed in ETH. We're working on adding support for additional cryptocurrencies in the future.
-                </div>
-            </div>
-
-            <!-- Account -->
-            <div class="vx-faq-item" data-category="account">
-                <div class="vx-faq-question" data-testid="faq-verify-email">
-                    <span>How do I verify my email?</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="vx-faq-answer">
-                    After registering, you'll receive a verification email with a 6-digit code. Enter this code on the verification page to activate your account. If you didn't receive the email, check your spam folder or request a new verification code from the login page.
-                </div>
-            </div>
-
-            <div class="vx-faq-item" data-category="account">
-                <div class="vx-faq-question" data-testid="faq-reset-password">
-                    <span>I forgot my password. How do I reset it?</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="vx-faq-answer">
-                    Click "Forgot Password" on the login page and enter your registered email address. You'll receive a password reset link. Follow the link to create a new password. For security reasons, the link expires after 1 hour.
-                </div>
-            </div>
-
-            <div class="vx-faq-item" data-category="account">
-                <div class="vx-faq-question" data-testid="faq-security">
-                    <span>How secure is my account?</span>
-                    <i class="bi bi-chevron-down"></i>
-                </div>
-                <div class="vx-faq-answer">
-                    We take security seriously. All passwords are encrypted using industry-standard bcrypt hashing. We recommend using a strong, unique password and enabling email notifications for important account activities. Never share your login credentials with anyone.
-                </div>
-            </div>
+      <div class="faq-item" data-category="buying">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span class="faq-q-text">How do I buy an NFT?</span>
+          <div class="faq-ic"><i class="bi bi-plus"></i></div>
         </div>
+        <div class="faq-a"><div class="faq-a-inner">Make sure you have sufficient ETH balance in your account. Browse the marketplace, find an NFT you want, and click Buy Now for fixed-price listings. For auctions, place a bid higher than the current one. Once a purchase completes the NFT transfers to your collection immediately.</div></div>
+      </div>
 
-        <!-- Contact Form -->
-        <!-- <div class="vx-form-section" id="contact-form">
-            <h2 class="vx-section-title">Still need help? Contact Us</h2>
-            <form id="supportForm" onsubmit="submitSupportForm(event)">
-                <div class="vx-form-grid">
-                    <div class="vx-form-group">
-                        <label class="vx-form-label">Your Name</label>
-                        <input type="text" class="vx-form-input" name="name" required data-testid="input-support-name">
-                    </div>
-                    <div class="vx-form-group">
-                        <label class="vx-form-label">Email Address</label>
-                        <input type="email" class="vx-form-input" name="email" required data-testid="input-support-email">
-                    </div>
-                    <div class="vx-form-group">
-                        <label class="vx-form-label">Subject</label>
-                        <select class="vx-form-select" name="subject" required data-testid="select-support-subject">
-                            <option value="">Select a topic</option>
-                            <option value="account">Account Issues</option>
-                            <option value="buying">Buying Help</option>
-                            <option value="selling">Selling Help</option>
-                            <option value="payment">Payment Issues</option>
-                            <option value="technical">Technical Support</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div class="vx-form-group">
-                        <label class="vx-form-label">Order/Transaction ID (optional)</label>
-                        <input type="text" class="vx-form-input" name="orderId" data-testid="input-support-orderid">
-                    </div>
-                    <div class="vx-form-group full-width">
-                        <label class="vx-form-label">Message</label>
-                        <textarea class="vx-form-textarea" name="message" required placeholder="Describe your issue in detail..." data-testid="textarea-support-message"></textarea>
-                    </div>
-                    <div class="vx-form-group full-width">
-                        <button type="submit" class="vx-submit-btn" data-testid="button-support-submit">
-                            <i class="bi bi-send"></i> Send Message
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div> -->
-    </main>
-
-    <!-- Footer -->
-    <footer class="vx-footer">
-        <div class="vx-footer-content">
-            <div>
-                <span>&copy; 2024 Ethergalleries. All rights reserved.</span>
-            </div>
-            <div class="vx-footer-links">
-                <a href="#">Terms of Service</a>
-                <a href="#">Privacy Policy</a>
-                <a href="support.html">Support</a>
-            </div>
+      <div class="faq-item" data-category="buying">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span class="faq-q-text">How do auctions work?</span>
+          <div class="faq-ic"><i class="bi bi-plus"></i></div>
         </div>
-    </footer>
+        <div class="faq-a"><div class="faq-a-inner">Auctions run for a set time window determined by the seller. Each bid must exceed the previous one by the minimum increment specified. When the auction closes, the highest bidder wins and the NFT is transferred. If you're outbid before the end, your funds are automatically returned to your balance.</div></div>
+      </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        // FAQ Toggle
-        document.querySelectorAll('.vx-faq-question').forEach(question => {
-            question.addEventListener('click', () => {
-                const item = question.parentElement;
-                item.classList.toggle('active');
-            });
-        });
+      <div class="faq-item" data-category="selling">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span class="faq-q-text">How do I list my NFT for sale?</span>
+          <div class="faq-ic"><i class="bi bi-plus"></i></div>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Go to your Dashboard, navigate to My NFTs, and click List for Sale on any unlisted artwork. Set your price and confirm. Listing is completely free — only the initial minting fee applies when creating the NFT. You can delist or change the price at any time before a sale occurs.</div></div>
+      </div>
 
-        // FAQ Category Filter
-        document.querySelectorAll('.vx-faq-category').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.vx-faq-category').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                const category = btn.dataset.category;
-                document.querySelectorAll('.vx-faq-item').forEach(item => {
-                    if (category === 'all' || item.dataset.category === category) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-        });
+      <div class="faq-item" data-category="selling">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span class="faq-q-text">What is the minting fee?</span>
+          <div class="faq-ic"><i class="bi bi-plus"></i></div>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Ethergalleries charges a one-time minting fee of 0.4 ETH when you create a new NFT. This fee covers platform maintenance and gas costs. It is deducted from your ETH balance at the moment of minting. There are no additional fees for listing or re-listing your minted NFTs.</div></div>
+      </div>
 
-        // Submit Support Form
-        async function submitSupportForm(e) {
-            e.preventDefault();
-            const form = e.target;
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
+      <div class="faq-item" data-category="selling">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span class="faq-q-text">How do creator royalties work?</span>
+          <div class="faq-ic"><i class="bi bi-plus"></i></div>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">When minting, creators can set a royalty percentage. Every time their NFT is resold on the platform, the original creator automatically receives that percentage of the sale price. This allows artists to benefit continuously from the appreciation of their work long after the initial sale.</div></div>
+      </div>
 
-            try {
-const token = localStorage.getItem('token'); 
-    if (!token) throw new Error('No token found');
+      <div class="faq-item" data-category="wallet">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span class="faq-q-text">How do I deposit funds?</span>
+          <div class="faq-ic"><i class="bi bi-plus"></i></div>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">From your Dashboard click Deposit. You'll see our platform wallet address and a QR code. Send ETH to that address from your own wallet, then fill in the transaction details in the deposit form. An admin reviews and credits your balance within 24 hours. Always double-check the wallet address before sending.</div></div>
+      </div>
 
-                const res = await fetch('https://changes-sample.onrender.com/api/support', {
-                    method: 'POST',
-                     headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // ✅ Send JWT
-     },
-                    body: JSON.stringify(data)
-                });
+      <div class="faq-item" data-category="wallet">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span class="faq-q-text">How do I withdraw funds?</span>
+          <div class="faq-ic"><i class="bi bi-plus"></i></div>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Click Withdraw in your Dashboard. Enter your ETH wallet address and the amount you wish to withdraw. Withdrawal requests are processed within 1–3 business days after admin approval. Make sure your wallet address is correct — transactions on the blockchain are irreversible.</div></div>
+      </div>
 
-                if (res.ok) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Message Sent!',
-                        text: 'We\'ve received your message and will get back to you within 24 hours.',
-                        confirmButtonColor: '#22c55e'
-                    });
-                    form.reset();
-                } else {
-                    const errorData = await res.json();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: errorData.message || 'Failed to send your message. Please try again.',
-                        confirmButtonColor: '#22c55e'
-                    });
-                }
-            } catch (err) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Connection Error',
-                    text: 'Unable to connect to the server. Please check your internet connection and try again.',
-                    confirmButtonColor: '#22c55e'
-                });
-            }
-        }
-    </script>
-<!-- Smartsupp Live Chat script -->
+      <div class="faq-item" data-category="wallet">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span class="faq-q-text">What currencies are supported?</span>
+          <div class="faq-ic"><i class="bi bi-plus"></i></div>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Ethergalleries primarily supports ETH (Ethereum). All account balances, prices, and transactions are denominated in ETH. WETH (Wrapped Ethereum) is also accepted in some contexts. Support for additional currencies is planned for future platform updates.</div></div>
+      </div>
+
+      <div class="faq-item" data-category="account">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span class="faq-q-text">How do I verify my email?</span>
+          <div class="faq-ic"><i class="bi bi-plus"></i></div>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">After registering, you'll receive a 6-digit verification code by email. Enter it on the verification page to activate your account. If the email doesn't arrive within a few minutes, check your spam folder or request a new code from the login page.</div></div>
+      </div>
+
+      <div class="faq-item" data-category="account">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span class="faq-q-text">I forgot my password — how do I reset it?</span>
+          <div class="faq-ic"><i class="bi bi-plus"></i></div>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Click Forgot Password on the login page and enter your registered email. You'll receive a reset link valid for 1 hour. Follow it to set a new password. If you don't receive the email, check spam, or contact support@ethergalleries.com.</div></div>
+      </div>
+
+      <div class="faq-item" data-category="account">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          <span class="faq-q-text">How secure is my account?</span>
+          <div class="faq-ic"><i class="bi bi-plus"></i></div>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">All passwords are encrypted using industry-standard bcrypt hashing — your raw password is never stored. We recommend a strong, unique password and to use email notifications for account activity alerts. Never share your login credentials or JWT tokens with anyone, including support staff.</div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="ft-grid">
+      <div>
+        <div class="ft-brand"><img src="./logo.png" alt="Ethergalleries" /></div>
+        <p class="ft-tag">The premier marketplace for rare digital art, NFTs, and on-chain collectibles.</p>
+      </div>
+      <div class="ft-col">
+        <h5>Explore</h5>
+        <ul class="ft-links">
+          <li><a href="/index.html"><i class="bi bi-compass"></i> Marketplace</a></li>
+          <li><a href="category.html"><i class="bi bi-grid"></i> Categories</a></li>
+          <li><a href="allcollections.html"><i class="bi bi-collection"></i> Collections</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h5>Account</h5>
+        <ul class="ft-links">
+          <li><a href="/login.html"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
+          <li><a href="/signup.html"><i class="bi bi-person-plus"></i> Sign Up</a></li>
+          <li><a href="support.html"><i class="bi bi-lifepreserver"></i> Support</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h5>Legal</h5>
+        <ul class="ft-links">
+          <li><a href="#"><i class="bi bi-file-text"></i> Terms of Service</a></li>
+          <li><a href="#"><i class="bi bi-shield"></i> Privacy Policy</a></li>
+          <li><a href="#"><i class="bi bi-cookie"></i> Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <p class="ft-copy">© 2024 Ethergalleries. All rights reserved.</p>
+      <div class="ft-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* FAQ Toggle */
+function toggleFAQ(btn) {
+  const item = btn.closest('.faq-item');
+  const wasActive = item.classList.contains('active');
+  document.querySelectorAll('.faq-item.active').forEach(i => i.classList.remove('active'));
+  if (!wasActive) item.classList.add('active');
+}
+
+/* Category filter */
+function setCategory(cat) {
+  document.querySelectorAll('.faq-cat').forEach(b => {
+    b.classList.toggle('active', b.dataset.category === cat);
+  });
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.style.display = (cat === 'all' || item.dataset.category === cat) ? 'block' : 'none';
+  });
+  document.getElementById('faq').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* Search filter */
+function filterFAQ(q) {
+  const term = q.toLowerCase().trim();
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const text = item.textContent.toLowerCase();
+    item.style.display = (!term || text.includes(term)) ? 'block' : 'none';
+  });
+  if (term) {
+    document.querySelectorAll('.faq-cat').forEach(b => b.classList.remove('active'));
+  }
+}
+
+function openChat() {
+  if (window.smartsupp) {
+    smartsupp('chat:open');
+  } else {
+    Swal.fire({ icon: 'info', title: 'Live Chat', text: 'Live chat is handled by our Smartsupp widget. Click the chat bubble in the bottom-right corner.', confirmButtonColor: '#22c55e', background: '#0e1018', color: '#eef2ff' });
+  }
+}
+</script>
+
+<!-- Smartsupp Live Chat -->
 <script type="text/javascript">
 var _smartsupp = _smartsupp || {};
 _smartsupp.key = '22fedf8eb82b9e0a64db380756000ffa3577c808';
-window.smartsupp||(function(d) {
-  var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+window.smartsupp||(function(d){
+  var s,c,o=smartsupp=function(){o._.push(arguments)};o._=[];
   s=d.getElementsByTagName('script')[0];c=d.createElement('script');
   c.type='text/javascript';c.charset='utf-8';c.async=true;
-  c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+  c.src='https://www.smartsuppchat.com/loader.js?';
+  s.parentNode.insertBefore(c,s);
 })(document);
 </script>
-<noscript> Powered by <a href=“https://www.smartsupp.com” target=“_blank”>Smartsupp</a></noscript>
 </body>
 </html>
