@@ -1,2356 +1,1825 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ethergalleries - Discover Rare Digital Art</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        :root {
-            --vx-primary: #22c55e;
-            --vx-primary-hover: #16a34a;
-            --vx-blue: #3b82f6;
-            --vx-dark: #1a1a2e;
-            --vx-light: #f8fafc;
-            --vx-card-bg: #ffffff;
-            --vx-border: #e2e8f0;
-            --vx-text: #1e293b;
-            --vx-text-muted: #64748b;
-        }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #ffffff;
-            color: var(--vx-text);
-        }
-        
-        /* Header */
-        .vx-header {
-            background: #ffffff;
-            border-bottom: 1px solid var(--vx-border);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        
-        .vx-header-inner {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 2rem;
-        }
-        
-        .vx-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--vx-text);
-        }
-        
-        .vx-logo-icon {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .vx-logo-icon svg {
-            width: 28px;
-            height: 28px;
-        }
-        
-        .vx-search-container {
-            flex: 1;
-            max-width: 500px;
-            position: relative;
-        }
-        
-        .vx-search-input {
-            width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.75rem;
-            border: 1px solid var(--vx-border);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            background: #f8fafc;
-            transition: all 0.2s;
-        }
-        
-        .vx-search-input:focus {
-            outline: none;
-            border-color: var(--vx-blue);
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-        
-        .vx-search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--vx-text-muted);
-        }
-        
-        .vx-search-shortcut {
-            position: absolute;
-            right: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #fff;
-            border: 1px solid var(--vx-border);
-            border-radius: 4px;
-            padding: 0.15rem 0.4rem;
-            font-size: 0.75rem;
-            color: var(--vx-text-muted);
-            font-family: monospace;
-        }
-        
-        .vx-search-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-            margin-top: 0.5rem;
-            max-height: 400px;
-            overflow-y: auto;
-            display: none;
-            z-index: 1001;
-        }
-        
-        .vx-search-dropdown.show { display: block; }
-        
-        .vx-search-result {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.75rem 1rem;
-            cursor: pointer;
-            transition: background 0.2s;
-            text-decoration: none;
-            color: inherit;
-        }
-        
-        .vx-search-result:hover { background: var(--vx-light); }
-        
-        .vx-search-result img {
-            width: 50px;
-            height: 50px;
-            border-radius: 8px;
-            object-fit: cover;
-        }
-        
-        .vx-search-result-info h6 {
-            margin: 0;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        
-        .vx-search-result-info small {
-            color: var(--vx-text-muted);
-        }
-        
-        .vx-search-section-label {
-            padding: 0.5rem 1rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--vx-text-muted);
-            text-transform: uppercase;
-            background: var(--vx-light);
-            border-bottom: 1px solid var(--vx-border);
-        }
-        
-        .vx-search-result.artist-result {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), transparent);
-        }
-        
-        .vx-search-result.artist-result:hover {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), var(--vx-light));
-        }
-        
-        .vx-artist-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--vx-blue), var(--vx-primary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 1.25rem;
-        }
-        
-        .vx-header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .vx-btn-login {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: transparent;
-            border: none;
-            color: var(--vx-text);
-            font-weight: 500;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        
-        .vx-btn-login:hover { color: var(--vx-text); }
-        
-        .vx-btn-signup {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1.25rem;
-            background: var(--vx-primary);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-        
-        .vx-btn-signup:hover {
-            background: var(--vx-primary-hover);
-            color: white;
-        }
-        
-        /* Hero Section */
-        .vx-hero {
-            position: relative;
-            height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            overflow: hidden;
-        }
-        
-        .vx-hero-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-            z-index: 0;
-        }
-        
-        .vx-hero-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=1600&auto=format&fit=crop') center/cover;
-            opacity: 0.4;
-        }
-        
-        .vx-hero-bg::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
-        }
-        
-        .vx-hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 700px;
-            padding: 0 1.5rem;
-        }
-        
-        .vx-hero h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-        
-        .vx-hero p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-        
-        .vx-hero-btns {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .vx-btn-outline {
-            padding: 0.875rem 1.75rem;
-            background: white;
-            border: none;
-            border-radius: 8px;
-            color: var(--vx-text);
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        
-        .vx-btn-outline:hover {
-            background: #f1f5f9;
-            color: var(--vx-text);
-        }
-        
-        .vx-btn-green {
-            padding: 0.875rem 1.75rem;
-            background: var(--vx-primary);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        
-        .vx-btn-green:hover {
-            background: var(--vx-primary-hover);
-            color: white;
-        }
-        
-        /* Section Styles */
-        .vx-section {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 4rem 1.5rem;
-        }
-        
-        .vx-section-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .vx-section-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--vx-primary);
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.75rem;
-        }
-        
-        .vx-section-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--vx-text);
-        }
-        
-        .vx-section-title span {
-            color: var(--vx-blue);
-        }
-        
-        .vx-section-subtitle {
-            color: var(--vx-text-muted);
-            font-size: 1.1rem;
-            margin-top: 0.75rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        /* Categories Grid */
-        .vx-categories-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        @media (max-width: 992px) {
-            .vx-categories-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        
-        @media (max-width: 576px) {
-            .vx-categories-grid { grid-template-columns: 1fr; }
-        }
-        
-        .vx-category-card {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.25rem;
-            background: #ffffff;
-            border: 1px solid var(--vx-border);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            color: inherit;
-        }
-        
-        .vx-category-card:hover {
-            border-color: var(--vx-blue);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            transform: translateY(-2px);
-        }
-        
-        .vx-category-card.active {
-            border-color: var(--vx-blue);
-            background: #f0f9ff;
-        }
-        
-        .vx-category-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-        
-        .vx-category-icon.blue { background: #dbeafe; color: #3b82f6; }
-        .vx-category-icon.pink { background: #fce7f3; color: #ec4899; }
-        .vx-category-icon.teal { background: #ccfbf1; color: #14b8a6; }
-        .vx-category-icon.red { background: #fee2e2; color: #ef4444; }
-        .vx-category-icon.orange { background: #ffedd5; color: #f97316; }
-        .vx-category-icon.purple { background: #f3e8ff; color: #a855f7; }
-        
-        .vx-category-info h6 {
-            font-weight: 600;
-            margin: 0 0 0.25rem;
-            font-size: 1rem;
-        }
-        
-        .vx-category-info small {
-            color: var(--vx-text-muted);
-            font-size: 0.85rem;
-        }
-        
-        .vx-pagination-dots {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 1.5rem;
-        }
-        
-        .vx-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #cbd5e1;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .vx-dot.active {
-            background: var(--vx-blue);
-            width: 24px;
-            border-radius: 4px;
-        }
-        
-        /* Collections Grid */
-        .vx-collections-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-        }
-        
-        @media (max-width: 992px) {
-            .vx-collections-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        
-        @media (max-width: 576px) {
-            .vx-collections-grid { grid-template-columns: 1fr; }
-        }
-        
-        .vx-collection-card {
-            background: #ffffff;
-            border: 1px solid var(--vx-border);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.2s;
-        }
-        
-        .vx-collection-card:hover {
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-            transform: translateY(-4px);
-        }
-        
-        .vx-collection-images {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 4px;
-            height: 200px;
-        }
-        
-        .vx-collection-main-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .vx-collection-side-imgs {
-            display: grid;
-            grid-template-rows: 1fr 1fr;
-            gap: 4px;
-        }
-        
-        .vx-collection-side-imgs img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .vx-collection-content {
-            padding: 1.25rem;
-        }
-        
-        .vx-collection-content h5 {
-            font-weight: 600;
-            margin: 0 0 0.5rem;
-        }
-        
-        .vx-collection-meta {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            color: var(--vx-text-muted);
-            font-size: 0.875rem;
-        }
-        
-        /* NFT Grid */
-        .vx-nft-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-        
-        .vx-nft-card {
-            background: white;
-            border: 1px solid var(--vx-border);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        
-        .vx-nft-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.08);
-        }
-        
-        .vx-nft-image-container {
-            position: relative;
-            padding-top: 100%;
-            overflow: hidden;
-        }
-        
-        .vx-nft-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s;
-        }
-        
-        .vx-nft-card:hover .vx-nft-image {
-            transform: scale(1.05);
-        }
-        
-        .vx-nft-like {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: rgba(255,255,255,0.95);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            z-index: 10;
-            font-size: 1rem;
-        }
-        
-        .vx-nft-like:hover { transform: scale(1.1); }
-        .vx-nft-like.liked { background: #ef4444; color: white; }
-        
-        .vx-likes-count {
-            font-size: 0.65rem;
-            font-weight: 600;
-            margin-top: 1px;
-        }
-        
-        .vx-nft-badge {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            background: var(--vx-primary);
-            color: white;
-            padding: 0.35rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .vx-nft-content {
-            padding: 1.25rem;
-        }
-        
-        .vx-nft-title {
-            font-weight: 600;
-            font-size: 1rem;
-            margin-bottom: 0.25rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .vx-nft-creator {
-            font-size: 0.85rem;
-            color: var(--vx-text-muted);
-            margin-bottom: 1rem;
-        }
-        
-        .vx-nft-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 1rem;
-            border-top: 1px solid var(--vx-border);
-        }
-        
-        .vx-nft-price {
-            font-weight: 700;
-            color: var(--vx-text);
-        }
-        
-        .vx-nft-price small {
-            font-weight: 400;
-            color: var(--vx-text-muted);
-            display: block;
-            font-size: 0.75rem;
-        }
-        
-        .vx-buy-btn {
-            background: var(--vx-blue);
-            color: white;
-            border: none;
-            padding: 0.5rem 1.25rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .vx-buy-btn:hover {
-            background: #2563eb;
-        }
-        
-        /* Filter Bar */
-        .vx-filter-bar {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background: #f8fafc;
-            border-radius: 12px;
-        }
-        
-        .vx-filter-select {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--vx-border);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            background: white;
-        }
-        
-        .vx-tabs {
-            display: flex;
-            gap: 0.25rem;
-            margin-bottom: 2rem;
-            background: #f1f5f9;
-            padding: 0.25rem;
-            border-radius: 10px;
-            width: fit-content;
-        }
-        
-        .vx-tab {
-            padding: 0.625rem 1.25rem;
-            border: none;
-            background: transparent;
-            font-weight: 500;
-            color: var(--vx-text-muted);
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-        
-        .vx-tab.active {
-            background: white;
-            color: var(--vx-text);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        /* Auctions */
-        .vx-auction-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 16px;
-            padding: 1.5rem;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .vx-auction-timer {
-            background: rgba(0,0,0,0.2);
-            padding: 0.75rem 1rem;
-            border-radius: 10px;
-            display: inline-flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .vx-timer-item { text-align: center; }
-        
-        .vx-timer-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            display: block;
-        }
-        
-        .vx-timer-label {
-            font-size: 0.7rem;
-            opacity: 0.8;
-            text-transform: uppercase;
-        }
-        
-        /* Exhibitions */
-        .vx-exhibition-card {
-            background: white;
-            border: 1px solid var(--vx-border);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-        
-        .vx-exhibition-image {
-            height: 200px;
-            object-fit: cover;
-            width: 100%;
-        }
-        
-        .vx-exhibition-content {
-            padding: 1.5rem;
-        }
-        
-        /* Footer */
-        .vx-footer {
-            background: var(--vx-dark);
-            color: white;
-            padding: 3rem 0;
-            margin-top: 4rem;
-        }
-        
-        .vx-footer a {
-            color: rgba(255,255,255,0.7);
-            text-decoration: none;
-            margin-right: 1.5rem;
-        }
-        
-        .vx-footer a:hover { color: white; }
-        
-        /* Modal */
-        .vx-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.6);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: 1rem;
-        }
-        
-        .vx-modal {
-            background: white;
-            border-radius: 20px;
-            max-width: 900px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .vx-modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--vx-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .vx-modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--vx-text-muted);
-        }
-        
-        .vx-modal-body { padding: 1.5rem; }
-        
-        .vx-artwork-detail {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-        
-        @media (max-width: 768px) {
-            .vx-artwork-detail { grid-template-columns: 1fr; }
-            .vx-hero h1 { font-size: 2rem; }
-            .vx-section-title { font-size: 1.75rem; }
-            .vx-header-inner { flex-wrap: wrap; }
-            .vx-search-container { order: 3; flex: 0 0 100%; margin-top: 1rem; max-width: 100%; }
-        }
-        
-        .vx-artwork-image {
-            width: 100%;
-            border-radius: 12px;
-            object-fit: cover;
-        }
-        
-        .vx-artwork-info h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        
-        .vx-creator-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--vx-light);
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            margin-bottom: 1rem;
-        }
-        
-        .vx-creator-avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: var(--vx-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 0.8rem;
-        }
-        
-        .vx-price-box {
-            background: var(--vx-light);
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin: 1.5rem 0;
-        }
-        
-        .vx-price-label {
-            font-size: 0.85rem;
-            color: var(--vx-text-muted);
-            margin-bottom: 0.25rem;
-        }
-        
-        .vx-price-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--vx-text);
-        }
-        
-        .vx-action-btns {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        .vx-action-btn {
-            flex: 1;
-            padding: 1rem;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .vx-action-btn.primary {
-            background: var(--vx-blue);
-            color: white;
-        }
-        
-        .vx-action-btn.primary:hover { background: #2563eb; }
-        
-        .vx-share-link {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-        
-        .vx-share-link input {
-            flex: 1;
-            padding: 0.75rem;
-            border: 1px solid var(--vx-border);
-            border-radius: 8px;
-            font-size: 0.85rem;
-        }
-        
-        .vx-empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--vx-text-muted);
-        }
-        
-        .vx-empty-state i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.3;
-        }
-        
-        .vx-btn-all-categories {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            background: white;
-            border: 1px solid var(--vx-border);
-            border-radius: 8px;
-            color: var(--vx-text);
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-        
-        .vx-btn-all-categories:hover {
-            border-color: var(--vx-blue);
-            color: var(--vx-blue);
-        }
-        
-        /* Carousel Styles */
-        .vx-carousel-container {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-            margin: 2rem 0;
-            padding: 0 3rem;
-        }
-        
-        .vx-carousel-track {
-            display: flex;
-            gap: 1rem;
-            transition: transform 0.5s ease-in-out;
-            will-change: transform;
-        }
-        
-        .vx-carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: white;
-            border: 1px solid var(--vx-border);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .vx-carousel-btn:hover {
-            background: var(--vx-primary);
-            color: white;
-            border-color: var(--vx-primary);
-        }
-        
-        .vx-carousel-prev { left: 0; }
-        .vx-carousel-next { right: 0; }
-        
-        .vx-carousel-card {
-            flex: 0 0 220px;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--vx-border);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        
-        .vx-carousel-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-        }
-        
-        .vx-carousel-card-img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-        }
-        
-        .vx-carousel-card-body {
-            padding: 1rem;
-        }
-        
-        .vx-carousel-card-title {
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 0.25rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .vx-carousel-card-artist {
-            font-size: 0.8rem;
-            color: var(--vx-text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .vx-carousel-card-price {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--vx-primary);
-            margin-top: 0.5rem;
-        }
-        
-        .vx-carousel-card-category {
-            position: absolute;
-            top: 0.5rem;
-            left: 0.5rem;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 500;
-        }
-        
-        .vx-carousel-loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 3rem;
-            color: var(--vx-text-muted);
-            gap: 0.5rem;
-        }
-        
-        @media (max-width: 768px) {
-            .vx-carousel-container { padding: 0 2.5rem; }
-            .vx-carousel-card { flex: 0 0 180px; }
-            .vx-carousel-card-img { height: 140px; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ethergalleries — Discover Rare Digital Art</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root {
+      --p:#22c55e; --pl:#4ade80; --pg:rgba(34,197,94,.18); --pgs:rgba(34,197,94,.09);
+      --blue:#3b82f6; --purple:#8b5cf6; --pink:#ec4899; --teal:#14b8a6; --amber:#f59e0b;
+      --bg:#08090d; --bg2:#0e1018; --bg3:#131720;
+      --s1:#191e2b; --s2:#1e2436; --s3:#242c42;
+      --b1:rgba(255,255,255,.06); --b2:rgba(255,255,255,.11); --b3:rgba(255,255,255,.18);
+      --tx:#eef2ff; --tx2:#8896b3; --tx3:#4a5568;
+      --ease:cubic-bezier(.4,0,.2,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;-webkit-font-smoothing:antialiased;}
+    ::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:var(--bg2);} ::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px;}
+    img,video{display:block;max-width:100%;} a{color:inherit;text-decoration:none;}
+
+    /* noise */
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size:200px 200px;}
+
+    /* ── HEADER ── */
+    .hdr{
+      position:sticky;top:0;z-index:900;
+      background:#ffffff;
+      border-bottom:1px solid #e2e8f0;
+      padding:1rem 0;
+    }
+    .hdr-in{
+      max-width:1280px;margin:0 auto;
+      padding:0 1.5rem;
+      display:flex;align-items:center;justify-content:space-between;gap:2rem;
+    }
+    .hdr-logo{flex-shrink:0;display:flex;align-items:center;text-decoration:none;}
+    .hdr-logo img{width:150px;height:50px;object-fit:contain;}
+
+    /* search */
+    .hdr-srch{flex:1;max-width:500px;position:relative;}
+    .hdr-srch input{
+      width:100%;padding:.75rem 3.5rem .75rem 2.75rem;
+      border:1px solid #e2e8f0;border-radius:8px;
+      font-size:.95rem;font-family:inherit;
+      background:#f8fafc;color:#1e293b;
+      transition:all .2s;
+    }
+    .hdr-srch input::placeholder{color:#94a3b8;}
+    .hdr-srch input:focus{
+      outline:none;border-color:var(--blue);
+      background:#fff;box-shadow:0 0 0 3px rgba(59,130,246,.1);
+    }
+    .srch-ic{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.95rem;pointer-events:none;}
+    .srch-kbd{
+      position:absolute;right:.75rem;top:50%;transform:translateY(-50%);
+      background:#fff;border:1px solid #e2e8f0;border-radius:4px;
+      padding:.15rem .4rem;font-size:.75rem;color:#94a3b8;font-family:monospace;
+    }
+
+    /* search dropdown — keep dark for polish */
+    .srch-drop{position:absolute;top:calc(100% + .5rem);left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.15);max-height:420px;overflow-y:auto;display:none;z-index:999;}
+    .srch-drop.show{display:block;}
+    .srch-lbl{padding:.45rem 1rem;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;background:#f8fafc;border-bottom:1px solid #e2e8f0;}
+    .srch-item{display:flex;align-items:center;gap:.875rem;padding:.7rem 1rem;cursor:pointer;transition:background .15s;color:#1e293b;}
+    .srch-item:hover{background:#f8fafc;}
+    .srch-item img{width:46px;height:46px;border-radius:8px;object-fit:cover;border:1px solid #e2e8f0;}
+    .srch-item h6{margin:0;font-weight:600;font-size:.9rem;color:#1e293b;}
+    .srch-item small{color:#64748b;font-size:.8rem;}
+    .srch-av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--p));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0;}
+
+    /* nav actions */
+    .hdr-nav{display:flex;align-items:center;gap:1rem;}
+    .btn-ghost{
+      display:inline-flex;align-items:center;gap:.5rem;
+      padding:.5rem 1rem;border:none;background:transparent;
+      color:#1e293b;font-family:inherit;font-size:.95rem;font-weight:500;
+      cursor:pointer;text-decoration:none;transition:color .2s;
+    }
+    .btn-ghost:hover{color:#0f172a;}
+    .btn-primary-sm{
+      display:inline-flex;align-items:center;gap:.5rem;
+      padding:.5rem 1.25rem;border-radius:8px;border:none;
+      background:var(--p);color:#fff;
+      font-family:inherit;font-size:.95rem;font-weight:500;
+      cursor:pointer;text-decoration:none;
+      transition:background .2s,transform .2s,box-shadow .2s;
+    }
+    .btn-primary-sm:hover{background:var(--pl);color:#fff;transform:translateY(-1px);box-shadow:0 6px 20px var(--pg);}
+
+    @media(max-width:768px){
+      .hdr-in{flex-wrap:wrap;}
+      .hdr-srch{order:3;flex:0 0 100%;max-width:100%;margin-top:.5rem;}
+    }
+
+    /* ── HERO ── */
+    .hero{
+      position:relative;overflow:hidden;
+      min-height:600px;
+      display:flex;align-items:stretch;
+    }
+    .hero-bg{position:absolute;inset:0;z-index:0;background:linear-gradient(145deg,#04060d 0%,#080e1f 45%,#0a1228 100%);}
+    .hero-bg::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=1600&auto=format&fit=crop') center/cover;opacity:.08;}
+    .hero-bg::after{content:'';position:absolute;inset:0;
+      background:
+        radial-gradient(ellipse 60% 80% at 0% 50%,rgba(34,197,94,.13) 0%,transparent 60%),
+        radial-gradient(ellipse 50% 60% at 100% 30%,rgba(59,130,246,.1) 0%,transparent 60%),
+        radial-gradient(ellipse 40% 40% at 50% 100%,rgba(139,92,246,.07) 0%,transparent 60%);}
+    .hero-grid{position:absolute;inset:0;z-index:0;
+      background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+      background-size:52px 52px;}
+    .hero-orb{position:absolute;z-index:0;border-radius:50%;filter:blur(70px);animation:floatOrb 8s ease-in-out infinite;}
+    .orb1{width:340px;height:340px;top:-100px;left:-80px;background:rgba(34,197,94,.08);}
+    .orb2{width:280px;height:280px;bottom:-80px;right:48%;background:rgba(59,130,246,.09);animation-delay:-4s;}
+    @keyframes floatOrb{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-18px) scale(1.03);}}
+
+    /* ── HERO INNER LAYOUT ── */
+    .hero-inner{
+      position:relative;z-index:1;
+      max-width:1380px;width:100%;margin:0 auto;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      min-height:600px;
+    }
+    @media(max-width:900px){
+      .hero-inner{grid-template-columns:1fr;padding:0 1.5rem;}
+      .hero-art-col{display:none !important;}
+    }
+    @media(max-width:768px){
+      .hero-art-col{display:none !important;}
+    }
+
+    /* ── HERO COPY (LEFT) ── */
+    .hero-copy{padding:5rem 3rem 5rem 2rem;text-align:left;display:flex;flex-direction:column;justify-content:center;}
+    @media(max-width:900px){.hero-copy{padding:4rem 0 3rem;}}
+    .hero-pill{display:inline-flex;align-items:center;gap:.5rem;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.22);color:var(--p);font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.35rem 1.1rem;border-radius:50px;margin-bottom:1.75rem;}
+    .hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.6rem,4.5vw,4.5rem);font-weight:800;line-height:1.04;letter-spacing:-.03em;color:#fff;margin-bottom:1.25rem;}
+    .hero h1 .grad{background:linear-gradient(135deg,var(--p) 0%,#a3f7c6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .hero p{font-size:1.05rem;color:var(--tx2);line-height:1.75;max-width:480px;margin:0 0 2rem;}
+    .hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;}
+
+    .btn-hp{display:inline-flex;align-items:center;gap:.5rem;padding:.9rem 2rem;border-radius:10px;background:var(--p);color:#000;font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;border:none;text-decoration:none;transition:background .25s,transform .25s,box-shadow .25s;}
+    .btn-hp:hover{background:var(--pl);color:#000;transform:translateY(-2px);box-shadow:0 12px 32px var(--pg);}
+    .btn-hg{display:inline-flex;align-items:center;gap:.5rem;padding:.9rem 2rem;border-radius:10px;background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.14);font-family:inherit;font-size:.95rem;font-weight:600;cursor:pointer;text-decoration:none;backdrop-filter:blur(8px);transition:background .25s,border-color .25s,transform .25s;}
+    .btn-hg:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.26);color:#fff;transform:translateY(-1px);}
+
+    /* ── HERO ART PANEL (RIGHT) — padded, frameless, blends into bg ── */
+    .hero-art-col{
+      position:relative;
+      overflow:hidden;
+      /* top/bottom breathing room + right margin away from viewport edge */
+      padding:3rem 2.5rem 3rem 0;
+      display:flex;
+      align-items:center;
+    }
+
+    /* inner container that actually clips the image */
+    .hap-inner{
+      position:relative;
+      width:100%;
+      height:100%;
+      min-height:360px;
+      border-radius:24px;
+      overflow:hidden;
+      /* frameless: no border, shadow or outline */
+    }
+
+    /* Each artwork layer — absolutely stacked, crossfade in/out */
+    .hap-slide{
+      position:absolute;inset:0;
+      opacity:0;
+      transition:opacity 2.2s ease-in-out;
+      z-index:0;
+    }
+    .hap-slide.active{
+      opacity:1;
+      z-index:1;
+    }
+    .hap-slide img,.hap-slide video{
+      width:100%;height:100%;
+      object-fit:cover;display:block;
+      animation:kenBurns 14s ease-in-out infinite alternate;
+    }
+    @keyframes kenBurns{
+      from{transform:scale(1)   translate(0,0);}
+      to  {transform:scale(1.09) translate(-1.5%,-1%);}
+    }
+
+    /* Vignette fades on all 4 sides — frameless blending */
+    .hap-inner::before{
+      content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
+      background:
+        /* left bleed into bg — heaviest */
+        linear-gradient(90deg, var(--bg) 0%, rgba(8,9,13,.72) 22%, transparent 55%),
+        /* top fade */
+        linear-gradient(180deg, rgba(8,9,13,.55) 0%, transparent 30%),
+        /* bottom fade */
+        linear-gradient(0deg,   rgba(8,9,13,.65) 0%, transparent 35%),
+        /* right edge soft fade */
+        linear-gradient(270deg, rgba(8,9,13,.4) 0%, transparent 25%);
+    }
+
+    /* Info tag floating bottom-right */
+    .hap-info{
+      position:absolute;bottom:1.75rem;right:1.5rem;
+      z-index:5;
+      background:rgba(0,0,0,.52);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      padding:.875rem 1.1rem;
+      max-width:210px;
+      opacity:0;
+      transform:translateY(10px);
+      transition:opacity .6s .4s ease, transform .6s .4s ease;
+    }
+    .hap-slide.active .hap-info{
+      opacity:1;
+      transform:translateY(0);
+    }
+    .hap-info-cat{
+      font-size:.6rem;font-weight:700;letter-spacing:.1em;
+      text-transform:uppercase;color:var(--p);margin-bottom:.3rem;
+    }
+    .hap-info-name{
+      font-family:'Syne',sans-serif;font-size:.925rem;font-weight:800;
+      color:#fff;line-height:1.25;margin-bottom:.25rem;
+    }
+    .hap-info-row{
+      display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:.5rem;
+    }
+    .hap-info-artist{font-size:.72rem;color:rgba(255,255,255,.5);}
+    .hap-info-price{
+      font-family:'Space Mono',monospace;font-size:.75rem;font-weight:700;
+      color:var(--p);white-space:nowrap;
+    }
+
+    /* Thin progress bar at very bottom of inner panel */
+    .hap-progress{
+      position:absolute;bottom:0;left:0;right:0;height:2px;z-index:6;
+      background:rgba(255,255,255,.06);
+    }
+    .hap-bar{
+      height:100%;
+      background:linear-gradient(90deg,var(--p),var(--blue));
+      width:0%;
+      transition:none;
+    }
+    .hap-bar.running{
+      transition:width var(--hap-dur,7s) linear;
+      width:100%;
+    }
+
+    /* ── CATEGORY CAROUSEL — rich full-bleed cards (same design language as fd-card) ── */
+    .cc-card{
+      flex:0 0 260px;
+      height:340px;
+      position:relative;
+      border-radius:20px;
+      overflow:hidden;
+      cursor:pointer;
+      border:none;                      /* frameless */
+      transition:transform .35s var(--ease), box-shadow .35s var(--ease);
+      flex-shrink:0;
+    }
+    .cc-card:hover{
+      transform:translateY(-8px) scale(1.015);
+      box-shadow:0 28px 64px rgba(0,0,0,.7);
+    }
+    .cc-card img{
+      width:100%;height:100%;object-fit:cover;display:block;
+      transition:transform .6s var(--ease);
+    }
+    .cc-card:hover img{transform:scale(1.08);}
+
+    /* gradient overlay */
+    .cc-card::before{
+      content:'';position:absolute;inset:0;z-index:1;
+      background:linear-gradient(180deg,
+        transparent 0%,
+        rgba(6,8,16,.15) 35%,
+        rgba(6,8,16,.8) 70%,
+        rgba(6,8,16,.97) 100%
+      );
+    }
+
+    /* colour accent glow at top — unique per category */
+    .cc-card::after{
+      content:'';position:absolute;inset:0;z-index:1;
+      opacity:.45;
+      background:var(--cc-accent,transparent);
+      mix-blend-mode:color;
+      transition:opacity .3s;
+      pointer-events:none;
+    }
+    .cc-card:hover::after{opacity:.25;}
+
+    /* category icon pill top-left */
+    .cc-icon{
+      position:absolute;top:1rem;left:1rem;z-index:3;
+      width:40px;height:40px;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.15rem;
+      background:rgba(0,0,0,.55);backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;
+    }
+
+    /* item count top-right */
+    .cc-count{
+      position:absolute;top:1rem;right:1rem;z-index:3;
+      background:rgba(0,0,0,.55);backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,.1);
+      color:var(--tx2);font-size:.65rem;font-weight:700;
+      padding:.28rem .7rem;border-radius:50px;
+      letter-spacing:.04em;
+    }
+
+    /* bottom info */
+    .cc-info{
+      position:absolute;bottom:0;left:0;right:0;z-index:3;
+      padding:1rem 1.1rem 1.25rem;
+    }
+    .cc-cat-label{
+      font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+      color:var(--cc-color,var(--p));margin-bottom:.35rem;
+    }
+    .cc-name{
+      font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;
+      color:#fff;margin-bottom:.2rem;line-height:1.2;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+    .cc-artist{font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:.75rem;}
+    .cc-footer{
+      display:flex;align-items:center;justify-content:space-between;
+      padding-top:.625rem;border-top:1px solid rgba(255,255,255,.08);
+    }
+    .cc-price{font-family:'Space Mono',monospace;font-size:.85rem;font-weight:700;color:var(--cc-color,var(--p));}
+    .cc-explore{
+      display:inline-flex;align-items:center;gap:.3rem;
+      background:rgba(255,255,255,.1);backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,.15);color:#fff;
+      padding:.38rem .875rem;border-radius:50px;
+      font-size:.72rem;font-weight:600;cursor:pointer;font-family:inherit;
+      transition:background .2s,transform .2s;
+      text-decoration:none;
+    }
+    .cc-explore:hover{background:var(--cc-color,var(--p));color:#000;border-color:var(--cc-color,var(--p));transform:scale(1.04);}
+
+    @media(max-width:768px){
+      .cc-card{flex:0 0 210px;height:280px;}
+    }
+
+    /* ── FEATURED DROP CARDS — rich full-bleed ── */
+    .fd-card{
+      flex:0 0 300px;
+      height:380px;
+      position:relative;
+      border-radius:20px;
+      overflow:hidden;
+      cursor:pointer;
+      border:1px solid var(--b1);
+      transition:transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s;
+      flex-shrink:0;
+    }
+    .fd-card:hover{
+      transform:translateY(-8px) scale(1.015);
+      box-shadow:0 28px 64px rgba(0,0,0,.7);
+      border-color:var(--b3);
+    }
+
+    .fd-card img,.fd-card video{
+      width:100%;height:100%;object-fit:cover;display:block;
+      transition:transform .6s var(--ease);
+    }
+    .fd-card:hover img,.fd-card:hover video{transform:scale(1.07);}
+
+    /* full-height gradient */
+    .fd-card::before{
+      content:'';position:absolute;inset:0;z-index:1;
+      background:
+        linear-gradient(180deg,
+          transparent 0%,
+          rgba(6,8,16,.2) 40%,
+          rgba(6,8,16,.85) 75%,
+          rgba(6,8,16,.97) 100%
+        );
+    }
+
+    /* top-left: category badge */
+    .fd-cat{
+      position:absolute;top:1rem;left:1rem;z-index:3;
+      background:rgba(0,0,0,.6);backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,.1);
+      color:#fff;font-size:.62rem;font-weight:700;
+      letter-spacing:.08em;text-transform:uppercase;
+      padding:.28rem .75rem;border-radius:50px;
+    }
+
+    /* top-right: status badge (For Sale / Auction) */
+    .fd-status{
+      position:absolute;top:1rem;right:1rem;z-index:3;
+      font-size:.62rem;font-weight:800;letter-spacing:.06em;
+      text-transform:uppercase;padding:.28rem .75rem;border-radius:50px;
+    }
+    .fd-status.sale{background:var(--p);color:#000;}
+    .fd-status.auc{background:var(--purple);color:#fff;}
+
+    /* bottom info block */
+    .fd-info{
+      position:absolute;bottom:0;left:0;right:0;z-index:3;
+      padding:1rem 1.25rem 1.375rem;
+    }
+
+    /* artist row */
+    .fd-artist-row{
+      display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;
+    }
+    .fd-av{
+      width:26px;height:26px;border-radius:50%;
+      background:linear-gradient(135deg,var(--blue),var(--p));
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-weight:700;font-size:.68rem;flex-shrink:0;
+      border:1.5px solid rgba(255,255,255,.2);
+    }
+    .fd-artist-name{font-size:.75rem;color:rgba(255,255,255,.6);}
+
+    .fd-name{
+      font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;
+      color:#fff;line-height:1.25;margin-bottom:.75rem;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+
+    .fd-footer{
+      display:flex;align-items:center;justify-content:space-between;
+      padding-top:.75rem;border-top:1px solid rgba(255,255,255,.1);
+    }
+    .fd-price-lbl{font-size:.62rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.15rem;}
+    .fd-price-val{font-family:'Space Mono',monospace;font-size:.92rem;font-weight:700;color:var(--p);}
+
+    .fd-btn{
+      display:inline-flex;align-items:center;gap:.35rem;
+      background:rgba(255,255,255,.12);backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,.18);color:#fff;
+      padding:.45rem 1rem;border-radius:50px;
+      font-size:.75rem;font-weight:600;cursor:pointer;font-family:inherit;
+      transition:background .2s,transform .2s;
+      text-decoration:none;
+    }
+    .fd-btn:hover{background:var(--p);color:#000;border-color:var(--p);transform:scale(1.04);}
+
+    /* likes chip */
+    .fd-likes{
+      display:flex;align-items:center;gap:.3rem;
+      font-size:.75rem;color:rgba(255,255,255,.5);
+    }
+
+    @media(max-width:768px){
+      .fd-card{flex:0 0 240px;height:320px;}
+    }
+
+    /* ── LAYOUT ── */
+    .wrap{max-width:1380px;margin:0 auto;padding:0 2rem;}
+    .sec{padding:5rem 0;}
+    .sec-alt{background:var(--bg2);border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);}
+    .sec-lbl{display:inline-flex;align-items:center;gap:.45rem;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--p);margin-bottom:.75rem;}
+    .sec-ttl{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800;letter-spacing:-.025em;color:var(--tx);}
+    .sec-ttl .acc{color:var(--blue);}
+    .sec-ttl .gr{background:linear-gradient(90deg,var(--p),var(--pl));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .sec-sub{color:var(--tx2);font-size:.975rem;line-height:1.7;max-width:560px;}
+    .sec-hd{text-align:center;margin-bottom:3.25rem;} .sec-hd .sec-sub{margin:.75rem auto 0;}
+    .divider{border:none;border-top:1px solid var(--b1);margin:0;}
+
+    /* ── CATEGORIES ── */
+    .cat-row{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:2rem;}
+    .cat-chip{display:inline-flex;align-items:center;gap:.6rem;padding:.6rem 1.1rem;border-radius:50px;background:var(--s1);border:1px solid var(--b1);cursor:pointer;transition:all .22s var(--ease);text-decoration:none;color:var(--tx2);}
+    .cat-chip:hover,.cat-chip.active{border-color:var(--p);color:var(--p);background:rgba(34,197,94,.08);box-shadow:0 4px 16px var(--pgs);}
+    .cat-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+    .ci-b{background:rgba(59,130,246,.15);color:#60a5fa;} .ci-pk{background:rgba(236,72,153,.15);color:#f472b6;}
+    .ci-tl{background:rgba(20,184,166,.15);color:#2dd4bf;} .ci-r{background:rgba(239,68,68,.15);color:#f87171;}
+    .ci-pu{background:rgba(139,92,246,.15);color:#a78bfa;} .ci-am{background:rgba(245,158,11,.15);color:#fbbf24;}
+    .cat-chip h6{margin:0;font-weight:600;font-size:.875rem;white-space:nowrap;}
+
+    /* ── CAROUSEL (FIXED) ── */
+    .car-outer{
+      position:relative;
+      /* fade edges */
+      -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 3rem,#000 calc(100% - 3rem),transparent 100%);
+      mask-image:linear-gradient(90deg,transparent 0,#000 3rem,#000 calc(100% - 3rem),transparent 100%);
+    }
+    .car-wrap{
+      overflow:hidden;
+      margin:2.25rem 0;
+      padding:0;
+    }
+    .car-track{
+      display:flex;
+      gap:1.125rem;
+      transition:transform .52s var(--ease);
+      will-change:transform;
+      padding:.5rem 3rem;    /* horizontal padding so first/last cards show fully */
+    }
+    .car-btn{
+      position:absolute;top:50%;transform:translateY(-50%);
+      width:40px;height:40px;border-radius:50%;
+      background:var(--s2);border:1px solid var(--b2);
+      color:var(--tx2);cursor:pointer;z-index:10;
+      display:flex;align-items:center;justify-content:center;
+      transition:all .2s var(--ease);font-size:.875rem;
+    }
+    .car-btn:hover{background:var(--p);color:#000;border-color:var(--p);}
+    .car-prev{left:.25rem;} .car-next{right:.25rem;}
+    .c-card{
+      flex:0 0 240px;           /* wider cards */
+      background:var(--s1);border:1px solid var(--b1);
+      border-radius:16px;overflow:hidden;
+      cursor:pointer;transition:all .3s var(--ease);position:relative;
+    }
+    .c-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(0,0,0,.45);border-color:var(--b2);}
+    .c-img{width:100%;height:160px;object-fit:cover;}
+    .c-body{padding:.9rem;}
+    .c-ttl{font-weight:600;font-size:.875rem;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.2rem;}
+    .c-art{font-size:.775rem;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .c-pr{font-size:.825rem;font-weight:700;color:var(--p);margin-top:.4rem;}
+    .c-cat-tag{
+      position:absolute;top:.6rem;left:.6rem;
+      background:rgba(0,0,0,.65);backdrop-filter:blur(6px);
+      color:#fff;padding:.2rem .5rem;border-radius:5px;
+      font-size:.65rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+    }
+    .car-empty{padding:3rem;color:var(--tx2);display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;}
+    @media(max-width:768px){
+      .c-card{flex:0 0 190px;}
+      .c-img{height:130px;}
+      .car-track{padding:.5rem 2.5rem;}
+    }
+
+    /* ── COLLECTIONS ── */
+    .coll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+    @media(max-width:992px){.coll-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:576px){.coll-grid{grid-template-columns:1fr;}}
+    .coll-card{background:var(--s1);border:1px solid var(--b1);border-radius:22px;overflow:hidden;cursor:pointer;transition:all .3s var(--ease);position:relative;}
+    .coll-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.5);border-color:var(--b2);}
+    .coll-mosaic{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;height:210px;gap:3px;}
+    .coll-mosaic img{width:100%;height:100%;object-fit:cover;display:block;}
+    .coll-mosaic img:first-child{grid-row:1/3;}
+    .coll-body{padding:1.25rem 1.375rem;}
+    .coll-cr{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;}
+    .coll-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--p));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.72rem;flex-shrink:0;}
+    .coll-cr span{font-size:.8rem;color:var(--tx2);}
+    .coll-nm{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--tx);margin-bottom:.5rem;}
+    .coll-meta{display:flex;gap:1.5rem;}
+    .coll-st label{display:block;font-size:.68rem;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.15rem;}
+    .coll-st span{font-size:.9rem;font-weight:700;color:var(--tx);font-family:'Space Mono',monospace;}
+    .coll-st .up{color:var(--p);}
+    .coll-badge{position:absolute;top:1rem;right:1rem;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border:1px solid var(--b2);color:var(--tx);font-size:.7rem;font-weight:600;padding:.3rem .75rem;border-radius:50px;}
+
+    /* ── MARKETPLACE ── */
+    .mkt-hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.75rem;}
+    .tabs{display:flex;gap:.25rem;background:var(--s1);border:1px solid var(--b1);padding:.28rem;border-radius:10px;}
+    .tab{padding:.55rem 1.2rem;border:none;background:transparent;color:var(--tx2);font-family:inherit;font-size:.875rem;font-weight:500;cursor:pointer;border-radius:7px;transition:all .2s;}
+    .tab.active{background:var(--s2);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.4);}
+    .filters{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;padding:.875rem 1.25rem;background:var(--s1);border:1px solid var(--b1);border-radius:16px;margin-bottom:2rem;}
+    .fsel{padding:.5rem 1rem;background:var(--bg3);border:1px solid var(--b1);border-radius:8px;color:var(--tx);font-family:inherit;font-size:.875rem;cursor:pointer;transition:border-color .2s;}
+    .fsel:focus{outline:none;border-color:var(--p);}
+
+    /* ── TICKER TAPE ── */
+    .ticker{background:var(--bg3);border-bottom:1px solid var(--b1);overflow:hidden;padding:.45rem 0;position:relative;}
+    .ticker::before,.ticker::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none;}
+    .ticker::before{left:0;background:linear-gradient(90deg,var(--bg3),transparent);}
+    .ticker::after{right:0;background:linear-gradient(-90deg,var(--bg3),transparent);}
+    .ticker-inner{display:flex;gap:3rem;animation:tickerScroll 30s linear infinite;width:max-content;}
+    .ticker-inner:hover{animation-play-state:paused;}
+    @keyframes tickerScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+    .ticker-item{display:flex;align-items:center;gap:.6rem;white-space:nowrap;font-size:.8rem;color:var(--tx2);}
+    .ticker-item .ti-name{font-weight:600;color:var(--tx);}
+    .ticker-item .ti-up{color:var(--p);font-size:.75rem;font-weight:700;}
+    .ticker-item .ti-down{color:#f87171;font-size:.75rem;font-weight:700;}
+    .ticker-dot{width:6px;height:6px;border-radius:50%;background:var(--b2);}
+
+    /* ── LIVE ACTIVITY FEED ── */
+    .activity-feed{position:fixed;bottom:1.5rem;left:1.5rem;z-index:800;display:flex;flex-direction:column;gap:.5rem;pointer-events:none;}
+    .activity-toast{background:var(--bg2);border:1px solid var(--b2);border-radius:12px;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;max-width:300px;box-shadow:0 8px 32px rgba(0,0,0,.5);animation:toastIn .4s var(--ease) both,toastOut .4s var(--ease) 4s both;pointer-events:auto;}
+    @keyframes toastIn{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:translateX(0);}}
+    @keyframes toastOut{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(-20px);}}
+    .at-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.85rem;flex-shrink:0;}
+    .at-text{font-size:.78rem;color:var(--tx2);line-height:1.4;}
+    .at-text strong{color:var(--tx);}
+    .at-text .at-price{color:var(--p);font-weight:700;font-family:'Space Mono',monospace;}
+    @media(max-width:600px){.activity-feed{display:none;}}
+
+    /* ── SPOTLIGHT / HERO CARD ── */
+    .spotlight{margin-bottom:3rem;background:linear-gradient(135deg,var(--s1) 0%,var(--s2) 100%);border:1px solid var(--b2);border-radius:24px;overflow:hidden;display:grid;grid-template-columns:1.2fr 1fr;position:relative;}
+    @media(max-width:768px){.spotlight{grid-template-columns:1fr;}}
+    .spotlight-img-wrap{position:relative;overflow:hidden;min-height:360px;}
+    .spotlight-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease);}
+    .spotlight:hover .spotlight-img-wrap img{transform:scale(1.04);}
+    .spotlight-badge{position:absolute;top:1.25rem;left:1.25rem;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .9rem;border-radius:50px;display:flex;align-items:center;gap:.4rem;}
+    .spotlight-badge .pulse{width:7px;height:7px;border-radius:50%;background:#fff;animation:pdot 1.2s infinite;}
+    .spotlight-body{padding:2.5rem 2rem;display:flex;flex-direction:column;justify-content:center;}
+    .spotlight-cat{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--p);margin-bottom:.75rem;}
+    .spotlight-title{font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;color:var(--tx);margin-bottom:.75rem;line-height:1.2;}
+    .spotlight-artist{display:flex;align-items:center;gap:.625rem;margin-bottom:1.25rem;}
+    .sp-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--p));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.8rem;}
+    .spotlight-artist span{font-size:.875rem;color:var(--tx2);}
+    .spotlight-artist strong{color:var(--tx);}
+    .spotlight-price-row{display:flex;align-items:flex-end;gap:2rem;margin-bottom:1.5rem;padding:1.25rem;background:rgba(0,0,0,.25);border-radius:14px;border:1px solid var(--b1);}
+    .sp-price-block label{display:block;font-size:.68rem;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem;}
+    .sp-price-block span{font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--p);}
+    .sp-price-block span.dim{color:var(--tx2);font-size:1.1rem;}
+    .spotlight-actions{display:flex;gap:.75rem;}
+    .btn-spot-buy{flex:1;padding:.85rem;border-radius:12px;background:var(--blue);color:#fff;border:none;font-family:inherit;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem;}
+    .btn-spot-buy:hover{background:#2563eb;transform:translateY(-1px);}
+    .btn-spot-like{padding:.85rem 1.1rem;border-radius:12px;background:var(--s3);color:var(--tx2);border:1px solid var(--b1);cursor:pointer;transition:all .2s;font-size:1.1rem;}
+    .btn-spot-like:hover{background:#ef4444;color:#fff;border-color:#ef4444;}
+
+    /* ── VIEW TOGGLE ── */
+    .view-toggle{display:flex;gap:.25rem;background:var(--s1);border:1px solid var(--b1);padding:.25rem;border-radius:8px;}
+    .vt-btn{width:34px;height:34px;border:none;background:transparent;color:var(--tx2);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:all .2s;}
+    .vt-btn.active{background:var(--s2);color:var(--tx);box-shadow:0 1px 3px rgba(0,0,0,.4);}
+
+    /* MASONRY NFT GRID (default) */
+    .nft-grid{columns:4;column-gap:1.25rem;margin-bottom:3rem;}
+    @media(max-width:1200px){.nft-grid{columns:3;}}
+    @media(max-width:768px){.nft-grid{columns:2;}}
+    @media(max-width:480px){.nft-grid{columns:1;}}
+    .nft-card{break-inside:avoid;page-break-inside:avoid;margin-bottom:1.25rem;background:var(--s1);border:1px solid var(--b1);border-radius:16px;overflow:hidden;cursor:pointer;display:block;color:inherit;transition:all .3s var(--ease);}
+    .nft-card:hover{transform:translateY(-4px);box-shadow:0 18px 50px rgba(0,0,0,.55);border-color:var(--b2);}
+
+    /* UNIFORM GRID */
+    .nft-grid.grid-uniform{columns:unset;display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;}
+    @media(max-width:1200px){.nft-grid.grid-uniform{grid-template-columns:repeat(3,1fr);}}
+    @media(max-width:768px){.nft-grid.grid-uniform{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:480px){.nft-grid.grid-uniform{grid-template-columns:1fr;}}
+    .nft-grid.grid-uniform .nft-card{margin-bottom:0;}
+    .nft-grid.grid-uniform .nft-iw img,.nft-grid.grid-uniform .nft-iw video{height:220px;object-fit:cover;}
+
+    /* LIST VIEW */
+    .nft-grid.grid-list{columns:unset;display:flex;flex-direction:column;gap:.75rem;}
+    .nft-grid.grid-list .nft-card{display:flex;flex-direction:row;margin-bottom:0;border-radius:14px;}
+    .nft-grid.grid-list .nft-iw{flex-shrink:0;width:120px;height:100px;}
+    .nft-grid.grid-list .nft-iw img,.nft-grid.grid-list .nft-iw video{width:120px;height:100px;object-fit:cover;}
+    .nft-grid.grid-list .nft-bdy{flex:1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;padding:.875rem 1.25rem;}
+    .nft-grid.grid-list .nft-ttl{font-size:1rem;white-space:normal;}
+    .nft-grid.grid-list .nft-ft{border-top:none;padding-top:0;}
+
+    .nft-iw{position:relative;overflow:hidden;}
+    .nft-iw img,.nft-iw video{width:100%;display:block;transition:transform .4s var(--ease);}
+    .nft-card:hover .nft-iw img,.nft-card:hover .nft-iw video{transform:scale(1.05);}
+    .nft-badge{position:absolute;top:.75rem;left:.75rem;background:var(--p);color:#000;font-size:.65rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:.28rem .7rem;border-radius:5px;}
+    .nft-badge.auc{background:var(--purple);color:#fff;}
+    .nft-like{position:absolute;top:.75rem;right:.75rem;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:#fff;font-size:.9rem;}
+    .nft-like:hover{background:rgba(239,68,68,.4);transform:scale(1.1);}
+    .nft-like.liked{background:#ef4444;border-color:#ef4444;}
+    .nft-lc{font-size:.58rem;font-weight:700;margin-top:1px;}
+    .nft-bdy{padding:1rem 1.1rem;}
+    .nft-ttl{font-family:'Syne',sans-serif;font-weight:700;font-size:.925rem;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.2rem;}
+    .nft-cr{font-size:.8rem;color:var(--tx2);margin-bottom:.875rem;}
+    .nft-ft{display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid var(--b1);}
+    .nft-pr{font-weight:700;color:var(--p);font-size:.925rem;font-family:'Space Mono',monospace;}
+    .nft-pr small{display:block;font-size:.68rem;font-weight:400;color:var(--tx3);font-family:'DM Sans',sans-serif;margin-top:.1rem;}
+    .nft-vw{font-size:.78rem;color:var(--tx3);display:flex;align-items:center;gap:.3rem;}
+    .empty-st{text-align:center;padding:5rem 2rem;color:var(--tx2);} .empty-st i{font-size:3.5rem;opacity:.2;display:block;margin-bottom:1rem;}
+
+    /* ── AUCTIONS ── */
+    .auc-card{background:linear-gradient(145deg,#1a2248 0%,#281460 100%);border:1px solid rgba(139,92,246,.2);border-radius:22px;padding:1.625rem;color:#fff;position:relative;overflow:hidden;transition:all .3s var(--ease);}
+    .auc-card::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:rgba(139,92,246,.1);pointer-events:none;}
+    .auc-card:hover{transform:translateY(-5px);box-shadow:0 16px 48px rgba(139,92,246,.22);}
+    .auc-thumb{width:100%;height:140px;object-fit:cover;border-radius:10px;margin-bottom:1rem;border:1px solid rgba(255,255,255,.1);}
+    .auc-timer{display:inline-flex;gap:.875rem;background:rgba(0,0,0,.3);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);padding:.65rem 1rem;border-radius:10px;margin-bottom:1rem;}
+    .t-seg{text-align:center;}
+    .t-val{font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;display:block;}
+    .t-lbl{font-size:.6rem;opacity:.65;text-transform:uppercase;letter-spacing:.08em;}
+    .auc-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.3rem;}
+    .auc-bid{font-size:.85rem;opacity:.75;margin-bottom:1rem;}
+    .btn-bid{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);padding:.5rem 1.25rem;border-radius:50px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;}
+    .btn-bid:hover{background:rgba(255,255,255,.22);transform:translateY(-1px);}
+
+    /* ── EXHIBITIONS ── */
+    .exh-card{background:var(--s1);border:1px solid var(--b1);border-radius:22px;overflow:hidden;transition:all .3s var(--ease);}
+    .exh-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.45);border-color:var(--b2);}
+    .exh-img{height:195px;object-fit:cover;width:100%;display:block;}
+    .exh-bdy{padding:1.375rem;}
+    .exh-type{display:inline-block;padding:.25rem .75rem;background:rgba(59,130,246,.15);color:#60a5fa;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:50px;margin-bottom:.875rem;}
+    .exh-ttl{font-family:'Syne',sans-serif;font-weight:700;color:var(--tx);font-size:1.05rem;margin-bottom:.5rem;}
+    .exh-desc{color:var(--tx2);font-size:.85rem;line-height:1.6;margin-bottom:1rem;}
+    .exh-ft{display:flex;align-items:center;justify-content:space-between;}
+    .exh-dt{font-size:.8rem;color:var(--tx3);display:flex;align-items:center;gap:.35rem;}
+    .btn-vexh{padding:.4rem 1rem;border-radius:50px;background:transparent;border:1px solid var(--blue);color:var(--blue);font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;}
+    .btn-vexh:hover{background:var(--blue);color:#fff;}
+
+    /* ── NEWSLETTER ── */
+    .nl{background:linear-gradient(135deg,#0d1c14 0%,#091524 100%);border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);padding:4rem 0;position:relative;overflow:hidden;}
+    .nl::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 80% at 5% 50%,rgba(34,197,94,.1) 0%,transparent 55%),radial-gradient(ellipse 40% 60% at 95% 50%,rgba(59,130,246,.08) 0%,transparent 55%);pointer-events:none;}
+    .nl-in{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:2rem;}
+    .nl-copy h3{font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;color:#fff;margin-bottom:.5rem;}
+    .nl-copy p{color:var(--tx2);font-size:.95rem;max-width:400px;}
+    .nl-form{display:flex;gap:.75rem;flex-wrap:wrap;}
+    .nl-form input{padding:.8rem 1.25rem;background:var(--s1);border:1px solid var(--b2);border-radius:10px;color:var(--tx);font-family:inherit;font-size:.9rem;width:280px;transition:border-color .2s;}
+    .nl-form input::placeholder{color:var(--tx3);}
+    .nl-form input:focus{outline:none;border-color:var(--p);}
+    .nl-form button{padding:.8rem 1.75rem;background:var(--p);color:#000;border:none;border-radius:10px;font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;transition:background .2s,transform .2s;}
+    .nl-form button:hover{background:var(--pl);transform:translateY(-1px);}
+
+    /* ══════════════════════════════════════
+       FOOTER — PREMIUM
+    ══════════════════════════════════════ */
+    .footer{background:var(--bg2);border-top:1px solid var(--b1);}
+    .ft-top{padding:4.5rem 0 3.5rem;border-bottom:1px solid var(--b1);}
+    .ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.4fr;gap:3rem;}
+    @media(max-width:1024px){.ft-grid{grid-template-columns:1fr 1fr;}}
+    @media(max-width:600px){.ft-grid{grid-template-columns:1fr;}}
+    .ft-brand img{height:38px;width:auto;margin-bottom:1.25rem;filter:brightness(1.1);}
+    .ft-tagline{color:var(--tx2);font-size:.9rem;line-height:1.7;max-width:280px;margin-bottom:1.5rem;}
+    .ft-social{display:flex;gap:.625rem;}
+    .soc-btn{width:38px;height:38px;border-radius:9px;background:var(--s1);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;color:var(--tx2);font-size:.95rem;cursor:pointer;text-decoration:none;transition:all .2s;}
+    .soc-btn:hover{background:var(--p);color:#000;border-color:var(--p);}
+    .ft-col h5{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-bottom:1.25rem;}
+    .ft-links{list-style:none;display:flex;flex-direction:column;gap:.65rem;}
+    .ft-links li a{color:var(--tx2);font-size:.9rem;text-decoration:none;transition:color .2s;display:flex;align-items:center;gap:.5rem;}
+    .ft-links li a:hover{color:var(--p);}
+    .ft-status{display:flex;flex-direction:column;gap:.75rem;}
+    .st-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+    .st-row span{font-size:.85rem;color:var(--tx2);}
+    .st-dot{width:8px;height:8px;border-radius:50%;background:var(--p);box-shadow:0 0 8px var(--pg);flex-shrink:0;animation:pdot 2s infinite;}
+    .st-dot.amber{background:var(--amber);box-shadow:0 0 8px rgba(245,158,11,.3);}
+    @keyframes pdot{0%,100%{opacity:1;}50%{opacity:.45;}}
+    .ft-stats{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-top:.5rem;}
+    .fst{background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:.875rem 1rem;}
+    .fst-v{font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--p);display:block;margin-bottom:.2rem;}
+    .fst-l{font-size:.7rem;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;}
+    .ft-bottom{padding:1.625rem 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+    .ft-bottom p{font-size:.82rem;color:var(--tx3);}
+    .ft-legal{display:flex;gap:1.5rem;}
+    .ft-legal a{font-size:.82rem;color:var(--tx3);text-decoration:none;transition:color .2s;}
+    .ft-legal a:hover{color:var(--tx2);}
+
+    /* ── MODAL ── */
+    .m-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:1rem;}
+    .m-box{background:var(--bg2);border:1px solid var(--b2);border-radius:28px;max-width:920px;width:100%;max-height:92vh;overflow-y:auto;}
+    .m-hdr{padding:1.375rem 1.75rem;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;}
+    .m-hdr h5{font-family:'Syne',sans-serif;font-weight:700;color:var(--tx);margin:0;}
+    .m-close{width:36px;height:36px;border-radius:9px;background:var(--s1);border:1px solid var(--b1);color:var(--tx2);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+    .m-close:hover{background:var(--s2);color:var(--tx);}
+    .m-bdy{padding:1.75rem;}
+    .aw-det{display:grid;grid-template-columns:1fr 1fr;gap:2.25rem;}
+    @media(max-width:700px){.aw-det{grid-template-columns:1fr;}}
+    .aw-img{width:100%;border-radius:16px;object-fit:cover;border:1px solid var(--b1);}
+    .aw-info h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--tx);margin-bottom:.75rem;}
+    .cr-pill{display:inline-flex;align-items:center;gap:.5rem;background:var(--s1);border:1px solid var(--b1);padding:.4rem 1rem;border-radius:50px;margin-bottom:1rem;}
+    .cr-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--p));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.7rem;}
+    .cr-pill span{font-size:.85rem;color:var(--tx);}
+    .pr-box{background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:1.25rem 1.5rem;margin:1.25rem 0;}
+    .pr-lbl{font-size:.75rem;color:var(--tx2);margin-bottom:.25rem;}
+    .pr-val{font-family:'Space Mono',monospace;font-size:1.85rem;font-weight:700;color:var(--p);}
+    .act-btns{display:flex;gap:.875rem;margin-top:1.25rem;}
+    .act-btn{flex:1;padding:.95rem;border-radius:16px;font-family:inherit;font-size:.95rem;font-weight:700;border:none;cursor:pointer;transition:all .2s;}
+    .act-btn.buy{background:var(--blue);color:#fff;}
+    .act-btn.buy:hover{background:#2563eb;transform:translateY(-1px);}
+    .share-rw{display:flex;gap:.5rem;margin-top:1rem;}
+    .share-rw input{flex:1;padding:.65rem .875rem;background:var(--s1);border:1px solid var(--b1);border-radius:8px;color:var(--tx2);font-size:.82rem;font-family:inherit;}
+    .share-rw button{padding:.65rem 1rem;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--tx2);cursor:pointer;font-size:.9rem;transition:all .2s;}
+    .share-rw button:hover{background:var(--s3);color:var(--tx);}
+    .chip{display:inline-block;padding:.25rem .7rem;border-radius:50px;font-size:.7rem;font-weight:600;background:var(--s2);color:var(--tx2);border:1px solid var(--b1);}
+    .btn-ghost-g{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.5rem;border-radius:9px;background:var(--s1);border:1px solid var(--b1);color:var(--tx);font-family:inherit;font-size:.875rem;font-weight:500;cursor:pointer;text-decoration:none;transition:all .22s;}
+    .btn-ghost-g:hover{border-color:var(--p);color:var(--p);background:var(--s2);}
+
+    /* bootstrap overrides */
+    .modal-content{background:var(--bg2);border:1px solid var(--b2);color:var(--tx);}
+    .modal-header{border-bottom-color:var(--b1);} .modal-footer{border-top-color:var(--b1);}
+    .btn-close{filter:invert(1);opacity:.6;}
+    .btn-secondary{background:var(--s2);border-color:var(--b1);color:var(--tx);}
+    .btn-secondary:hover{background:var(--s3);}
+    .text-muted{color:var(--tx2) !important;}
+    .alert-secondary{background:var(--s1);border-color:var(--b1);color:var(--tx2);}
+    .btn-outline-danger{color:#f87171;border-color:#f87171;}
+    .btn-outline-danger:hover{background:#ef4444;color:#fff;border-color:#ef4444;}
+    .btn-danger{background:#ef4444;border-color:#ef4444;color:#fff;}
+    .btn-outline-secondary{background:var(--s1);border-color:var(--b1);color:var(--tx2);}
+    .btn-outline-secondary:hover{background:var(--s2);color:var(--tx);}
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+    .hero-pill   { animation: fadeUp .5s both; }
+    .hero h1     { animation: fadeUp .6s .1s both; }
+    .hero p      { animation: fadeUp .6s .2s both; }
+    .hero-ctas   { animation: fadeUp .6s .3s both; }
+    .hero-micro  { animation: fadeUp .6s .45s both; }
+
+    @media(max-width:768px){
+      .hero h1{font-size:2.2rem;}
+      .nl-in{flex-direction:column;}
+      .nl-form input{width:100%;}
+      .ft-bottom{flex-direction:column;text-align:center;}
+    }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="vx-header">
-        <div class="vx-header-inner">
-            <a href="/index.html" class="vx-logo">
-                <div class="vx-logo-icon">
-                   
-                </div>
-                 <img src="./logo.png" width="150" height="50" alt="">
-            </a>
-            
-            <div class="vx-search-container">
-                <i class="bi bi-search vx-search-icon"></i>
-                <input type="text" class="vx-search-input" id="searchInput" placeholder="Search collections, NFTs, creators...">
-                <span class="vx-search-shortcut">⌘K</span>
-                <div class="vx-search-dropdown" id="searchDropdown"></div>
-            </div>
-            
-            <div class="vx-header-actions">
-                <a href="support.html" class="vx-btn-login" data-testid="link-support">
-                    <i class="bi bi-question-circle"></i>
-                    Support
-                </a>
-                <a href="/login.html" class="vx-btn-login" data-testid="link-login">
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    Login
-                </a>
-                <a href="/signup.html" class="vx-btn-signup" data-testid="link-signup">
-                    <i class="bi bi-person-plus"></i>
-                    Sign Up
-                </a>
-            </div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-in">
+    <a href="/index.html" class="hdr-logo">
+      <img src="./logo.png" width="150" height="50" alt="Ethergalleries" />
+    </a>
+
+    <div class="hdr-srch">
+      <i class="bi bi-search srch-ic"></i>
+      <input type="text" id="searchInput" placeholder="Search collections, NFTs, creators..." />
+      <span class="srch-kbd">⌘K</span>
+      <div class="srch-drop" id="searchDropdown"></div>
+    </div>
+
+    <nav class="hdr-nav">
+      <a href="support.html" class="btn-ghost" data-testid="link-support">
+        <i class="bi bi-question-circle"></i> Support
+      </a>
+      <a href="/login.html" class="btn-ghost" data-testid="link-login">
+        <i class="bi bi-box-arrow-in-right"></i> Login
+      </a>
+      <a href="/signup.html" class="btn-primary-sm" data-testid="link-signup">
+        <i class="bi bi-person-plus"></i> Sign Up
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- TICKER TAPE -->
+<div class="ticker" id="tickerTape">
+  <div class="ticker-inner" id="tickerInner">
+    <!-- populated by JS -->
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+
+  <div class="hero-inner">
+    <!-- LEFT: copy -->
+    <div class="hero-copy">
+      <div class="hero-pill"><i class="bi bi-stars"></i> The Premier Digital Art Marketplace</div>
+      <h1>Discover <span class="grad">Rare Digital</span><br>Art &amp; Collectibles</h1>
+      <p>Explore, collect, and trade exclusive NFTs from emerging artists and established creators worldwide.</p>
+      <div class="hero-ctas">
+        <a href="#marketplace" class="btn-hp"><i class="bi bi-shop"></i> Explore Marketplace</a>
+        <a href="#collections" class="btn-hg"><i class="bi bi-collection"></i> View Collections</a>
+      </div>
+    </div>
+
+    <!-- RIGHT: crossfade ghost artworks -->
+    <div class="hero-art-col" id="heroArtPanel">
+      <div class="hap-inner" id="hapInner">
+        <!-- slides injected by JS -->
+        <div class="hap-progress"><div class="hap-bar" id="hapBar"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="sec" id="categories">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="sec-lbl"><i class="bi bi-grid-3x3-gap-fill"></i> Browse</div>
+      <h2 class="sec-ttl">Explore by <span class="acc">Category</span></h2>
+      <p class="sec-sub">Dive into curated collections across every medium and style.</p>
+    </div>
+    <div class="cat-row" id="categoriesContainer">
+      <div class="cat-chip active" data-category="all"><div class="cat-ic ci-b"><i class="bi bi-grid-3x3-gap-fill"></i></div><h6>All</h6></div>
+      <div class="cat-chip" data-category="Art"><div class="cat-ic ci-pk"><i class="bi bi-palette-fill"></i></div><h6>Art</h6></div>
+      <div class="cat-chip" data-category="Photography"><div class="cat-ic ci-tl"><i class="bi bi-camera-fill"></i></div><h6>Photography</h6></div>
+      <div class="cat-chip" data-category="Music"><div class="cat-ic ci-r"><i class="bi bi-music-note-beamed"></i></div><h6>Music</h6></div>
+      <div class="cat-chip" data-category="Video"><div class="cat-ic ci-pu"><i class="bi bi-play-circle-fill"></i></div><h6>Animated</h6></div>
+      <div class="cat-chip" data-category="Gaming"><div class="cat-ic ci-am"><i class="bi bi-controller"></i></div><h6>Gaming</h6></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- FEATURED DROPS -->
+<section class="sec sec-alt" id="featured-drops">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="sec-lbl"><i class="bi bi-lightning-charge-fill"></i> Trending</div>
+      <h2 class="sec-ttl">Featured <span class="acc">Drops</span></h2>
+      <p class="sec-sub">Hand-picked highlights from this week's most in-demand NFTs.</p>
+    </div>
+    <div class="car-outer" style="position:relative;">
+      <button class="car-btn car-prev" onclick="slideFeatured(-1)" data-testid="button-featured-prev"><i class="bi bi-chevron-left"></i></button>
+      <div class="car-wrap" id="featuredDropsCarousel">
+        <div class="car-track" id="featuredDropsTrack"><div class="car-empty"><i class="bi bi-hourglass-split"></i> Loading…</div></div>
+      </div>
+      <button class="car-btn car-next" onclick="slideFeatured(1)" data-testid="button-featured-next"><i class="bi bi-chevron-right"></i></button>
+    </div>
+    <div class="text-center mt-2">
+      <a href="#marketplace" class="btn-ghost-g" onclick="return guardedNav(event,'#marketplace')">View all drops <i class="bi bi-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- COLLECTIONS -->
+<section class="sec" id="collections">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="sec-lbl"><i class="bi bi-collection-fill"></i> Curated</div>
+      <h2 class="sec-ttl">Top <span class="gr">Collections</span></h2>
+      <p class="sec-sub">The highest-volume NFT collections curated by our editorial team.</p>
+    </div>
+    <div class="coll-grid" id="collectionsGrid">
+      <div class="car-empty" style="grid-column:1/-1"><i class="bi bi-hourglass-split"></i> Loading collections…</div>
+    </div>
+    <div class="text-center mt-4">
+      <a href="category.html" class="btn-ghost-g" onclick="return guardedNav(event,'category.html')">Browse all collections <i class="bi bi-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- EXPLORE BY CATEGORY CAROUSEL -->
+<section class="sec sec-alt">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="sec-lbl"><i class="bi bi-compass-fill"></i> Discover</div>
+      <h2 class="sec-ttl">Explore <span class="acc">Categories</span></h2>
+      <p class="sec-sub">A curated pick from each category — find your next obsession.</p>
+    </div>
+    <div class="car-outer" style="position:relative;">
+      <button class="car-btn car-prev" onclick="slideCategoryArt(-1)" data-testid="button-category-prev"><i class="bi bi-chevron-left"></i></button>
+      <div class="car-wrap" id="categoriesCarousel">
+        <div class="car-track" id="categoriesArtTrack"><div class="car-empty"><i class="bi bi-hourglass-split"></i> Loading…</div></div>
+      </div>
+      <button class="car-btn car-next" onclick="slideCategoryArt(1)" data-testid="button-category-next"><i class="bi bi-chevron-right"></i></button>
+    </div>
+    <div class="text-center mt-2">
+      <a href="category.html" class="btn-ghost-g" onclick="return guardedNav(event,'category.html')"><i class="bi bi-grid me-1"></i> All categories</a>
+    </div>
+  </div>
+</section>
+
+<!-- MARKETPLACE -->
+<section class="sec" id="marketplace">
+  <div class="wrap">
+    <div class="mkt-hd">
+      <div><div class="sec-lbl"><i class="bi bi-shop"></i> Browse &amp; Buy</div><h2 class="sec-ttl">Marketplace</h2></div>
+      <div style="display:flex;align-items:center;gap:.875rem;flex-wrap:wrap;">
+        <div class="tabs">
+          <button class="tab active" data-tab="all">All Items</button>
+          <button class="tab" data-tab="listed">For Sale</button>
+          <button class="tab" data-tab="auction">Auctions</button>
         </div>
-    </header>
-    
-    <!-- Hero Section -->
-    <section class="vx-hero">
-        <div class="vx-hero-bg"></div>
-        <div class="vx-hero-content">
-            <h1>Discover Rare Digital Art</h1>
-            <p>Explore, collect, and trade exclusive NFTs from emerging artists and established creators</p>
-            <div class="vx-hero-btns">
-                <a href="#marketplace" class="vx-btn-outline">Explore Marketplace</a>
-                <a href="#collections" class="vx-btn-green">View Collections</a>
-            </div>
+        <div class="view-toggle" id="viewToggle">
+          <button class="vt-btn active" data-view="masonry" title="Masonry grid"><i class="bi bi-grid-3x3-gap"></i></button>
+          <button class="vt-btn" data-view="uniform" title="Uniform grid"><i class="bi bi-grid"></i></button>
+          <button class="vt-btn" data-view="list" title="List view"><i class="bi bi-list-ul"></i></button>
         </div>
-    </section>
-    
-    <!-- Explore by Category -->
-    <section class="vx-section" id="categories">
-        <h2 class="vx-section-title" style="text-align: center; margin-bottom: 2rem;">Explore by Category</h2>
-        
-        <div class="vx-categories-grid" id="categoriesContainer">
-            <div class="vx-category-card active" data-category="all">
-                <div class="vx-category-icon blue"><i class="bi bi-grid-3x3-gap-fill"></i></div>
-                <div class="vx-category-info">
-                    <h6>All Categories</h6>
-                    <small>Browse everything</small>
-                </div>
-            </div>
-            <!-- <div class="vx-category-card" data-category="Gaming">
-                <div class="vx-category-icon blue"><i class="bi bi-controller"></i></div>
-                <div class="vx-category-info">
-                    <h6>Gaming</h6>
-                    <small>Game assets & collectibles</small>
-                </div>
-            </div> -->
-            <div class="vx-category-card" data-category="Art">
-                <div class="vx-category-icon pink"><i class="bi bi-palette-fill"></i></div>
-                <div class="vx-category-info">
-                    <h6> Art</h6>
-                    <small>Creative digital artwork</small>
-                </div>
-            </div>
-            <div class="vx-category-card" data-category="Photography">
-                <div class="vx-category-icon teal"><i class="bi bi-camera-fill"></i></div>
-                <div class="vx-category-info">
-                    <h6>Photography</h6>
-                    <small>Photographic NFTs</small>
-                </div>
-            </div>
-            <div class="vx-category-card" data-category="Music">
-                <div class="vx-category-icon red"><i class="bi bi-music-note-beamed"></i></div>
-                <div class="vx-category-info">
-                    <h6>Music</h6>
-                    <small>Audio & music NFTs</small>
-                </div>
-            </div>
-            <!-- <div class="vx-category-card" data-category="Sports">
-                <div class="vx-category-icon orange"><i class="bi bi-trophy-fill"></i></div>
-                <div class="vx-category-info">
-                    <h6>Sports</h6>
-                    <small>Sports memorabilia</small>
-                </div>
-            </div> -->
-            <!-- <div class="vx-category-card" data-category="Fashion">
-                <div class="vx-category-icon pink"><i class="bi bi-handbag-fill"></i></div>
-                <div class="vx-category-info">
-                    <h6>Fashion</h6>
-                    <small>Digital fashion</small>
-                </div>
-            </div> -->
-            <!-- <div class="vx-category-card" data-category="3D Art">
-                <div class="vx-category-icon blue"><i class="bi bi-box"></i></div>
-                <div class="vx-category-info">
-                    <h6>3D Art</h6>
-                    <small>3D models & sculptures</small>
-                </div>
-            </div> -->
-            <div class="vx-category-card" data-category="Video">
-                <div class="vx-category-icon purple"><i class="bi bi-play-circle-fill"></i></div>
-                <div class="vx-category-info">
-                    <h6>Animated</h6>
-                    <small>Animated artworks</small>
-                </div>
-            </div>
+      </div>
+    </div>
+    <div class="filters">
+      <select class="fsel" id="sortFilter">
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        <option value="price-low">Price: Low → High</option>
+        <option value="price-high">Price: High → Low</option>
+        <option value="likes">Most Liked</option>
+      </select>
+      <select class="fsel" id="priceFilter">
+        <option value="">All Prices</option>
+        <option value="0-1">Under 1 ETH</option>
+        <option value="1-5">1 – 5 ETH</option>
+        <option value="5-10">5 – 10 ETH</option>
+        <option value="10+">10+ ETH</option>
+      </select>
+    </div>
+
+    <!-- SPOTLIGHT -->
+    <div class="spotlight" id="spotlightCard" style="display:none;">
+      <div class="spotlight-img-wrap">
+        <img id="spImg" src="" alt="" />
+        <div class="spotlight-badge"><span class="pulse"></span> Editor's Pick</div>
+      </div>
+      <div class="spotlight-body">
+        <div class="spotlight-cat" id="spCat"></div>
+        <div class="spotlight-title" id="spTitle"></div>
+        <div class="spotlight-artist">
+          <div class="sp-av" id="spAv"></div>
+          <span>by <strong id="spArtist"></strong></span>
         </div>
-        
-        <div class="vx-pagination-dots">
-            <span class="vx-dot"></span>
-            <span class="vx-dot"></span>
-            <span class="vx-dot"></span>
-            <span class="vx-dot"></span>
-            <span class="vx-dot"></span>
-            <span class="vx-dot active"></span>
-            <span class="vx-dot"></span>
-            <span class="vx-dot"></span>
+        <div class="spotlight-price-row">
+          <div class="sp-price-block"><label>Current Price</label><span id="spPrice"></span></div>
+          <div class="sp-price-block"><label>Views</label><span class="dim" id="spViews"></span></div>
+          <div class="sp-price-block"><label>Likes</label><span class="dim" id="spLikes"></span></div>
         </div>
-    </section>
-    
-    <!-- Featured Drops -->
-    <section class="vx-section" id="collections" style="background: #f8fafc; margin: 0; max-width: 100%; padding-left: calc((100% - 1280px) / 2 + 1.5rem); padding-right: calc((100% - 1280px) / 2 + 1.5rem);">
-        <div class="vx-section-header">
-            <div class="vx-section-label">
-                <i class="bi bi-lightning-charge-fill"></i>
-                TRENDING COLLECTIONS
-            </div>
-            <h2 class="vx-section-title">Featured <span>Drops</span></h2>
-            <p class="vx-section-subtitle">Curated selection of this week's most promising NFT collections</p>
+        <div class="spotlight-actions">
+          <button class="btn-spot-buy" id="spBuyBtn"><i class="bi bi-cart"></i> Buy Now</button>
+          <button class="btn-spot-like" id="spLikeBtn"><i class="bi bi-heart"></i></button>
         </div>
-        
-        <!-- Featured Drops Carousel -->
-        <div class="vx-carousel-container" id="featuredDropsCarousel">
-            <button class="vx-carousel-btn vx-carousel-prev" onclick="slideFeaturedDrops(-1)" data-testid="button-featured-prev">
-                <i class="bi bi-chevron-left"></i>
-            </button>
-            <div class="vx-carousel-track" id="featuredDropsTrack">
-                <div class="vx-carousel-loading">
-                    <i class="bi bi-hourglass-split"></i> Loading featured drops...
-                </div>
-            </div>
-            <button class="vx-carousel-btn vx-carousel-next" onclick="slideFeaturedDrops(1)" data-testid="button-featured-next">
-                <i class="bi bi-chevron-right"></i>
-            </button>
-        </div>
-        
-        <div class="text-center mb-4">
-            <a href="#marketplace" class="vx-btn-outline" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-                View All Collections <i class="bi bi-arrow-right"></i>
-            </a>
-        </div>
-    </section>
-    
-    <!-- Explore Categories Section -->
-    <section class="vx-section">
-        <div class="vx-section-header">
-            <div class="vx-section-label">
-                <i class="bi bi-lightning-charge-fill"></i>
-                TRENDING BY CATEGORY
-            </div>
-            <h2 class="vx-section-title">Explore <span>Categories</span></h2>
-            <p class="vx-section-subtitle">Discover trending NFTs across different categories and find your next digital asset</p>
-        </div>
-        
-        <!-- Categories Art Carousel -->
-        <div class="vx-carousel-container" id="categoriesCarousel">
-            <button class="vx-carousel-btn vx-carousel-prev" onclick="slideCategoryArt(-1)" data-testid="button-category-prev">
-                <i class="bi bi-chevron-left"></i>
-            </button>
-            <div class="vx-carousel-track" id="categoriesArtTrack">
-                <div class="vx-carousel-loading">
-                    <i class="bi bi-hourglass-split"></i> Loading category art...
-                </div>
-            </div>
-            <button class="vx-carousel-btn vx-carousel-next" onclick="slideCategoryArt(1)" data-testid="button-category-next">
-                <i class="bi bi-chevron-right"></i>
-            </button>
-        </div>
-        
-        <div class="text-center">
-            <a href="#categories" class="vx-btn-all-categories">
-                <i class="bi bi-lightning-charge"></i>
-                All Categories
-            </a>
-        </div>
-    </section>
-    
-    <!-- Marketplace Section -->
-    <section class="vx-section" id="marketplace">
-        <h2 class="vx-section-title" style="margin-bottom: 2rem;">
-            <span><i class="bi bi-shop me-2"></i></span>Marketplace
-        </h2>
-        
-        <div class="vx-tabs">
-            <button class="vx-tab active" data-tab="all">All Items</button>
-            <button class="vx-tab" data-tab="listed">For Sale</button>
-            <button class="vx-tab" data-tab="auction">Auctions</button>
-        </div>
-        
-        <div class="vx-filter-bar">
-            <select class="vx-filter-select" id="sortFilter">
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="likes">Most Liked</option>
-            </select>
-            <select class="vx-filter-select" id="priceFilter">
-                <option value="">All Prices</option>
-                <option value="0-1">Under 1 ETH</option>
-                <option value="1-5">1 - 5 ETH</option>
-                <option value="5-10">5 - 10 ETH</option>
-                <option value="10+">10+ ETH</option>
-            </select>
-        </div>
-        
-        <div class="vx-nft-grid" id="nftGrid">
-            <div class="vx-empty-state" style="grid-column: 1 / -1;">
-                <i class="bi bi-image"></i>
-                <h4>Loading artworks...</h4>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Live Auctions -->
-    <section class="vx-section" id="auctions">
-        <h3 class="vx-section-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">
-            <span><i class="bi bi-lightning-charge me-2"></i>Live Auctions</span>
-        </h3>
-        <div class="row g-4" id="auctionsGrid"></div>
-    </section>
-    <!-- Exhibition View Modal -->
+      </div>
+    </div>
+
+    <div class="nft-grid" id="nftGrid">
+      <div class="empty-st"><i class="bi bi-image"></i><h4>Loading artworks…</h4></div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE AUCTIONS -->
+<section class="sec sec-alt" id="auctions">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="sec-lbl"><i class="bi bi-hammer"></i> Live Now</div>
+      <h2 class="sec-ttl">Live <span style="color:var(--purple)">Auctions</span></h2>
+      <p class="sec-sub">Active bids closing soon — place yours before time runs out.</p>
+    </div>
+    <div class="row g-4" id="auctionsGrid"></div>
+  </div>
+</section>
+
+<!-- Exhibition BS Modal -->
 <div class="modal fade" id="exhibitionViewModal" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content rounded-4">
-      
       <div class="modal-header">
         <h5 class="modal-title" id="exhibitionModalTitle">Exhibition</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-
-      <div class="modal-body" id="exhibitionModalBody">
-        <!-- Dynamic content -->
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
-        </button>
-      </div>
-
+      <div class="modal-body" id="exhibitionModalBody"></div>
+      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div>
     </div>
   </div>
 </div>
 
-    <!-- Exhibitions -->
-    <section class="vx-section" id="exhibitions">
-        <h3 class="vx-section-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">
-            <span><i class="bi bi-building me-2"></i>Exhibitions</span>
-        </h3>
-        <div class="row g-4" id="exhibitionsGrid"></div>
-    </section>
-    
-    <!-- Footer -->
-    <footer class="vx-footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <h4 class="mb-3" style="display: flex; align-items: center; gap: 0.5rem;">
-                        <img src="./logo.png" width="150" height="50" alt="">
-                    </h4>
-                    <p class="text-white-50">The premier NFT marketplace for digital art collectors and creators.</p>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <h6 class="mb-3">Quick Links</h6>
-                    <div>
-                        <a href="/index.html">Explore</a>
-                        <a href="/dashboard.html">Dashboard</a>
-                    </div>
-                </div>
-                <!-- <div class="col-md-4 mb-4">
-                    <h6 class="mb-3">Community</h6>
-                    <div>
-                        <a href="#"><i class="bi bi-twitter me-1"></i>Twitter</a>
-                        <a href="#"><i class="bi bi-discord me-1"></i>Discord</a>
-                    </div>
-                </div> -->
-            </div>
-            <hr class="border-secondary">
-            <p class="text-white-50 mb-0 text-center">2024 Ethergalleries. All rights reserved.</p>
-        </div>
-    </footer>
-    
-    <!-- Artwork Modal -->
-    <div class="vx-modal-overlay" id="artworkModal">
-        <div class="vx-modal">
-            <div class="vx-modal-header">
-                <h5 class="mb-0">Artwork Details</h5>
-                <button class="vx-modal-close" onclick="closeArtworkModal()">&times;</button>
-            </div>
-            <div class="vx-modal-body">
-                <div class="vx-artwork-detail">
-                    <div>
-                        <img src="" alt="" class="vx-artwork-image" id="modalArtworkImage">
-                    </div>
-                    <div class="vx-artwork-info">
-                        <h2 id="modalArtworkName"></h2>
-                        <div class="vx-creator-badge">
-                            <div class="vx-creator-avatar" id="modalCreatorAvatar"></div>
-                            <span id="modalCreatorName"></span>
-                        </div>
-                        <p class="text-muted" id="modalArtworkDescription"></p>
-                        
-                        <div class="d-flex gap-3 mb-3">
-                            <span class="badge bg-light text-dark" id="modalCategory"></span>
-                            <span class="badge bg-light text-dark" id="modalRarity"></span>
-                        </div>
-                        
-                        <div class="vx-price-box">
-                            <div class="vx-price-label">Current Price</div>
-                            <div class="vx-price-value" id="modalPrice"></div>
-                        </div>
-                        
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <button class="btn btn-outline-danger rounded-pill" id="modalLikeBtn" onclick="toggleModalLike()">
-                                <i class="bi bi-heart me-1"></i> <span id="modalLikeCount">0</span>
-                            </button>
-                            <span class="text-muted"><i class="bi bi-eye me-1"></i> <span id="modalViews">0</span> views</span>
-                        </div>
-                        
-                        <div class="vx-action-btns" id="modalActionBtns"></div>
-                        
-                        <div class="vx-share-link">
-                            <input type="text" id="shareLink" readonly>
-                            <button class="btn btn-outline-secondary" onclick="copyShareLink()">
-                                <i class="bi bi-copy"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- EXHIBITIONS -->
+<section class="sec" id="exhibitions">
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="sec-lbl"><i class="bi bi-building"></i> Cultural</div>
+      <h2 class="sec-ttl">Digital <span class="acc">Exhibitions</span></h2>
+      <p class="sec-sub">Immersive showcases curated by gallerists and digital art institutions.</p>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        let allNFTs = [];
-        let allAuctions = [];
-        let allExhibitions = [];
-        let currentCategory = 'all';
-        let currentTab = 'all';
-        let currentNFT = null;
-        let likedNFTs = JSON.parse(localStorage.getItem('likedNFTs') || '[]');
-       
-        let searchTimeout = null;
-        
-        // Carousel state
-        let featuredDropsIndex = 0;
-        let categoryArtIndex = 0;
-        let featuredDropsItems = [];
-        let categoryArtItems = [];
-        let featuredDropsAutoSlide = null;
-        let categoryArtAutoSlide = null;
-        const CAROUSEL_INTERVAL = 4000; // Auto-slide every 4 seconds
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            loadMarketplaceData();
-            setupEventListeners();
-            checkURLForArtwork();
-            loadCarousels();
-        });
-        
-        function setupEventListeners() {
-            document.querySelectorAll('.vx-category-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const category = card.dataset.category;
-                    if (category === 'all') {
-                        window.location.href = 'category.html';
-                    } else {
-                        window.location.href = `category.html?category=${encodeURIComponent(category)}`;
-                    }
-                });
-            });
-            
-            document.querySelectorAll('.vx-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelectorAll('.vx-tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    currentTab = tab.dataset.tab;
-                    filterAndRenderNFTs();
-                });
-            });
-            
-            document.getElementById('sortFilter').addEventListener('change', filterAndRenderNFTs);
-            document.getElementById('priceFilter').addEventListener('change', filterAndRenderNFTs);
-            
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', (e) => {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => performSearch(e.target.value), 300);
-            });
-            
-            searchInput.addEventListener('focus', () => {
-                if (searchInput.value.length >= 2) {
-                    document.getElementById('searchDropdown').classList.add('show');
-                }
-            });
-            
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.vx-search-container')) {
-                    document.getElementById('searchDropdown').classList.remove('show');
-                }
-            });
-            
-            document.addEventListener('keydown', (e) => {
-                if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-                    e.preventDefault();
-                    document.getElementById('searchInput').focus();
-                }
-            });
-            
-            // Pause carousel on hover
-            const featuredCarousel = document.getElementById('featuredDropsCarousel');
-            const categoryCarousel = document.getElementById('categoriesCarousel');
-            
-            if (featuredCarousel) {
-                featuredCarousel.addEventListener('mouseenter', () => clearInterval(featuredDropsAutoSlide));
-                featuredCarousel.addEventListener('mouseleave', startFeaturedDropsAutoSlide);
-            }
-            
-            if (categoryCarousel) {
-                categoryCarousel.addEventListener('mouseenter', () => clearInterval(categoryArtAutoSlide));
-                categoryCarousel.addEventListener('mouseleave', startCategoryArtAutoSlide);
-                categoryCarousel.addEventListener('focusin', () => clearInterval(categoryArtAutoSlide));
-                categoryCarousel.addEventListener('focusout', startCategoryArtAutoSlide);
-            }
-            
-            // Also pause featured carousel on focus
-            if (featuredCarousel) {
-                featuredCarousel.addEventListener('focusin', () => clearInterval(featuredDropsAutoSlide));
-                featuredCarousel.addEventListener('focusout', startFeaturedDropsAutoSlide);
-            }
-        }
-        
-        // Carousel Functions
-        async function loadCarousels() {
-            try {
-// const token = localStorage.getItem('token'); 
-//     if (!token) throw new Error('No token found');
+    <div class="row g-4" id="exhibitionsGrid"></div>
+  </div>
+</section>
 
-                const res = await fetch('https://changes-sample.onrender.com/api/marketplace/nfts');
-                if (!res.ok) throw new Error('Failed to load NFTs');
-                const nfts = await res.json();
-                
-                // Featured Drops - random 10 NFTs
-                featuredDropsItems = shuffleArray([...nfts]).slice(0, 10);
-                renderFeaturedDropsCarousel();
-                startFeaturedDropsAutoSlide();
-                
-                // Categories Art - one random NFT per category
-                const categories = ['Art', 'Gaming', 'Music', 'Photography', 'Sports', '3D Art', 'Video'];
-                categoryArtItems = [];
-                categories.forEach(cat => {
-                    const catNFTs = nfts.filter(n => n.category === cat);
-                    if (catNFTs.length > 0) {
-                        const randomNFT = catNFTs[Math.floor(Math.random() * catNFTs.length)];
-                        categoryArtItems.push({ ...randomNFT, displayCategory: cat });
-                    }
-                });
-                renderCategoryArtCarousel();
-                startCategoryArtAutoSlide();
-            } catch (err) {
-                console.error('Failed to load carousels:', err);
-                document.getElementById('featuredDropsTrack').innerHTML = '<div class="vx-carousel-loading">No featured drops available</div>';
-                document.getElementById('categoriesArtTrack').innerHTML = '<div class="vx-carousel-loading">No category art available</div>';
-            }
-        }
-        
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-        
-        function renderFeaturedDropsCarousel() {
-            const track = document.getElementById('featuredDropsTrack');
-            if (!track || featuredDropsItems.length === 0) {
-                track.innerHTML = '<div class="vx-carousel-loading">No featured drops available</div>';
-                return;
-            }
-            
-            track.innerHTML = featuredDropsItems.map(nft => `
-    <div class="vx-carousel-card"
-         onclick="window.location.href='artwork.html?id=${nft._id}'"
-         data-testid="card-featured-${nft._id}">
-
-        ${
-            nft.mediaType === "video"
-            ? `
-                <video
-                    src="${nft.imageUrl}"
-                    class="vx-carousel-card-img"
-                    autoplay
-                    loop
-                    muted
-                    playsinline
-                ></video>
-            `
-            : `
-                <img
-                    src="${nft.imageUrl || '/placeholder-nft.svg'}"
-                    alt="${nft.name}"
-                    class="vx-carousel-card-img"
-                    loading="lazy"
-                >
-            `
-        }
-
-        <div class="vx-carousel-card-body">
-            <div class="vx-carousel-card-title">${nft.name}</div>
-            <div class="vx-carousel-card-artist">by ${nft.creator || 'Unknown Artist'}</div>
-            <div class="vx-carousel-card-price">${nft.price || 0} ETH</div>
-        </div>
+<!-- NEWSLETTER -->
+<div class="nl">
+  <div class="wrap">
+    <div class="nl-in">
+      <div class="nl-copy">
+        <h3>Stay ahead of the drop.</h3>
+        <p>Weekly curatorial picks, auction alerts, and exclusive collector insights — straight to your inbox.</p>
+      </div>
+      <div class="nl-form">
+        <input type="email" id="nlEmail" placeholder="your@email.com" />
+        <button onclick="subscribeNL()">Subscribe</button>
+      </div>
     </div>
-`).join('');
+  </div>
+</div>
 
-            
-            updateCarouselPosition('featured');
-        }
-        
-        function renderCategoryArtCarousel() {
-            const track = document.getElementById('categoriesArtTrack');
-            if (!track || categoryArtItems.length === 0) {
-                track.innerHTML = '<div class="vx-carousel-loading">No category art available</div>';
-                return;
-            }
-            
-            track.innerHTML = categoryArtItems.map(nft => `
-                <div class="vx-carousel-card" style="position: relative;" onclick="window.location.href='category.html?category=${encodeURIComponent(nft.displayCategory)}'" data-testid="card-category-${nft.displayCategory}">
-                    <div class="vx-carousel-card-category">${nft.displayCategory}</div>
-                    <img src="${nft.imageUrl || '/placeholder-nft.svg'}" alt="${nft.name}" class="vx-carousel-card-img" loading="lazy">
-                    <div class="vx-carousel-card-body">
-                        <div class="vx-carousel-card-title">${nft.name}</div>
-                        <div class="vx-carousel-card-artist">by ${nft.creator || 'Unknown Artist'}</div>
-                        <div class="vx-carousel-card-price">${nft.price || 0} ETH</div>
-                    </div>
-                </div>
-            `).join('');
-            
-            updateCarouselPosition('category');
-        }
-        
-        function slideFeaturedDrops(direction) {
-            const totalItems = featuredDropsItems.length;
-            if (totalItems === 0) return;
-            
-            featuredDropsIndex += direction;
-            if (featuredDropsIndex < 0) featuredDropsIndex = totalItems - 1;
-            if (featuredDropsIndex >= totalItems) featuredDropsIndex = 0;
-            
-            updateCarouselPosition('featured');
-        }
-        
-        function slideCategoryArt(direction) {
-            const totalItems = categoryArtItems.length;
-            if (totalItems === 0) return;
-            
-            categoryArtIndex += direction;
-            if (categoryArtIndex < 0) categoryArtIndex = totalItems - 1;
-            if (categoryArtIndex >= totalItems) categoryArtIndex = 0;
-            
-            updateCarouselPosition('category');
-        }
-        
-        function getCardWidth(trackId) {
-            const track = document.getElementById(trackId);
-            if (!track) return 236; // fallback
-            const firstCard = track.querySelector('.vx-carousel-card');
-            if (!firstCard) return 236;
-            // Get computed width including gap
-            const style = window.getComputedStyle(track);
-            const gap = parseInt(style.gap) || 16;
-            return firstCard.offsetWidth + gap;
-        }
-        
-        function updateCarouselPosition(type) {
-            if (type === 'featured') {
-                const track = document.getElementById('featuredDropsTrack');
-                if (track) {
-                    const cardWidth = getCardWidth('featuredDropsTrack');
-                    track.style.transform = `translateX(-${featuredDropsIndex * cardWidth}px)`;
-                }
-            } else if (type === 'category') {
-                const track = document.getElementById('categoriesArtTrack');
-                if (track) {
-                    const cardWidth = getCardWidth('categoriesArtTrack');
-                    track.style.transform = `translateX(-${categoryArtIndex * cardWidth}px)`;
-                }
-            }
-        }
-        
-        // Handle window resize to recalculate carousel positions
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                updateCarouselPosition('featured');
-                updateCarouselPosition('category');
-            }, 100);
-        });
-        
-        function startFeaturedDropsAutoSlide() {
-            clearInterval(featuredDropsAutoSlide);
-            featuredDropsAutoSlide = setInterval(() => {
-                slideFeaturedDrops(1);
-            }, CAROUSEL_INTERVAL);
-        }
-        
-        function startCategoryArtAutoSlide() {
-            clearInterval(categoryArtAutoSlide);
-            categoryArtAutoSlide = setInterval(() => {
-                slideCategoryArt(1);
-            }, CAROUSEL_INTERVAL);
-        }
-        
-        async function loadMarketplaceData() {
-            try {
-// const token = localStorage.getItem('token'); 
-//     if (!token) throw new Error('No token found');
+<!-- LIVE ACTIVITY FEED -->
+<div class="activity-feed" id="activityFeed"></div>
 
-                const [nftsRes, auctionsRes, exhibitionsRes] = await Promise.all([
-                    fetch('https://changes-sample.onrender.com/api/marketplace/nfts'),
-                    fetch('https://changes-sample.onrender.com/api/marketplace/auctions'),
-                    fetch('https://changes-sample.onrender.com/api/marketplace/exhibitions')
-                ]);
-                
-                if (nftsRes.ok) allNFTs = await nftsRes.json();
-                if (auctionsRes.ok) allAuctions = await auctionsRes.json(); 
-                if (exhibitionsRes.ok) allExhibitions = await exhibitionsRes.json();
-                
-                filterAndRenderNFTs();
-                renderAuctions();
-                renderExhibitions();
-            } catch (err) {
-                console.error('Failed to load marketplace data:', err);
-            }
-        }
-        
-        function filterAndRenderNFTs() {
-            let filtered = [...allNFTs];
-            
-            if (currentCategory !== 'all') {
-                filtered = filtered.filter(n => n.category === currentCategory);
-            }
-            
-            if (currentTab === 'listed') {
-                filtered = filtered.filter(n => n.status === 'listed');
-            } else if (currentTab === 'auction') {
-                filtered = filtered.filter(n => n.status === 'auction');
-            }
-            
-            const priceFilter = document.getElementById('priceFilter').value;
-            if (priceFilter) {
-                if (priceFilter === '10+') {
-                    filtered = filtered.filter(n => (n.price || 0) >= 10);
-                } else {
-                    const [min, max] = priceFilter.split('-').map(Number);
-                    filtered = filtered.filter(n => {
-                        const price = n.price || 0;
-                        return price >= min && price < max;
-                    });
-                }
-            }
-            
-            const sortFilter = document.getElementById('sortFilter').value;
-            switch (sortFilter) {
-                case 'oldest':
-                    filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-                    break;
-                case 'price-low':
-                    filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
-                    break;
-                case 'price-high':
-                    filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
-                    break;
-                case 'likes':
-                    filtered.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-                    break;
-                default:
-                    filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            }
-            
-            renderNFTGrid(filtered);
-        }
-        
-        function renderNFTGrid(nfts) {
-            const grid = document.getElementById('nftGrid');
-            
-            if (nfts.length === 0) {
-                grid.innerHTML = `
-                    <div class="vx-empty-state" style="grid-column: 1 / -1;">
-                        <i class="bi bi-image"></i>
-                        <h4>No artworks found</h4>
-                        <p>Try adjusting your filters or search criteria</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            grid.innerHTML = nfts
-    .slice(0, 20) // show only first 20 NFTs
-    .map(nft => {
-        const isLiked = likedNFTs.includes(nft._id);
-        const statusBadge =
-            nft.status === 'auction' ? 'Auction' :
-            nft.status === 'listed' ? 'For Sale' : '';
-
-       return `
-    <a href="artwork.html?id=${nft._id}" class="vx-nft-card"
-       data-testid="card-nft-${nft._id}"
-       style="text-decoration: none; color: inherit; display: block;">
-        
-        <div class="vx-nft-image-container">
-            ${
-                nft.mediaType === "video"
-                ? `
-                    <video
-                        src="${nft.imageUrl}"
-                        class="vx-nft-image"
-                        autoplay
-                        loop
-                        muted
-                        playsinline
-                    ></video>
-                `
-                : `
-                    <img
-                        src="${nft.imageUrl}"
-                        alt="${nft.name}"
-                        class="vx-nft-image"
-                    >
-                `
-            }
-
-            ${statusBadge ? `<span class="vx-nft-badge">${statusBadge}</span>` : ''}
-
-            <button class="vx-nft-like ${isLiked ? 'liked' : ''}"
-                onclick="event.preventDefault(); event.stopPropagation(); toggleLike('${nft._id}')"
-                data-testid="button-like-${nft._id}">
-                
-                <i class="bi bi-heart${isLiked ? '-fill' : ''}"></i>
-                <div class="vx-likes-count">${nft.likes || 0}</div>
-            </button>
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="ft-top">
+    <div class="wrap">
+      <div class="ft-grid">
+        <!-- Brand -->
+        <div>
+          <div class="ft-brand"><img src="./logo.png" alt="Ethergalleries" /></div>
+          <p class="ft-tagline">The premier marketplace for rare digital art, NFTs, and on-chain collectibles. Empowering creators and collectors worldwide.</p>
+          <div class="ft-social">
+            <a href="#" class="soc-btn" title="X / Twitter"><i class="bi bi-twitter-x"></i></a>
+            <a href="#" class="soc-btn" title="Discord"><i class="bi bi-discord"></i></a>
+            <a href="#" class="soc-btn" title="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="soc-btn" title="Telegram"><i class="bi bi-telegram"></i></a>
+          </div>
         </div>
-
-        <div class="vx-nft-content">
-            <h6 class="vx-nft-title">${nft.name}</h6>
-            <p class="vx-nft-creator">by ${nft.creator || 'Unknown'}</p>
-
-            <div class="vx-nft-footer">
-                <div class="vx-nft-price">
-                    ${nft.price
-                        ? nft.price.toFixed(2) + ' ' + (nft.currency || 'ETH')
-                        : 'Not listed'}
-                    <small>Current Price</small>
-                </div>
+        <!-- Explore -->
+        <div class="ft-col">
+          <h5>Explore</h5>
+          <ul class="ft-links">
+            <li><a href="/index.html"><i class="bi bi-compass"></i> Marketplace</a></li>
+            <li><a href="category.html" onclick="return guardedNav(event,'category.html')"><i class="bi bi-grid"></i> Categories</a></li>
+            <li><a href="#collections"><i class="bi bi-collection"></i> Collections</a></li>
+            <li><a href="#auctions"><i class="bi bi-hammer"></i> Live Auctions</a></li>
+            <li><a href="#exhibitions"><i class="bi bi-building"></i> Exhibitions</a></li>
+          </ul>
+        </div>
+        <!-- Account -->
+        <div class="ft-col">
+          <h5>Account</h5>
+          <ul class="ft-links">
+            <li><a href="/dashboard.html" onclick="return guardedNav(event,'dashboard.html')"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a href="/login.html"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
+            <li><a href="/signup.html"><i class="bi bi-person-plus"></i> Sign Up</a></li>
+            <li><a href="support.html"><i class="bi bi-lifepreserver"></i> Support</a></li>
+          </ul>
+        </div>
+        <!-- Status -->
+        <div class="ft-col">
+          <h5>Platform Status</h5>
+          <div class="ft-status">
+            <div class="st-row"><span>API Services</span><div class="st-dot"></div></div>
+            <div class="st-row"><span>Marketplace</span><div class="st-dot"></div></div>
+            <div class="st-row"><span>Auctions Engine</span><div class="st-dot"></div></div>
+            <div class="st-row"><span>Payment Gateway</span><div class="st-dot amber"></div></div>
+          </div>
+          <div style="margin-top:1.75rem;">
+            <h5>Accepted</h5>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem;">
+              <span class="chip">ETH</span><span class="chip">MATIC</span><span class="chip">SOL</span><span class="chip">USDC</span>
             </div>
-        </div>
-    </a>
-`;
-
-    })
-    .join('');
-        }
-        
-        function renderAuctions() {
-            const grid = document.getElementById('auctionsGrid');
-            const activeAuctions = allAuctions.filter(a => {
-                const now = new Date();
-                return new Date(a.startTime) <= now && new Date(a.endTime) > now;
-            });
-            
-            if (activeAuctions.length === 0) {
-                grid.innerHTML = '<div class="col-12 text-center text-muted py-4">No live auctions at the moment</div>';
-                return;
-            }
-            
-            grid.innerHTML = activeAuctions.slice(0, 4).map(auction => {
-                const endTime = new Date(auction.endTime);
-                const timeLeft = getTimeLeft(endTime);
-                
-                return `
-                    <div class="col-md-6 col-lg-3">
-                        <div class="vx-auction-card">
-                            <div class="vx-auction-timer">
-                                <div class="vx-timer-item">
-                                    <span class="vx-timer-value">${timeLeft.hours}</span>
-                                    <span class="vx-timer-label">Hours</span>
-                                </div>
-                                <div class="vx-timer-item">
-                                    <span class="vx-timer-value">${timeLeft.minutes}</span>
-                                    <span class="vx-timer-label">Mins</span>
-                                </div>
-                                <div class="vx-timer-item">
-                                    <span class="vx-timer-value">${timeLeft.seconds}</span>
-                                    <span class="vx-timer-label">Secs</span>
-                                </div>
-                            </div>
-                            <h5 class="fw-bold mb-2">${auction.title || 'Untitled Auction'}</h5>
-                            <p class="opacity-75 mb-3">Current Bid: ${auction.currentBid || auction.startingPrice} ETH</p>
-                            <button class="btn btn-light btn-sm rounded-pill px-4" onclick="openAuctionDetail('${auction._id}')" data-testid="button-bid-${auction._id}">Place Bid</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function renderExhibitions() {
-  const grid = document.getElementById('exhibitionsGrid');
-
-  if (allExhibitions.length === 0) {
-    grid.innerHTML =
-      '<div class="col-12 text-center text-muted py-4">No exhibitions available</div>';
-    return;
-  }
-
-  grid.innerHTML = allExhibitions.slice(0, 3).map(exhibition => `
-    <div class="col-md-4">
-      <div class="vx-exhibition-card">
-        <img 
-          src="${exhibition.thumbnailUrl || 'https://via.placeholder.com/400x200?text=Exhibition'}"
-          alt="${exhibition.title}"
-          class="vx-exhibition-image"
-        />
-        <div class="vx-exhibition-content">
-          <span class="badge bg-primary mb-2">${exhibition.type || 'Virtual'}</span>
-          <h5 class="fw-bold">${exhibition.title}</h5>
-          <p class="text-muted small mb-3">
-            ${exhibition.description || 'No description'}
-          </p>
-          <div class="d-flex justify-content-between align-items-center">
-            <small class="text-muted">
-              <i class="bi bi-calendar me-1"></i>
-              ${new Date(exhibition.startDate).toLocaleDateString()}
-            </small>
-            <button 
-              class="btn btn-sm btn-outline-primary rounded-pill view-exhibition-btn"
-              data-id="${exhibition._id}">
-              View
-            </button>
           </div>
         </div>
       </div>
     </div>
-  `).join('');
-}
-function openExhibitionView(exhibitionId) {
-  const exhibition = allExhibitions.find(e => e._id === exhibitionId);
-  if (!exhibition) return;
-
-  document.getElementById("exhibitionModalTitle").textContent =
-    exhibition.title;
-
-  document.getElementById("exhibitionModalBody").innerHTML = `
-    <img 
-      src="${exhibition.thumbnailUrl || 'https://via.placeholder.com/800x400'}"
-      class="img-fluid rounded mb-3"
-      alt="${exhibition.title}"
-    />
-
-    <p class="text-muted">${exhibition.description || "No description"}</p>
-
-    <div class="d-flex gap-3 flex-wrap">
-      <span class="badge bg-primary">${exhibition.type || "Virtual"}</span>
-      <span class="badge bg-outline-secondary">
-        ${new Date(exhibition.startDate).toLocaleDateString()}
-      </span>
+  </div>
+  <div class="wrap">
+    <div class="ft-bottom">
+      <p>© 2024 Ethergalleries. All rights reserved.</p>
+      <div class="ft-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookie Policy</a>
+      </div>
     </div>
-  `;
+  </div>
+</footer>
 
-  const modal = new bootstrap.Modal(
-    document.getElementById("exhibitionViewModal")
-  );
+<!-- ARTWORK MODAL -->
+<div class="m-overlay" id="artworkModal">
+  <div class="m-box">
+    <div class="m-hdr">
+      <h5>Artwork Details</h5>
+      <button class="m-close" onclick="closeArtworkModal()"><i class="bi bi-x"></i></button>
+    </div>
+    <div class="m-bdy">
+      <div class="aw-det">
+        <div><img src="" alt="" class="aw-img" id="modalArtworkImage" /></div>
+        <div class="aw-info">
+          <h2 id="modalArtworkName"></h2>
+          <div class="cr-pill"><div class="cr-av" id="modalCreatorAvatar"></div><span id="modalCreatorName"></span></div>
+          <p class="text-muted" id="modalArtworkDescription" style="font-size:.9rem;line-height:1.65;margin-bottom:1rem;"></p>
+          <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
+            <span class="chip" id="modalCategory"></span><span class="chip" id="modalRarity"></span>
+          </div>
+          <div class="pr-box"><div class="pr-lbl">Current Price</div><div class="pr-val" id="modalPrice"></div></div>
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:.75rem;">
+            <button class="btn btn-outline-danger rounded-pill btn-sm" id="modalLikeBtn" onclick="toggleModalLike()">
+              <i class="bi bi-heart me-1"></i><span id="modalLikeCount">0</span>
+            </button>
+            <span class="text-muted" style="font-size:.85rem;"><i class="bi bi-eye me-1"></i><span id="modalViews">0</span> views</span>
+          </div>
+          <div class="act-btns" id="modalActionBtns"></div>
+          <div class="share-rw">
+            <input type="text" id="shareLink" readonly />
+            <button onclick="copyShareLink()"><i class="bi bi-copy"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  modal.show();
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* TOKEN GUARD */
+function guardedNav(ev,dest){
+  if(!localStorage.getItem('token')){
+    ev.preventDefault();
+    Swal.fire({icon:'warning',title:'Login Required',text:'Please log in to access this section.',showCancelButton:true,confirmButtonText:'Go to Login',cancelButtonText:'Cancel',confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'})
+    .then(r=>{if(r.isConfirmed)window.location.href='/login.html';});
+    return false;
+  }
+  return true;
+}
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a[href]');
+  if(!a)return;
+  const h=a.getAttribute('href')||'';
+  if(['category.html','artwork.html','artist.html','dashboard.html'].some(g=>h.includes(g))&&!localStorage.getItem('token')){
+    e.preventDefault();
+    Swal.fire({icon:'warning',title:'Login Required',text:'Please log in to access this page.',showCancelButton:true,confirmButtonText:'Go to Login',cancelButtonText:'Cancel',confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'})
+    .then(r=>{if(r.isConfirmed)window.location.href='/login.html';});
+  }
+});
+
+/* STATE */
+let allNFTs=[],allAuctions=[],allExhibitions=[];
+let curCat='all',curTab='all',curNFT=null;
+let liked=JSON.parse(localStorage.getItem('likedNFTs')||'[]');
+let srchT=null;
+let fIdx=0,cIdx=0,fItems=[],cItems=[],fAuto=null,cAuto=null;
+const SLIDE=4200;
+let gridView='masonry'; // masonry | uniform | list
+
+document.addEventListener('DOMContentLoaded',()=>{
+  loadData(); setupListeners(); checkURL(); loadCarousels();
+  buildTicker(); startActivityFeed(); initHeroCarousel();
+});
+
+function setupListeners(){
+  document.querySelectorAll('.cat-chip').forEach(c=>{
+    c.addEventListener('click',()=>{
+      const cat=c.dataset.category;
+      window.location.href=cat==='all'?'category.html':`category.html?category=${encodeURIComponent(cat)}`;
+    });
+  });
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active'); curTab=t.dataset.tab; renderNFTs();
+    });
+  });
+  document.getElementById('sortFilter').addEventListener('change',renderNFTs);
+  document.getElementById('priceFilter').addEventListener('change',renderNFTs);
+  const si=document.getElementById('searchInput');
+  si.addEventListener('input',e=>{clearTimeout(srchT);srchT=setTimeout(()=>doSearch(e.target.value),300);});
+  si.addEventListener('focus',()=>{if(si.value.length>=2)document.getElementById('searchDropdown').classList.add('show');});
+  document.addEventListener('click',e=>{if(!e.target.closest('.hdr-srch'))document.getElementById('searchDropdown').classList.remove('show');});
+  document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();si.focus();}});
+  ['featuredDropsCarousel','categoriesCarousel'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.addEventListener('mouseenter',()=>{clearInterval(fAuto);clearInterval(cAuto);});
+    el.addEventListener('mouseleave',()=>{startFA();startCA();});
+  });
+  // Also wire up outer wrappers once carousels render
+  setTimeout(setupCarouselPause, 500);
+  // View toggle
+  document.querySelectorAll('.vt-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.vt-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      gridView=btn.dataset.view;
+      renderNFTs();
+    });
+  });
 }
 
-document
-  .getElementById('exhibitionsGrid')
-  .addEventListener('click', (e) => {
-    const btn = e.target.closest('.view-exhibition-btn');
-    if (!btn) return;
+async function loadData(){
+  try{
+    const[nr,ar,er]=await Promise.all([
+      fetch('https://changes-sample.onrender.com/api/marketplace/nfts'),
+      fetch('https://changes-sample.onrender.com/api/marketplace/auctions'),
+      fetch('https://changes-sample.onrender.com/api/marketplace/exhibitions')
+    ]);
+    if(nr.ok)allNFTs=await nr.json();
+    if(ar.ok)allAuctions=await ar.json();
+    if(er.ok)allExhibitions=await er.json();
+    renderNFTs(); renderAuctions(); renderExhibitions(); renderCollections();
+    buildTicker(); // rebuild with real data
+    populateHeroFromNFTs(); // swap hero placeholders with real artworks
+  }catch(e){console.error(e);}
+}
 
-    const exhibitionId = btn.dataset.id;
-    openExhibitionView(exhibitionId);
+/* CAROUSELS */
+async function loadCarousels(){
+  try{
+    const res=await fetch('https://changes-sample.onrender.com/api/marketplace/nfts');
+    if(!res.ok)throw new Error();
+    const nfts=await res.json();
+    fItems=shuffle([...nfts]).slice(0,12);
+    renderFC(); startFA();
+    const cats=['Art','Gaming','Music','Photography','Sports','3D Art','Video'];
+    cItems=[];
+    cats.forEach(cat=>{
+      const pool=nfts.filter(n=>n.category===cat);
+      if(pool.length)cItems.push({...pool[Math.floor(Math.random()*pool.length)],dc:cat});
+    });
+    renderCC(); startCA();
+  }catch(e){
+    errTrack('featuredDropsTrack'); errTrack('categoriesArtTrack');
+  }
+}
+
+function errTrack(id){const t=document.getElementById(id);if(t)t.innerHTML='<div class="car-empty">No items available</div>';}
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function renderFC(){
+  const t=document.getElementById('featuredDropsTrack');
+  if(!t||!fItems.length)return errTrack('featuredDropsTrack');
+  t.innerHTML=fItems.map(n=>{
+    const statusBadge=n.status==='auction'
+      ?'<span class="fd-status auc">Auction</span>'
+      :n.status==='listed'
+        ?'<span class="fd-status sale">For Sale</span>'
+        :'';
+    const media=n.mediaType==='video'
+      ?`<video src="${n.imageUrl}" autoplay loop muted playsinline></video>`
+      :`<img src="${n.imageUrl||'/placeholder.svg'}" alt="${n.name}" loading="lazy">`;
+    const initials=(n.creator||'?')[0].toUpperCase();
+    const price=n.price?`${n.price.toFixed(2)} ${n.currency||'ETH'}`:'Unlisted';
+    return`<div class="fd-card" data-testid="card-featured-${n._id}" onclick="window.location.href='artwork.html?id=${n._id}'">
+      ${media}
+      <span class="fd-cat">${n.category||'Art'}</span>
+      ${statusBadge}
+      <div class="fd-info">
+        <div class="fd-artist-row">
+          <div class="fd-av">${initials}</div>
+          <span class="fd-artist-name">by ${n.creator||'Unknown'}</span>
+        </div>
+        <div class="fd-name">${n.name}</div>
+        <div class="fd-footer">
+          <div>
+            <div class="fd-price-lbl">Price</div>
+            <div class="fd-price-val">${price}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;">
+            <div class="fd-likes"><i class="bi bi-heart-fill" style="color:#f87171;font-size:.7rem;"></i>${n.likes||0}</div>
+            <a href="artwork.html?id=${n._id}" class="fd-btn" onclick="event.stopPropagation()">View <i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  setTP('featuredDropsTrack',fIdx);
+}
+
+/* category accent map */
+const CAT_ACCENTS = {
+  'Art':         { color:'#f472b6', icon:'bi-palette-fill',           accent:'rgba(236,72,153,.55)' },
+  'Gaming':      { color:'#fbbf24', icon:'bi-controller',              accent:'rgba(245,158,11,.55)' },
+  'Music':       { color:'#f87171', icon:'bi-music-note-beamed',       accent:'rgba(239,68,68,.5)'  },
+  'Photography': { color:'#2dd4bf', icon:'bi-camera-fill',             accent:'rgba(20,184,166,.5)' },
+  'Sports':      { color:'#60a5fa', icon:'bi-trophy-fill',             accent:'rgba(59,130,246,.5)' },
+  '3D Art':      { color:'#a78bfa', icon:'bi-box',                     accent:'rgba(139,92,246,.5)' },
+  'Video':       { color:'#c084fc', icon:'bi-play-circle-fill',        accent:'rgba(168,85,247,.5)' },
+};
+
+function renderCC(){
+  const t=document.getElementById('categoriesArtTrack');
+  if(!t||!cItems.length)return errTrack('categoriesArtTrack');
+  t.innerHTML=cItems.map(n=>{
+    const cfg=CAT_ACCENTS[n.dc]||{color:'#22c55e',icon:'bi-grid',accent:'rgba(34,197,94,.5)'};
+    const price=n.price?`${(n.price||0).toFixed(2)} ${n.currency||'ETH'}`:'Explore';
+    return`<div class="cc-card" style="--cc-color:${cfg.color};--cc-accent:${cfg.accent};"
+        onclick="window.location.href='category.html?category=${encodeURIComponent(n.dc)}'"
+        data-testid="card-cat-${n.dc}">
+      <img src="${n.imageUrl||'/placeholder.svg'}" alt="${n.dc}" loading="lazy">
+      <div class="cc-icon"><i class="bi ${cfg.icon}"></i></div>
+      <div class="cc-count">${n.dc}</div>
+      <div class="cc-info">
+        <div class="cc-cat-label">${n.dc}</div>
+        <div class="cc-name">${n.name}</div>
+        <div class="cc-artist">by ${n.creator||'Unknown'}</div>
+        <div class="cc-footer">
+          <span class="cc-price">${price}</span>
+          <a href="category.html?category=${encodeURIComponent(n.dc)}" class="cc-explore" onclick="event.stopPropagation()">
+            Explore <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  setTP('categoriesArtTrack',cIdx);
+}
+
+function cardW(tid){
+  const t=document.getElementById(tid); if(!t)return 278;
+  const c=t.querySelector('.c-card,.cc-card,.fd-card'); if(!c)return 278;
+  const rect=c.getBoundingClientRect();
+  const gap=parseFloat(window.getComputedStyle(t).gap)||18;
+  return rect.width+gap;
+}
+function setTP(tid,idx){
+  const t=document.getElementById(tid);
+  if(!t)return;
+  // Offset by track's own paddingLeft so index 0 starts flush
+  const pl=parseFloat(window.getComputedStyle(t).paddingLeft)||48;
+  const offset=idx===0?0:idx*cardW(tid);
+  t.style.transform=`translateX(-${offset}px)`;
+}
+
+// Update hover pause to use new outer wrapper id
+function setupCarouselPause(){
+  ['featuredDropsCarousel','categoriesCarousel'].forEach(id=>{
+    const el=document.getElementById(id);
+    const outer=el?.closest('.car-outer');
+    if(!outer)return;
+    outer.addEventListener('mouseenter',()=>{clearInterval(fAuto);clearInterval(cAuto);});
+    outer.addEventListener('mouseleave',()=>{startFA();startCA();});
+  });
+}
+
+function slideFeatured(d){if(!fItems.length)return;fIdx=(fIdx+d+fItems.length)%fItems.length;setTP('featuredDropsTrack',fIdx);}
+function slideCategoryArt(d){if(!cItems.length)return;cIdx=(cIdx+d+cItems.length)%cItems.length;setTP('categoriesArtTrack',cIdx);}
+function startFA(){clearInterval(fAuto);fAuto=setInterval(()=>slideFeatured(1),SLIDE);}
+function startCA(){clearInterval(cAuto);cAuto=setInterval(()=>slideCategoryArt(1),SLIDE);}
+
+let rT; window.addEventListener('resize',()=>{
+  clearTimeout(rT);
+  rT=setTimeout(()=>{
+    setTP('featuredDropsTrack',fIdx);
+    setTP('categoriesArtTrack',cIdx);
+  },120);
+});
+
+/* COLLECTIONS */
+function renderCollections(){
+  const grid=document.getElementById('collectionsGrid');
+  if(!allNFTs.length)return;
+  const byC={};
+  allNFTs.forEach(n=>{const k=n.creator||'Unknown';if(!byC[k])byC[k]=[];byC[k].push(n);});
+  const cols=Object.entries(byC)
+    .map(([c,ns])=>({c,ns,tot:ns.length,floor:Math.min(...ns.map(n=>n.price||0))}))
+    .sort((a,b)=>b.tot-a.tot).slice(0,6);
+  if(!cols.length){grid.innerHTML='<div class="car-empty" style="grid-column:1/-1">No collections found</div>';return;}
+  const ph='https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&auto=format&fit=crop';
+  grid.innerHTML=cols.map((col,i)=>{
+    const imgs=col.ns.slice(0,3);
+    const chg=(Math.random()*40-5).toFixed(1);
+    const up=parseFloat(chg)>=0;
+    return`<div class="coll-card" onclick="window.location.href='category.html'" data-testid="coll-${i}">
+      <div class="coll-mosaic">
+        <img src="${imgs[0]?.imageUrl||ph}" alt="">
+        <img src="${imgs[1]?.imageUrl||ph}" alt="">
+        <img src="${imgs[2]?.imageUrl||ph}" alt="">
+      </div>
+      <span class="coll-badge">${col.tot} items</span>
+      <div class="coll-body">
+        <div class="coll-cr"><div class="coll-av">${col.c.charAt(0).toUpperCase()}</div><span>by ${col.c}</span></div>
+        <div class="coll-nm">${col.c}'s Collection</div>
+        <div class="coll-meta">
+          <div class="coll-st"><label>Floor</label><span>${col.floor.toFixed(2)} ETH</span></div>
+          <div class="coll-st"><label>Volume</label><span>${(col.tot*col.floor).toFixed(1)} ETH</span></div>
+          <div class="coll-st"><label>24h</label><span class="${up?'up':''}">${up?'+':''}${chg}%</span></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* NFT GRID */
+function renderNFTs(){
+  let f=[...allNFTs];
+  if(curCat!=='all')f=f.filter(n=>n.category===curCat);
+  if(curTab==='listed')f=f.filter(n=>n.status==='listed');
+  if(curTab==='auction')f=f.filter(n=>n.status==='auction');
+  const pr=document.getElementById('priceFilter').value;
+  if(pr==='10+')f=f.filter(n=>(n.price||0)>=10);
+  else if(pr){const[lo,hi]=pr.split('-').map(Number);f=f.filter(n=>(n.price||0)>=lo&&(n.price||0)<hi);}
+  switch(document.getElementById('sortFilter').value){
+    case'oldest':f.sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));break;
+    case'price-low':f.sort((a,b)=>(a.price||0)-(b.price||0));break;
+    case'price-high':f.sort((a,b)=>(b.price||0)-(a.price||0));break;
+    case'likes':f.sort((a,b)=>(b.likes||0)-(a.likes||0));break;
+    default:f.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  }
+
+  // Spotlight: pick most-liked listed NFT
+  const sp=f.find(n=>n.status==='listed'&&n.price)||f[0];
+  renderSpotlight(sp);
+
+  const g=document.getElementById('nftGrid');
+  // Apply view mode class
+  g.className='nft-grid'+(gridView==='uniform'?' grid-uniform':gridView==='list'?' grid-list':'');
+
+  if(!f.length){g.innerHTML='<div class="empty-st"><i class="bi bi-image"></i><h4>No artworks found</h4><p>Try adjusting your filters</p></div>';return;}
+
+  const rarityColor={Legendary:'#f59e0b',Epic:'#8b5cf6',Rare:'#3b82f6',Uncommon:'#14b8a6',Common:'#4a5568'};
+
+  g.innerHTML=f.slice(0,20).map(nft=>{
+    const lk=liked.includes(nft._id);
+    const bd=nft.status==='auction'?'<span class="nft-badge auc">Auction</span>':nft.status==='listed'?'<span class="nft-badge">For Sale</span>':'';
+    const md=nft.mediaType==='video'?`<video src="${nft.imageUrl}" autoplay loop muted playsinline style="width:100%;display:block;"></video>`:`<img src="${nft.imageUrl}" alt="${nft.name}" loading="lazy">`;
+    const rar=nft.rarity||'Common';
+    const rarCol=rarityColor[rar]||'#4a5568';
+    const rarPill=`<span style="position:absolute;bottom:.6rem;left:.6rem;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);border:1px solid ${rarCol}44;color:${rarCol};font-size:.6rem;font-weight:700;padding:.2rem .55rem;border-radius:50px;letter-spacing:.06em;text-transform:uppercase;">${rar}</span>`;
+    return`<a href="artwork.html?id=${nft._id}" class="nft-card" data-testid="card-nft-${nft._id}" style="text-decoration:none;">
+      <div class="nft-iw">${md}${bd}${rarPill}
+        <button class="nft-like ${lk?'liked':''}" onclick="event.preventDefault();event.stopPropagation();toggleLike('${nft._id}')" data-testid="button-like-${nft._id}">
+          <i class="bi bi-heart${lk?'-fill':''}"></i><span class="nft-lc">${nft.likes||0}</span>
+        </button>
+      </div>
+      <div class="nft-bdy">
+        <div class="nft-ttl">${nft.name}</div>
+        <div class="nft-cr">by ${nft.creator||'Unknown'}</div>
+        <div class="nft-ft">
+          <div class="nft-pr">${nft.price?nft.price.toFixed(2)+' '+(nft.currency||'ETH'):'Unlisted'}<small>Current Price</small></div>
+          <div class="nft-vw"><i class="bi bi-eye"></i>${nft.views||0}</div>
+        </div>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+function renderSpotlight(nft){
+  const el=document.getElementById('spotlightCard');
+  if(!nft){el.style.display='none';return;}
+  el.style.display='grid';
+  document.getElementById('spImg').src=nft.imageUrl||'';
+  document.getElementById('spCat').textContent=nft.category||'Art';
+  document.getElementById('spTitle').textContent=nft.name||'';
+  document.getElementById('spAv').textContent=(nft.creator||'U')[0].toUpperCase();
+  document.getElementById('spArtist').textContent=nft.creator||'Unknown';
+  document.getElementById('spPrice').textContent=nft.price?`${nft.price.toFixed(2)} ${nft.currency||'ETH'}`:'Not listed';
+  document.getElementById('spViews').textContent=nft.views||0;
+  document.getElementById('spLikes').textContent=nft.likes||0;
+  document.getElementById('spBuyBtn').onclick=()=>nft.status==='listed'?buyNFT(nft._id):placeBid(nft._id);
+  document.getElementById('spLikeBtn').onclick=()=>toggleLike(nft._id);
+}
+
+/* AUCTIONS */
+function renderAuctions(){
+  const g=document.getElementById('auctionsGrid');
+  const now=Date.now();
+  const act=allAuctions.filter(a=>new Date(a.startTime)<=now&&new Date(a.endTime)>now);
+  if(!act.length){g.innerHTML='<div class="col-12 text-center text-muted py-5">No live auctions at the moment.</div>';return;}
+  g.innerHTML=act.slice(0,4).map(a=>{
+    const tl=tLeft(new Date(a.endTime));
+    const th=allNFTs.find(n=>n._id===a.nftId);
+    return`<div class="col-md-6 col-lg-3"><div class="auc-card">
+      ${th?`<img src="${th.imageUrl}" class="auc-thumb" alt="">` : ''}
+      <div class="auc-timer">
+        <div class="t-seg"><span class="t-val">${tl.h}</span><span class="t-lbl">Hrs</span></div>
+        <div class="t-seg"><span class="t-val">${tl.m}</span><span class="t-lbl">Min</span></div>
+        <div class="t-seg"><span class="t-val">${tl.s}</span><span class="t-lbl">Sec</span></div>
+      </div>
+      <div class="auc-name">${a.title||'Untitled Auction'}</div>
+      <div class="auc-bid">Current Bid: <strong>${a.currentBid||a.startingPrice} ETH</strong></div>
+      <button class="btn-bid" onclick="placeBid('${a._id}')" data-testid="button-bid-${a._id}"><i class="bi bi-hammer"></i> Place Bid</button>
+    </div></div>`;
+  }).join('');
+}
+setInterval(renderAuctions,1000);
+function tLeft(end){const d=Math.max(0,end-Date.now());return{h:String(Math.floor(d/3600000)).padStart(2,'0'),m:String(Math.floor((d%3600000)/60000)).padStart(2,'0'),s:String(Math.floor((d%60000)/1000)).padStart(2,'0')};}
+
+/* EXHIBITIONS */
+function renderExhibitions(){
+  const g=document.getElementById('exhibitionsGrid');
+  if(!allExhibitions.length){g.innerHTML='<div class="col-12 text-center text-muted py-5">No exhibitions available.</div>';return;}
+  g.innerHTML=allExhibitions.slice(0,3).map(ex=>`
+    <div class="col-md-4"><div class="exh-card">
+      <img src="${ex.thumbnailUrl||'https://via.placeholder.com/400x200'}" alt="${ex.title}" class="exh-img">
+      <div class="exh-bdy">
+        <div class="exh-type">${ex.type||'Virtual'}</div>
+        <div class="exh-ttl">${ex.title}</div>
+        <div class="exh-desc">${ex.description||'No description'}</div>
+        <div class="exh-ft">
+          <div class="exh-dt"><i class="bi bi-calendar3"></i>${new Date(ex.startDate).toLocaleDateString()}</div>
+          <button class="btn-vexh view-exhibition-btn" data-id="${ex._id}">View</button>
+        </div>
+      </div>
+    </div></div>`).join('');
+}
+function openExhibitionView(id){
+  const ex=allExhibitions.find(e=>e._id===id);if(!ex)return;
+  document.getElementById('exhibitionModalTitle').textContent=ex.title;
+  document.getElementById('exhibitionModalBody').innerHTML=`<img src="${ex.thumbnailUrl||''}" class="img-fluid rounded mb-3" alt="${ex.title}"><p class="text-muted mb-3">${ex.description||'No description'}</p><div class="d-flex gap-2"><span class="chip">${ex.type||'Virtual'}</span><span class="chip">${new Date(ex.startDate).toLocaleDateString()}</span></div>`;
+  new bootstrap.Modal(document.getElementById('exhibitionViewModal')).show();
+}
+document.getElementById('exhibitionsGrid').addEventListener('click',e=>{const b=e.target.closest('.view-exhibition-btn');if(b)openExhibitionView(b.dataset.id);});
+
+/* SEARCH */
+async function doSearch(q){
+  const d=document.getElementById('searchDropdown');
+  if(q.length<2){d.classList.remove('show');return;}
+  try{
+    const res=await fetch(`https://changes-sample.onrender.com/api/marketplace/search?q=${encodeURIComponent(q)}`);
+    if(!res.ok)throw new Error();
+    const results=await res.json();
+    if(!results.length){d.innerHTML='<div class="p-3 text-muted text-center" style="font-size:.875rem;">No results found</div>';}
+    else{
+      const arts=[...new Set(results.map(n=>n.creator).filter(Boolean))].filter(a=>a.toLowerCase().includes(q.toLowerCase())).slice(0,3);
+      let h='';
+      if(arts.length){h+='<div class="srch-lbl">Artists</div>';h+=arts.map(a=>`<a href="artist.html?name=${encodeURIComponent(a)}" class="srch-item" style="background:rgba(59,130,246,.04);"><div class="srch-av">${a[0].toUpperCase()}</div><div><h6>${a}</h6><small>View Profile</small></div></a>`).join('');}
+      h+='<div class="srch-lbl">Artworks</div>';
+      h+=results.slice(0,6).map(n=>`<a href="artwork.html?id=${n._id}" class="srch-item"><img src="${n.imageUrl}" alt="${n.name}"><div><h6>${n.name}</h6><small>by ${n.creator||'Unknown'} · ${n.category}</small></div></a>`).join('');
+      d.innerHTML=h;
+    }
+    d.classList.add('show');
+  }catch(e){console.error(e);}
+}
+
+/* LIKE */
+async function toggleLike(id){
+  const lk=liked.includes(id);
+  liked=lk?liked.filter(x=>x!==id):[...liked,id];
+  localStorage.setItem('likedNFTs',JSON.stringify(liked));
+  const nft=allNFTs.find(n=>n._id===id);
+  if(nft)nft.likes=lk?Math.max(0,(nft.likes||0)-1):(nft.likes||0)+1;
+  renderNFTs();
+  try{
+    const token=localStorage.getItem('token');if(!token)throw new Error();
+    await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${id}/like`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify({unlike:lk})});
+  }catch(e){}
+}
+
+/* MODAL */
+function openArtworkModal(id){
+  curNFT=allNFTs.find(n=>n._id===id);if(!curNFT)return;
+  window.history.pushState({},'',`/marketplace?nft=${id}`);
+  incrementViews(id);
+  document.getElementById('modalArtworkImage').src=curNFT.imageUrl;
+  document.getElementById('modalArtworkName').textContent=curNFT.name;
+  document.getElementById('modalCreatorAvatar').textContent=(curNFT.creator||'U')[0].toUpperCase();
+  document.getElementById('modalCreatorName').textContent=curNFT.creator||'Unknown Artist';
+  document.getElementById('modalArtworkDescription').textContent=curNFT.description||'No description.';
+  document.getElementById('modalCategory').textContent=curNFT.category||'Art';
+  document.getElementById('modalRarity').textContent=curNFT.rarity||'Common';
+  document.getElementById('modalPrice').textContent=curNFT.price?`${curNFT.price.toFixed(2)} ${curNFT.currency||'ETH'}`:'Not for sale';
+  document.getElementById('modalViews').textContent=curNFT.views||0;
+  const lk=liked.includes(id);
+  const lb=document.getElementById('modalLikeBtn');
+  lb.innerHTML=`<i class="bi bi-heart${lk?'-fill':''} me-1"></i><span id="modalLikeCount">${curNFT.likes||0}</span>`;
+  lb.className=`btn btn-sm rounded-pill ${lk?'btn-danger':'btn-outline-danger'}`;
+  const ab=document.getElementById('modalActionBtns');
+  if(curNFT.status==='listed')ab.innerHTML=`<button class="act-btn buy" onclick="buyNFT('${id}')" data-testid="button-modal-buy"><i class="bi bi-cart me-2"></i>Buy Now — ${curNFT.price} ${curNFT.currency||'ETH'}</button>`;
+  else if(curNFT.status==='auction')ab.innerHTML=`<button class="act-btn buy" onclick="placeBid('${id}')" data-testid="button-modal-bid"><i class="bi bi-hammer me-2"></i>Place Bid</button>`;
+  else ab.innerHTML=`<div class="alert-secondary p-3 rounded-3" style="font-size:.875rem;">This artwork is not currently for sale.</div>`;
+  document.getElementById('shareLink').value=window.location.href;
+  document.getElementById('artworkModal').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeArtworkModal(){document.getElementById('artworkModal').style.display='none';document.body.style.overflow='';window.history.pushState({},'','/marketplace');curNFT=null;}
+function toggleModalLike(){
+  if(!curNFT)return;toggleLike(curNFT._id);
+  const lk=liked.includes(curNFT._id);
+  const lb=document.getElementById('modalLikeBtn');
+  lb.innerHTML=`<i class="bi bi-heart${lk?'-fill':''} me-1"></i><span id="modalLikeCount">${curNFT.likes||0}</span>`;
+  lb.className=`btn btn-sm rounded-pill ${lk?'btn-danger':'btn-outline-danger'}`;
+}
+async function incrementViews(id){try{const t=localStorage.getItem('token');if(!t)throw new Error();await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${id}/view`,{method:'POST'});}catch(e){}}
+async function buyNFT(id){
+  const nft=allNFTs.find(n=>n._id===id);if(!nft)return;
+  const sr=await fetch('https://changes-sample.onrender.com/api/auth/session');const sess=await sr.json();
+  if(!sess.authenticated){const r=await Swal.fire({icon:'warning',title:'Login Required',text:'Log in to purchase.',showCancelButton:true,confirmButtonText:'Login',cancelButtonText:'Cancel',confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});if(r.isConfirmed)window.location.href='/dashboard.html';return;}
+  const c=await Swal.fire({icon:'question',title:'Confirm Purchase',text:`Buy "${nft.name}" for ${nft.price} ${nft.currency||'ETH'}?`,showCancelButton:true,confirmButtonText:'Buy Now',confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});
+  if(!c.isConfirmed)return;
+  try{
+    const token=localStorage.getItem('token');if(!token)throw new Error('No token');
+    const res=await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${id}/buy`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`}});
+    if(!res.ok){const err=await res.json();throw new Error(err.message);}
+    await Swal.fire({icon:'success',title:'Purchased!',text:`"${nft.name}" is now in your collection.`,confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});
+    closeArtworkModal();loadData();
+  }catch(e){Swal.fire({icon:'error',title:'Error',text:e.message||'Purchase failed.',confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});}
+}
+async function placeBid(id){
+  const{value:amt}=await Swal.fire({icon:'question',title:'Place Bid',input:'text',inputLabel:'Bid amount (ETH):',inputPlaceholder:'e.g. 1.5',showCancelButton:true,confirmButtonText:'Submit Bid',confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});
+  if(!amt)return;
+  Swal.fire({icon:'success',title:'Bid Placed',text:`Your bid of ${amt} ETH was submitted.`,confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});
+}
+function copyShareLink(){const i=document.getElementById('shareLink');i.select();document.execCommand('copy');Swal.fire({icon:'success',title:'Copied!',text:'Link copied.',timer:1500,showConfirmButton:false,background:'#0e1018',color:'#eef2ff'});}
+function checkURL(){const id=new URLSearchParams(window.location.search).get('nft');if(id)setTimeout(()=>openArtworkModal(id),500);}
+/* ── HERO GHOST ARTWORK CROSSFADE ── */
+const HAP_DURATION = 7000; // ms each artwork stays visible
+const HAP_PLACEHOLDERS = [
+  { imageUrl:'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=900&auto=format&fit=crop', name:'Neon Genesis', creator:'0xArtLab', category:'Digital Art', price:'4.20 ETH' },
+  { imageUrl:'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=900&auto=format&fit=crop', name:'Chromatic Dreams', creator:'PixelSage', category:'3D Art', price:'2.75 ETH' },
+  { imageUrl:'https://images.unsplash.com/photo-1614812512223-b0c22c46c46b?w=900&auto=format&fit=crop', name:'Void Walker', creator:'MetaCanvas', category:'Photography', price:'1.98 ETH' },
+  { imageUrl:'https://images.unsplash.com/photo-1547623542-de3ff5941ddb?w=900&auto=format&fit=crop', name:'Electric Fauna', creator:'NeonWild', category:'Art', price:'6.50 ETH' },
+  { imageUrl:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&auto=format&fit=crop', name:'Astral Bloom', creator:'CryptoFlora', category:'Animated', price:'3.33 ETH' },
+];
+
+let hapItems = [];
+let hapActive = 0;
+let hapTimer = null;
+
+function initHeroCarousel() {
+  hapItems = HAP_PLACEHOLDERS;
+  buildHAP();
+  startHAP();
+}
+
+function populateHeroFromNFTs() {
+  if (allNFTs.length < 3) return;
+  hapItems = shuffle([...allNFTs])
+    .filter(n => n.imageUrl && n.mediaType !== 'video')
+    .slice(0, 6)
+    .map(n => ({
+      imageUrl: n.imageUrl,
+      name: n.name,
+      creator: n.creator || 'Unknown',
+      category: n.category || 'Art',
+      price: n.price ? `${n.price.toFixed(2)} ${n.currency||'ETH'}` : 'Unlisted',
+    }));
+  hapActive = 0;
+  buildHAP();
+  startHAP();
+}
+
+function buildHAP() {
+  const panel = document.getElementById('hapInner');
+  if (!panel) return;
+  // Remove old slides but keep progress bar
+  panel.querySelectorAll('.hap-slide').forEach(s => s.remove());
+
+  hapItems.forEach((item, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'hap-slide' + (i === 0 ? ' active' : '');
+    slide.dataset.idx = i;
+    slide.innerHTML = `
+      <img src="${item.imageUrl}" alt="${item.name}" loading="${i===0?'eager':'lazy'}">
+      <div class="hap-info">
+        <div class="hap-info-cat">${item.category}</div>
+        <div class="hap-info-name">${item.name}</div>
+        <div class="hap-info-row">
+          <span class="hap-info-artist">by ${item.creator}</span>
+          <span class="hap-info-price">${item.price}</span>
+        </div>
+      </div>`;
+    // insert before progress bar
+    panel.insertBefore(slide, panel.querySelector('.hap-progress'));
   });
 
-        
-        function getTimeLeft(endTime) {
-            const now = new Date();
-            const diff = Math.max(0, endTime - now);
-            
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            return {
-                hours: String(hours).padStart(2, '0'),
-                minutes: String(minutes).padStart(2, '0'),
-                seconds: String(seconds).padStart(2, '0')
-            };
-        }
-        
-        async function performSearch(query) {
-            const dropdown = document.getElementById('searchDropdown');
-            
-            if (query.length < 2) {
-                dropdown.classList.remove('show');
-                return;
-            }
-            
-            try {
-// const token = localStorage.getItem('token'); 
-//     if (!token) throw new Error('No token found');
+  resetHAPBar();
+}
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/marketplace/search?q=${encodeURIComponent(query)}`);
-                if (!res.ok) throw new Error('Search failed');
-                
-                const results = await res.json();
-                
-                if (results.length === 0) {
-                    dropdown.innerHTML = '<div class="p-3 text-muted text-center">No results found</div>';
-                } else {
-                    // Extract unique artists from results
-                    const uniqueArtists = [...new Set(results.map(nft => nft.creator).filter(Boolean))];
-                    const queryLower = query.toLowerCase();
-                    const matchingArtists = uniqueArtists.filter(artist => 
-                        artist.toLowerCase().includes(queryLower)
-                    ).slice(0, 3);
-                   // Extract unique creators + owners
-// const uniqueArtists = [
-//   ...new Set(
-//     results
-//       .flatMap(nft => [nft.creator, nft.owner])
-//       .filter(Boolean)
-//   )
-// ];
+function hapNext() {
+  const slides = document.querySelectorAll('#hapInner .hap-slide');
+  if (!slides.length) return;
+  slides[hapActive].classList.remove('active');
+  hapActive = (hapActive + 1) % slides.length;
+  slides[hapActive].classList.add('active');
+  resetHAPBar();
+}
 
-// const queryLower = query.toLowerCase();
+function resetHAPBar() {
+  const bar = document.getElementById('hapBar');
+  if (!bar) return;
+  bar.classList.remove('running');
+  bar.style.transition = 'none';
+  bar.style.width = '0%';
+  // Force reflow then start
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      bar.style.setProperty('--hap-dur', `${HAP_DURATION/1000}s`);
+      bar.classList.add('running');
+    });
+  });
+}
 
-// const matchingArtists = uniqueArtists
-//   .filter(name => name.toLowerCase().includes(queryLower))
-//   .slice(0, 3); 
-                    let html = '';
-                    
-                    // Show matching artists first
-                    if (matchingArtists.length > 0) {
-                        html += '<div class="vx-search-section-label">Artists</div>';
-                        html += matchingArtists.map(artist => `
-                            <a href="artist.html?name=${encodeURIComponent(artist)}" class="vx-search-result artist-result" data-testid="search-artist-${artist}">
-                                <div class="vx-artist-avatar">${artist.charAt(0).toUpperCase()}</div>
-                                <div class="vx-search-result-info">
-                                    <h6>${artist}</h6>
-                                    <small>View Profile</small>
-                                </div>
-                            </a>
-                        `).join('');
-                    }
-                    
-                    // Show NFTs
-                    html += '<div class="vx-search-section-label">Artworks</div>';
-                    html += results.slice(0, 6).map(nft => `
-                        <a href="artwork.html?id=${nft._id}" class="vx-search-result" data-testid="search-result-${nft._id}">
-                            <img src="${nft.imageUrl}" alt="${nft.name}">
-                            <div class="vx-search-result-info">
-                                <h6>${nft.name}</h6>
-                                <small>by ${nft.creator || 'Unknown'} - ${nft.category}</small>
-                            </div>
-                        </a>
-                    `).join('');
-                    
-                    dropdown.innerHTML = html;
-                }
-                
-                dropdown.classList.add('show');
-            } catch (err) {
-                console.error('Search error:', err);
-            }
-        }
-        
-        async function toggleLike(nftId) {
-            const isLiked = likedNFTs.includes(nftId);
-            
-            if (isLiked) {
-                likedNFTs = likedNFTs.filter(id => id !== nftId);
-            } else {
-                likedNFTs.push(nftId);
-            }
-            localStorage.setItem('likedNFTs', JSON.stringify(likedNFTs));
-            
-            const nft = allNFTs.find(n => n._id === nftId);
-            if (nft) {
-                nft.likes = isLiked ? Math.max(0, (nft.likes || 0) - 1) : (nft.likes || 0) + 1;
-            }
-            
-            filterAndRenderNFTs();
-            
-            try {
-const token = localStorage.getItem('token'); 
-    if (!token) throw new Error('No token found');
+function startHAP() {
+  clearInterval(hapTimer);
+  hapTimer = setInterval(hapNext, HAP_DURATION);
+}
 
-                await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${nftId}/like`, {
-                    method: 'POST',
-                     headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // ✅ Send JWT
-      },     body: JSON.stringify({ unlike: isLiked })
-                });
-            } catch (err) {
-                console.error('Like sync error:', err);
-            }
-        }
-        
-        function openArtworkModal(nftId) {
-            currentNFT = allNFTs.find(n => n._id === nftId);
-            if (!currentNFT) return;
-            
-            window.history.pushState({}, '', `/marketplace?nft=${nftId}`);
-            
-            incrementViews(nftId);
-            
-            document.getElementById('modalArtworkImage').src = currentNFT.imageUrl;
-            document.getElementById('modalArtworkName').textContent = currentNFT.name;
-            document.getElementById('modalCreatorAvatar').textContent = (currentNFT.creator || 'U')[0].toUpperCase();
-            document.getElementById('modalCreatorName').textContent = currentNFT.creator || 'Unknown Artist';
-            document.getElementById('modalArtworkDescription').textContent = currentNFT.description || 'No description available';
-            document.getElementById('modalCategory').textContent = currentNFT.category || 'Art';
-            document.getElementById('modalRarity').textContent = currentNFT.rarity || 'Common';
-            document.getElementById('modalPrice').textContent = currentNFT.price ? 
-                `${currentNFT.price.toFixed(2)} ${currentNFT.currency || 'ETH'}` : 'Not for sale';
-            document.getElementById('modalLikeCount').textContent = currentNFT.likes || 0;
-            document.getElementById('modalViews').textContent = currentNFT.views || 0;
-            
-            const isLiked = likedNFTs.includes(nftId);
-            const likeBtn = document.getElementById('modalLikeBtn');
-            likeBtn.innerHTML = `<i class="bi bi-heart${isLiked ? '-fill' : ''} me-1"></i> <span id="modalLikeCount">${currentNFT.likes || 0}</span>`;
-            likeBtn.classList.toggle('btn-danger', isLiked);
-            likeBtn.classList.toggle('btn-outline-danger', !isLiked);
-            
-            const actionBtns = document.getElementById('modalActionBtns');
-            if (currentNFT.status === 'listed') {
-                actionBtns.innerHTML = `
-                    <button class="vx-action-btn primary" onclick="buyNFT('${nftId}')" data-testid="button-modal-buy">
-                        <i class="bi bi-cart me-2"></i>Buy Now for ${currentNFT.price} ${currentNFT.currency || 'ETH'}
-                    </button>
-                `;
-            } else if (currentNFT.status === 'auction') {
-                actionBtns.innerHTML = `
-                    <button class="vx-action-btn primary" onclick="placeBid('${nftId}')" data-testid="button-modal-bid">
-                        <i class="bi bi-hammer me-2"></i>Place Bid
-                    </button>
-                `;
-            } else {
-                actionBtns.innerHTML = `
-                    <div class="alert alert-secondary mb-0">This artwork is not currently for sale</div>
-                `;
-            }
-            
-            document.getElementById('shareLink').value = window.location.href;
-            
-            document.getElementById('artworkModal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeArtworkModal() {
-            document.getElementById('artworkModal').style.display = 'none';
-            document.body.style.overflow = '';
-            window.history.pushState({}, '', '/marketplace');
-            currentNFT = null;
-        }
-        
-        function toggleModalLike() {
-            if (currentNFT) {
-                toggleLike(currentNFT._id);
-                const isLiked = likedNFTs.includes(currentNFT._id);
-                const likeBtn = document.getElementById('modalLikeBtn');
-                likeBtn.innerHTML = `<i class="bi bi-heart${isLiked ? '-fill' : ''} me-1"></i> <span id="modalLikeCount">${currentNFT.likes || 0}</span>`;
-                likeBtn.classList.toggle('btn-danger', isLiked);
-                likeBtn.classList.toggle('btn-outline-danger', !isLiked);
-            }
-        }
-        
-        async function incrementViews(nftId) {
-            try {
-const token = localStorage.getItem('token'); 
-    if (!token) throw new Error('No token found');
+/* TICKER TAPE */
+function buildTicker(){
+  const tickers=[
+    {name:'CryptoPunk #9981',price:'12.4 ETH',change:'+8.2%',up:true},
+    {name:'Bored Ape #3312',price:'84.0 ETH',change:'+2.1%',up:true},
+    {name:'Azuki #5521',price:'15.3 ETH',change:'-1.4%',up:false},
+    {name:'Doodles #8841',price:'7.8 ETH',change:'+5.7%',up:true},
+    {name:'CloneX #1029',price:'9.2 ETH',change:'+0.9%',up:true},
+    {name:'Moonbirds #441',price:'18.6 ETH',change:'-3.2%',up:false},
+    {name:'World of Women #220',price:'4.1 ETH',change:'+12.0%',up:true},
+    {name:'Otherdeed #6634',price:'2.9 ETH',change:'+1.8%',up:true},
+  ];
+  // Use real NFTs if loaded
+  const items=allNFTs.length?allNFTs.slice(0,8).map(n=>({name:n.name,price:`${(n.price||0).toFixed(2)} ${n.currency||'ETH'}`,change:`+${(Math.random()*15).toFixed(1)}%`,up:Math.random()>.3})):tickers;
+  const html=items.map(t=>`
+    <div class="ticker-item">
+      <span class="ti-name">${t.name}</span>
+      <span>${t.price}</span>
+      <span class="${t.up?'ti-up':'ti-down'}">${t.change}</span>
+    </div>
+    <div class="ticker-dot"></div>`).join('');
+  // Duplicate for seamless loop
+  const inner=document.getElementById('tickerInner');
+  if(inner){inner.innerHTML=html+html;}
+}
 
-                await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${nftId}/view`, { method: 'POST' });
-            } catch (err) {
-                console.error('View increment error:', err);
-            }
-        }
-        
-        async function buyNFT(nftId) {
-            const nft = allNFTs.find(n => n._id === nftId);
-            if (!nft) return;
-            
-            const sessionRes = await fetch('https://changes-sample.onrender.com/api/auth/session');
-            const session = await sessionRes.json();
-            
-            if (!session.authenticated) {
-                const loginResult = await Swal.fire({
-                    icon: 'warning',
-                    title: 'Login Required',
-                    text: 'You need to login to purchase NFTs. Go to login page?',
-                    showCancelButton: true,
-                    confirmButtonText: 'Go to Login',
-                    cancelButtonText: 'Cancel',
-                    confirmButtonColor: '#3b82f6'
-                });
-                if (loginResult.isConfirmed) {
-                    window.location.href = '/dashboard.html';
-                }
-                return;
-            }
-            
-            const result = await Swal.fire({
-                icon: 'question',
-                title: 'Confirm Purchase',
-                text: `Are you sure you want to buy "${nft.name}" for ${nft.price} ${nft.currency || 'ETH'}?`,
-                showCancelButton: true,
-                confirmButtonText: 'Buy Now',
-                cancelButtonText: 'Cancel',
-                confirmButtonColor: '#3b82f6'
-            });
-            if (!result.isConfirmed) return;
-            
-            try {
-const token = localStorage.getItem('token'); 
-    if (!token) throw new Error('No token found');
+/* LIVE ACTIVITY FEED */
+const activityMessages=[
+  (n,p)=>`<strong>${n}</strong> just purchased an artwork for <span class="at-price">${p} ETH</span>`,
+  (n,p)=>`<strong>${n}</strong> placed a bid of <span class="at-price">${p} ETH</span>`,
+  (n)=>`<strong>${n}</strong> added a new artwork to their collection`,
+  (n,p)=>`<strong>${n}</strong> listed an NFT for <span class="at-price">${p} ETH</span>`,
+  (n)=>`<strong>${n}</strong> started following a creator`,
+];
+const fakeNames=['0xAlpha','CryptoSage','NFTWanderer','PixelKing','ArtCollector','0xZen','MetaVault','NeonDreamer'];
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${nftId}/buy`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                     }
-                });
-                
-                if (!res.ok) {
-                    const error = await res.json();
-                    throw new Error(error.message || 'Purchase failed');
-                }
-                
-                const purchaseResult = await res.json();
-                await Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: `Congratulations! You now own "${nft.name}". The artwork has been transferred to your collection.`,
-                    confirmButtonColor: '#3b82f6'
-                });
-                
-                closeArtworkModal();
-                loadMarketplaceData();
-            } catch (err) {
-                await Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: err.message || 'Failed to complete purchase. Please try again.',
-                    confirmButtonColor: '#3b82f6'
-                });
-            }
-        }
-        
-        async function placeBid(nftId) {
-            const { value: bidAmount } = await Swal.fire({
-                icon: 'question',
-                title: 'Place Bid',
-                input: 'text',
-                inputLabel: 'Enter your bid amount (ETH):',
-                inputPlaceholder: 'e.g., 1.5',
-                showCancelButton: true,
-                confirmButtonText: 'Submit Bid',
-                cancelButtonText: 'Cancel',
-                confirmButtonColor: '#3b82f6'
-            });
-            if (!bidAmount) return;
-            
-            await Swal.fire({
-                icon: 'info',
-                title: 'Bid Placed',
-                text: `Your bid of ${bidAmount} ETH has been submitted. You will be notified if you win!`,
-                confirmButtonColor: '#3b82f6'
-            });
-        }
-        
-        function navigateToArtwork(nftId) {
-            document.getElementById('searchDropdown').classList.remove('show');
-            window.location.href = `artwork.html?id=${nftId}`;
-        }
-        
-        function copyShareLink() {
-            const input = document.getElementById('shareLink');
-            input.select();
-            document.execCommand('copy');
-            Swal.fire({
-                icon: 'success',
-                title: 'Copied!',
-                text: 'Link copied to clipboard',
-                timer: 1500,
-                showConfirmButton: false
-            });
-        }
-        
-        function checkURLForArtwork() {
-            const params = new URLSearchParams(window.location.search);
-            const nftId = params.get('nft');
-            if (nftId) {
-                setTimeout(() => openArtworkModal(nftId), 500);
-            }
-        }
-        
-        function openAuctionDetail(auctionId) {
-            const auction = allAuctions.find(a => a._id === auctionId);
-            if (!auction) return;
-            
-            placeBid(auction.nftId);
-        }
-        
-        setInterval(() => {
-            renderAuctions();
-        }, 1000);
-    </script>
-<!-- Smartsupp Live Chat script -->
-<script type="text/javascript">
-var _smartsupp = _smartsupp || {};
-_smartsupp.key = '22fedf8eb82b9e0a64db380756000ffa3577c808';
-window.smartsupp||(function(d) {
-  var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
-  s=d.getElementsByTagName('script')[0];c=d.createElement('script');
-  c.type='text/javascript';c.charset='utf-8';c.async=true;
-  c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
-})(document);
+function startActivityFeed(){
+  let delay=3000;
+  function showToast(){
+    const feed=document.getElementById('activityFeed');
+    if(!feed)return;
+    const name=fakeNames[Math.floor(Math.random()*fakeNames.length)];
+    const price=(Math.random()*10+0.5).toFixed(2);
+    const msgFn=activityMessages[Math.floor(Math.random()*activityMessages.length)];
+    const initial=(name.replace('0x','').charAt(0)||'X').toUpperCase();
+    const toast=document.createElement('div');
+    toast.className='activity-toast';
+    toast.innerHTML=`<div class="at-avatar">${initial}</div><div class="at-text">${msgFn(name,price)}<br><span style="font-size:.7rem;color:var(--tx3);margin-top:.2rem;display:block;">${Math.floor(Math.random()*59)+1}s ago</span></div>`;
+    feed.appendChild(toast);
+    setTimeout(()=>{toast.style.opacity='0';toast.style.transform='translateX(-20px)';setTimeout(()=>toast.remove(),400);},4500);
+    if(feed.children.length>3)feed.firstChild.remove();
+    delay=Math.random()*5000+4000;
+    setTimeout(showToast,delay);
+  }
+  setTimeout(showToast,delay);
+}
+
+function subscribeNL(){
+  const v=document.getElementById('nlEmail').value;
+  if(!v||!v.includes('@')){Swal.fire({icon:'warning',title:'Invalid email',text:'Enter a valid email.',confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});return;}
+  Swal.fire({icon:'success',title:'Subscribed!',text:`You're subscribed with ${v}.`,confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});
+  document.getElementById('nlEmail').value='';
+}
 </script>
-<noscript> Powered by <a href=“https://www.smartsupp.com” target=“_blank”>Smartsupp</a></noscript>
+
+<!-- Smartsupp -->
+<script type="text/javascript">
+var _smartsupp=_smartsupp||{};_smartsupp.key='22fedf8eb82b9e0a64db380756000ffa3577c808';
+window.smartsupp||(function(d){var s,c,o=smartsupp=function(){o._.push(arguments)};o._=[];s=d.getElementsByTagName('script')[0];c=d.createElement('script');c.type='text/javascript';c.charset='utf-8';c.async=true;c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);})(document);
+</script>
+<noscript>Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
 </body>
 </html>

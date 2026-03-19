@@ -1,935 +1,873 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artwork - Ethergalleries</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        :root {
-            --vx-primary: #22c55e;
-            --vx-primary-hover: #16a34a;
-            --vx-blue: #3b82f6;
-            --vx-dark: #1a1a2e;
-            --vx-light: #f8fafc;
-            --vx-card-bg: #ffffff;
-            --vx-border: #e2e8f0;
-            --vx-text: #1e293b;
-            --vx-text-muted: #64748b;
-        }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f8fafc;
-            color: var(--vx-text);
-        }
-        
-        .vx-header {
-            background: #ffffff;
-            border-bottom: 1px solid var(--vx-border);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        
-        .vx-header-inner {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 2rem;
-        }
-        
-        .vx-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--vx-text);
-        }
-        
-        .vx-logo-icon svg { width: 28px; height: 28px; }
-        
-        .vx-header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .vx-btn-login {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: transparent;
-            border: none;
-            color: var(--vx-text);
-            font-weight: 500;
-            text-decoration: none;
-        }
-        
-        .vx-btn-signup {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1.25rem;
-            background: var(--vx-primary);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            text-decoration: none;
-        }
-        
-        .vx-main {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem;
-        }
-        
-        .vx-breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            font-size: 0.9rem;
-            color: var(--vx-text-muted);
-        }
-        
-        .vx-breadcrumb a {
-            color: var(--vx-text-muted);
-            text-decoration: none;
-        }
-        
-        .vx-breadcrumb a:hover { color: var(--vx-blue); }
-        
-        .vx-artwork-detail {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            margin-bottom: 4rem;
-        }
-        
-        @media (max-width: 992px) {
-            .vx-artwork-detail { grid-template-columns: 1fr; }
-        }
-        
-        .vx-artwork-image-container {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            background: white;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-        
-        .vx-artwork-image {
-            width: 100%;
-            display: block;
-        }
-        
-        .vx-artwork-actions {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .vx-action-icon {
-            width: 44px;
-            height: 44px;
-            background: rgba(255,255,255,0.95);
-            border: none;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: all 0.2s;
-        }
-        
-        .vx-action-icon:hover { transform: scale(1.1); }
-        .vx-action-icon.liked { background: #ef4444; color: white; }
-        
-        .vx-artwork-info {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-        
-        .vx-artwork-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        
-        .vx-artwork-category {
-            display: inline-block;
-            background: var(--vx-light);
-            padding: 0.35rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            color: var(--vx-text-muted);
-            margin-bottom: 1.5rem;
-        }
-        
-        .vx-creator-link {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: var(--vx-light);
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.2s;
-        }
-        
-        .vx-creator-link:hover {
-            background: #e2e8f0;
-            color: inherit;
-        }
-        
-        .vx-creator-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--vx-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 1.2rem;
-        }
-        
-        .vx-creator-info h6 {
-            margin: 0;
-            font-weight: 600;
-        }
-        
-        .vx-creator-info small {
-            color: var(--vx-text-muted);
-        }
-        
-        .vx-artwork-description {
-            color: var(--vx-text-muted);
-            line-height: 1.7;
-            margin-bottom: 1.5rem;
-        }
-        
-        .vx-meta-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .vx-meta-item {
-            background: var(--vx-light);
-            padding: 1rem;
-            border-radius: 10px;
-        }
-        
-        .vx-meta-label {
-            font-size: 0.8rem;
-            color: var(--vx-text-muted);
-            margin-bottom: 0.25rem;
-        }
-        
-        .vx-meta-value {
-            font-weight: 600;
-            font-size: 1rem;
-        }
-        
-        .vx-price-section {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-        }
-        
-        .vx-price-label {
-            font-size: 0.85rem;
-            opacity: 0.8;
-            margin-bottom: 0.25rem;
-        }
-        
-        .vx-price-value {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-        
-        .vx-price-usd {
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-        
-        .vx-buy-section {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .vx-buy-btn {
-            flex: 1;
-            padding: 1rem;
-            background: var(--vx-blue);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .vx-buy-btn:hover { background: #2563eb; }
-        
-        .vx-buy-btn.disabled {
-            background: #94a3b8;
-            cursor: not-allowed;
-        }
-        
-        .vx-share-section {
-            margin-top: 1.5rem;
-        }
-        
-        .vx-share-label {
-            font-size: 0.85rem;
-            color: var(--vx-text-muted);
-            margin-bottom: 0.5rem;
-        }
-        
-        .vx-share-link {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .vx-share-link input {
-            flex: 1;
-            padding: 0.75rem;
-            border: 1px solid var(--vx-border);
-            border-radius: 8px;
-            font-size: 0.85rem;
-            background: var(--vx-light);
-        }
-        
-        .vx-share-link button {
-            padding: 0.75rem 1rem;
-            background: var(--vx-light);
-            border: 1px solid var(--vx-border);
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        
-        .vx-section {
-            margin-bottom: 3rem;
-        }
-        
-        .vx-section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .vx-section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-        
-        .vx-see-all {
-            color: var(--vx-blue);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .vx-carousel {
-            display: flex;
-            gap: 1.5rem;
-            overflow-x: auto;
-            padding-bottom: 1rem;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        .vx-carousel::-webkit-scrollbar {
-            height: 6px;
-        }
-        
-        .vx-carousel::-webkit-scrollbar-track {
-            background: var(--vx-light);
-            border-radius: 3px;
-        }
-        
-        .vx-carousel::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-        
-        .vx-carousel-card {
-            flex: 0 0 260px;
-            background: white;
-            border: 1px solid var(--vx-border);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.2s;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-        }
-        
-        .vx-carousel-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.08);
-        }
-        
-        .vx-carousel-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        
-        .vx-carousel-content {
-            padding: 1rem;
-        }
-        
-        .vx-carousel-title {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .vx-carousel-creator {
-            font-size: 0.85rem;
-            color: var(--vx-text-muted);
-            margin-bottom: 0.5rem;
-        }
-        
-        .vx-carousel-price {
-            font-weight: 700;
-            color: var(--vx-text);
-        }
-        
-        .vx-footer {
-            background: var(--vx-dark);
-            color: white;
-            padding: 3rem 0;
-            margin-top: 4rem;
-        }
-        
-        .vx-loading {
-            text-align: center;
-            padding: 4rem;
-            color: var(--vx-text-muted);
-        }
-        
-        .vx-stats {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .vx-stat {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--vx-text-muted);
-        }
-    </style>
-</head>
-<body>
-    <header class="vx-header">
-        <div class="vx-header-inner">
-            <a href="/index.html" class="vx-logo">
-                <div class="vx-logo-icon">
-                   
-                </div>
-                 <img src="./logo.png" width="150" height="50" alt="">
-            </a>
-            <!-- <div class="vx-header-actions">
-                <a href="/dashboard.html" class="vx-btn-login"><i class="bi bi-box-arrow-in-right"></i> Login</a>
-                <a href="/dashboard.html" class="vx-btn-signup"><i class="bi bi-person-plus"></i> Sign Up</a>
-            </div> -->
-        </div>
-    </header>
-    
-    <main class="vx-main" id="mainContent">
-        <div class="vx-loading">
-            <i class="bi bi-hourglass-split" style="font-size: 3rem;"></i>
-            <h4>Loading artwork...</h4>
-        </div>
-    </main>
-    
-    <footer class="vx-footer">
-        <div class="container text-center">
-            <p class="text-white-50 mb-0">2024 Ethergalleries. All rights reserved.</p>
-        </div>
-    </footer>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        let currentNFT = null;
-        let artistNFTs = [];
-        let categoryNFTs = [];
-        let likedNFTs = JSON.parse(localStorage.getItem('likedNFTs') || '[]');
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            const nftId = params.get('id');
-            if (nftId) {
-                loadArtwork(nftId);
-            } else {
-                document.getElementById('mainContent').innerHTML = `
-                    <div class="vx-loading">
-                        <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
-                        <h4>Artwork not found</h4>
-                        <a href="/index.html" class="vx-buy-btn" style="display: inline-block; margin-top: 1rem;">Back to Marketplace</a>
-                    </div>
-                `;
-            }
-        });
-        
-        async function loadArtwork(nftId) {
-            try {
-// const token = localStorage.getItem('token'); 
-//     if (!token) throw new Error('No token found');
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Artwork — Ethergalleries</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    /* ════ TOKENS ════ */
+    :root{
+      --p:#22c55e;--pl:#4ade80;--pg:rgba(34,197,94,.18);--pgs:rgba(34,197,94,.09);
+      --blue:#3b82f6;--purple:#8b5cf6;--pink:#ec4899;--teal:#14b8a6;--amber:#f59e0b;
+      --bg:#08090d;--bg2:#0e1018;--bg3:#131720;
+      --s1:#191e2b;--s2:#1e2436;--s3:#242c42;
+      --b1:rgba(255,255,255,.06);--b2:rgba(255,255,255,.11);--b3:rgba(255,255,255,.18);
+      --tx:#eef2ff;--tx2:#8896b3;--tx3:#4a5568;
+      --ease:cubic-bezier(.4,0,.2,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;}
+    ::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:var(--bg2);} ::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px;}
+    img,video{display:block;max-width:100%;} a{color:inherit;text-decoration:none;}
 
-                const res = await fetch('https://changes-sample.onrender.com/api/marketplace/nfts');
-                if (!res.ok) throw new Error('Failed to load');
-                
-                const allNFTs = await res.json();
-                currentNFT = allNFTs.find(n => n._id === nftId);
-                
-                if (!currentNFT) {
-                    throw new Error('Artwork not found');
-                }
-                
-                document.title = `${currentNFT.name} - Ethergalleries`;
-                
-                await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${nftId}/view`, { method: 'POST' });
-                
-                artistNFTs = allNFTs.filter(n => n.creator === currentNFT.creator && n._id !== nftId);
-                categoryNFTs = allNFTs.filter(n => n.category === currentNFT.category && n._id !== nftId && n.creator !== currentNFT.creator);
-                
-                renderArtwork();
-            } catch (err) {
-                console.error(err);
-                document.getElementById('mainContent').innerHTML = `
-                    <div class="vx-loading">
-                        <i class="bi bi-exclamation-circle" style="font-size: 3rem;"></i>
-                        <h4>Error loading artwork</h4>
-                        <a href="/index.html" class="vx-buy-btn" style="display: inline-block; margin-top: 1rem;">Back to Marketplace</a>
-                    </div>
-                `;
-            }
-        }
+    /* noise */
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size:200px 200px;}
 
-        async function getUsernameFromEmail(email) {
-  try {
-    if (!email) throw new Error("Email is required");
+    /* ════ HEADER ════ */
+    .hdr{position:sticky;top:0;z-index:900;background:#fff;border-bottom:1px solid #e2e8f0;padding:1rem 0;}
+    .hdr-in{max-width:1280px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;}
+    .hdr-logo img{width:150px;height:50px;object-fit:contain;display:block;}
+    .hdr-nav{display:flex;align-items:center;gap:1rem;}
+    .hdr-link{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border:none;background:transparent;color:#1e293b;font-family:inherit;font-size:.95rem;font-weight:500;cursor:pointer;text-decoration:none;transition:color .2s;}
+    .hdr-link:hover{color:var(--p);}
+    .hdr-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.25rem;border-radius:8px;border:none;background:var(--p);color:#fff;font-family:inherit;font-size:.95rem;font-weight:600;cursor:pointer;text-decoration:none;transition:background .2s,transform .2s;}
+    .hdr-btn:hover{background:var(--pl);color:#fff;transform:translateY(-1px);}
 
-    const encodedEmail = encodeURIComponent(email.trim().toLowerCase());
-
-    const res = await fetch(
-      `https://changes-sample.onrender.com/api/user/by-email/${encodedEmail}`,
-      {
-        method: "GET",
-        credentials: "include", // keep if you use cookies/session
-        headers: {
-          "Accept": "application/json"
-        }
-      }
-    );
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.message || "Failed to fetch username");
+    /* ════ HERO — dark bg, thumb left, info right ════ */
+    .aw-hero{
+      position:relative;overflow:hidden;
+      background:linear-gradient(135deg,#06070f 0%,#0d0b1e 50%,#070f1a 100%);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    /* purple glow top-center */
+    .aw-hero::before{
+      content:'';position:absolute;top:-120px;left:15%;
+      width:700px;height:700px;
+      background:radial-gradient(circle,rgba(139,92,246,.18) 0%,transparent 65%);
+      pointer-events:none;z-index:0;
+    }
+    /* teal glow bottom-right */
+    .aw-hero::after{
+      content:'';position:absolute;bottom:-100px;right:5%;
+      width:400px;height:400px;
+      background:radial-gradient(circle,rgba(20,184,166,.1) 0%,transparent 65%);
+      pointer-events:none;z-index:0;
     }
 
-    const data = await res.json();
+    /* breadcrumb */
+    .aw-breadcrumb{
+      position:relative;z-index:2;
+      padding:20px 40px 0;
+      display:flex;align-items:center;gap:6px;
+      font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.04em;
+      color:rgba(255,255,255,.3);
+    }
+    .aw-breadcrumb a{color:rgba(255,255,255,.3);transition:color .15s;}
+    .aw-breadcrumb a:hover{color:rgba(255,255,255,.7);}
+    .aw-breadcrumb span{color:rgba(255,255,255,.55);}
+    .aw-breadcrumb-sep{opacity:.25;}
 
-    return data.username; // ✅ what you need
-  } catch (err) {
-    console.error("getUsernameFromEmail error:", err.message);
-    return null;
-  }
-}
+    /* two-column hero body: fixed-width thumb | flexible info */
+    .aw-hero-body{
+      position:relative;z-index:2;
+      max-width:1380px;margin:0 auto;
+      display:grid;grid-template-columns:auto 1fr;
+      gap:40px;align-items:flex-end;
+      padding:28px 40px 0;
+    }
+    @media(max-width:900px){
+      .aw-hero-body{grid-template-columns:1fr;padding:20px 24px 0;}
+      .aw-breadcrumb{padding:16px 24px 0;}
+    }
 
-        
-      async  function renderArtwork() {
+    /* thumbnail */
+    .aw-hero-thumb{
+      width:220px;height:220px;border-radius:18px;
+      border:2px solid rgba(255,255,255,.1);
+      overflow:hidden;flex-shrink:0;
+      box-shadow:0 28px 56px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.05);
+      position:relative;transition:transform .3s;
+    }
+    .aw-hero-thumb:hover{transform:scale(1.02);}
+    .aw-hero-thumb img,.aw-hero-thumb video{width:100%;height:100%;object-fit:cover;display:block;}
 
-            const username = await getUsernameFromEmail(currentNFT.owner);
-            localStorage.setItem("creatorEmail",currentNFT.owner)
-console.log(username);
+    /* status badge on thumb */
+    .aw-thumb-status{
+      position:absolute;top:10px;left:10px;
+      padding:3px 10px;border-radius:6px;
+      font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;
+    }
+    .aw-thumb-status.sale{background:var(--p);color:#000;}
+    .aw-thumb-status.auction{background:var(--purple);color:#fff;}
 
-            const isLiked = likedNFTs.includes(currentNFT._id);
-            const creatorInitial = (username || 'User')[0].toUpperCase();
-            const creatorSlug = encodeURIComponent(username || 'unknown');
-            
-            let buyButtonHTML = '';
-            if (currentNFT.status === 'listed') {
-                buyButtonHTML = `
-                    <button class="vx-buy-btn" onclick="buyNFT()" data-testid="button-buy-artwork">
-                        <i class="bi bi-cart me-2"></i>Buy Now for ${currentNFT.price} ${currentNFT.currency || 'ETH'}
-                    </button>
-                `;
-            } else if (currentNFT.status === 'auction') {
-                buyButtonHTML = `
-                    <button class="vx-buy-btn" onclick="placeBid()" data-testid="button-bid-artwork">
-                        <i class="bi bi-hammer me-2"></i>Place Bid
-                    </button>
-                `;
-            } else {
-                buyButtonHTML = `
-                    <button class="vx-buy-btn disabled" disabled>
-                        <i class="bi bi-lock me-2"></i>Not Available for Sale
-                    </button>
-                `;
-            }
-            
-            const artworkMediaHTML =
-  currentNFT.mediaType === 'video'
-    ? `
-      <video
-  src="${currentNFT.imageUrl}"
-  class="vx-artwork-image"
-  muted
-  autoplay
-  loop
-  controls
-  playsinline
-></video>
+    /* hero info (right of thumb) */
+    .aw-hero-info{padding-bottom:10px;}
 
-    `
-    : `
-      <img
-        src="${currentNFT.imageUrl}"
-        alt="${currentNFT.name}"
-        class="vx-artwork-image"
-      />
-    `;
+    .aw-hero-eyebrow{
+      font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+      color:var(--purple);margin-bottom:10px;
+      display:flex;align-items:center;gap:8px;
+    }
+    .aw-hero-eyebrow-dot{width:4px;height:4px;border-radius:50%;background:var(--purple);}
 
-document.getElementById('mainContent').innerHTML = `
-  <nav class="vx-breadcrumb">
-    <a href="/index.html">Marketplace</a>
-    <i class="bi bi-chevron-right"></i>
-    <a href="category.html?category=${encodeURIComponent(currentNFT.category || 'Art')}">
-      ${currentNFT.category || 'Art'}
-    </a>
-    <i class="bi bi-chevron-right"></i>
-    <span>${currentNFT.name}</span>
-  </nav>
-  
-  <div class="vx-artwork-detail">
-    <div class="vx-artwork-image-container">
-      ${artworkMediaHTML}
+    .aw-hero-title{
+      font-family:'Syne',sans-serif;font-weight:800;
+      font-size:clamp(24px,3.5vw,48px);letter-spacing:-.03em;
+      color:#fff;line-height:1.06;margin-bottom:12px;
+    }
 
-      <div class="vx-artwork-actions">
-        <button
-          class="vx-action-icon ${isLiked ? 'liked' : ''}"
-          onclick="toggleLike()"
-          data-testid="button-like-artwork"
-        >
-          <i class="bi bi-heart${isLiked ? '-fill' : ''}"></i>
-        </button>
+    .aw-hero-creator-row{
+      display:flex;align-items:center;gap:10px;
+      font-size:13px;color:rgba(255,255,255,.5);
+      text-decoration:none;transition:color .2s;
+      width:fit-content;
+    }
+    .aw-hero-creator-row:hover{color:rgba(255,255,255,.85);}
+    .aw-hero-creator-av{
+      width:28px;height:28px;border-radius:7px;flex-shrink:0;
+      background:linear-gradient(135deg,var(--blue),var(--p));
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:#fff;
+    }
+
+    /* ════ STATS STRIP ════ */
+    .aw-stats-strip{
+      background:#fff;border-bottom:1px solid #e5e7eb;
+      display:grid;grid-template-columns:repeat(5,1fr);
+    }
+    @media(max-width:900px){.aw-stats-strip{grid-template-columns:repeat(3,1fr);}}
+    @media(max-width:500px){.aw-stats-strip{grid-template-columns:1fr 1fr;}}
+
+    .aw-stat-cell{
+      padding:18px 20px;border-right:1px solid #e5e7eb;
+      text-align:center;
+    }
+    .aw-stat-cell:last-child{border-right:none;}
+    .aw-stat-val{
+      font-family:'Syne',sans-serif;font-size:20px;font-weight:700;
+      color:#0d0d14;margin-bottom:4px;
+    }
+    .aw-stat-val.mono{font-family:'Space Mono',monospace;font-size:16px;}
+    .aw-stat-label{
+      font-family:'Space Mono',monospace;font-size:10px;
+      color:#9ca3af;letter-spacing:.08em;text-transform:uppercase;
+    }
+
+    /* ════ TABS BAR ════ */
+    .aw-tabs{
+      background:#fff;border-bottom:1px solid #e5e7eb;
+      display:flex;padding:0 40px;gap:4px;
+    }
+    @media(max-width:900px){.aw-tabs{padding:0 24px;}}
+    .aw-tab{
+      padding:14px 22px;font-size:13px;font-weight:500;color:#6b7280;
+      border-bottom:2px solid transparent;cursor:pointer;transition:all .15s;
+      background:none;border-top:none;border-left:none;border-right:none;
+      font-family:inherit;
+    }
+    .aw-tab:hover{color:#1e293b;}
+    .aw-tab.active{color:var(--p);border-bottom-color:var(--p);}
+
+    /* ════ MAIN CONTENT ════ */
+    .aw-main{max-width:1380px;margin:0 auto;padding:0 2rem 5rem;}
+
+    /* pull-up offset so detail grid overlaps hero bottom */
+    .aw-detail-wrap{
+      margin-top:-2.5rem;
+      position:relative;z-index:4;
+    }
+
+    /* ════ DETAIL GRID ════ */
+    .aw-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;}
+    @media(max-width:992px){.aw-grid{grid-template-columns:1fr;}}
+
+    /* ── LEFT image panel ── */
+    .aw-img-panel{}
+
+    .aw-img-wrap{
+      position:relative;border-radius:22px;overflow:hidden;
+      background:var(--s1);
+      box-shadow:0 24px 72px rgba(0,0,0,.65);
+      border:1px solid var(--b2);
+    }
+    .aw-img-wrap img,.aw-img-wrap video{width:100%;display:block;}
+
+    /* img footer strip */
+    .aw-img-footer{
+      display:grid;grid-template-columns:1fr 1fr 1fr;
+      gap:1px;background:var(--b1);margin-top:1px;
+    }
+    .aw-img-stat{
+      background:var(--s1);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:.875rem .5rem;gap:.25rem;
+    }
+    .aw-img-stat i{font-size:1rem;color:var(--tx2);}
+    .aw-img-stat .val{font-family:'Space Mono',monospace;font-size:.85rem;font-weight:700;color:var(--tx);}
+    .aw-img-stat .lbl{font-size:.62rem;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;}
+
+    /* ── RIGHT info panel ── */
+    .aw-info{
+      background:var(--s1);border:1px solid var(--b1);
+      border-radius:22px;padding:1.875rem;
+      position:sticky;top:5.5rem;
+    }
+
+    .aw-category-pill{
+      display:inline-flex;align-items:center;gap:.35rem;
+      background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.2);
+      color:#60a5fa;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+      padding:.28rem .8rem;border-radius:50px;margin-bottom:.875rem;
+    }
+
+    .aw-info-title{
+      font-family:'Syne',sans-serif;
+      font-size:clamp(1.35rem,2.5vw,1.9rem);
+      font-weight:800;letter-spacing:-.02em;color:var(--tx);
+      margin-bottom:1.375rem;line-height:1.15;
+    }
+
+    /* creator */
+    .aw-creator{
+      display:flex;align-items:center;gap:.875rem;
+      padding:.875rem 1.1rem;
+      background:var(--s2);border:1px solid var(--b1);
+      border-radius:14px;margin-bottom:1.375rem;
+      text-decoration:none;color:inherit;transition:all .22s;
+    }
+    .aw-creator:hover{border-color:var(--b2);background:var(--s3);}
+    .aw-creator-av{
+      width:44px;height:44px;border-radius:50%;flex-shrink:0;
+      background:linear-gradient(135deg,var(--blue),var(--p));
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-weight:800;font-size:1.1rem;
+      border:2px solid rgba(255,255,255,.1);
+    }
+    .aw-creator-name{font-weight:600;font-size:.92rem;color:var(--tx);}
+    .aw-creator-sub{font-size:.76rem;color:var(--tx2);margin-top:.1rem;}
+
+    /* description */
+    .aw-desc{
+      font-size:.875rem;color:var(--tx2);line-height:1.75;
+      margin-bottom:1.375rem;
+      padding:1rem 1.1rem;
+      background:var(--bg3);border:1px solid var(--b1);border-radius:12px;
+    }
+
+    /* meta grid */
+    .aw-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:.625rem;margin-bottom:1.375rem;}
+    .aw-meta-item{background:var(--bg3);border:1px solid var(--b1);border-radius:11px;padding:.8rem .9rem;}
+    .aw-meta-lbl{font-size:.62rem;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem;}
+    .aw-meta-val{font-weight:600;font-size:.875rem;color:var(--tx);}
+
+    /* price box */
+    .aw-price-box{
+      background:linear-gradient(135deg,#0b1a0e 0%,#0a1830 100%);
+      border:1px solid rgba(34,197,94,.2);
+      border-radius:16px;padding:1.25rem 1.375rem;margin-bottom:1.375rem;
+      position:relative;overflow:hidden;
+    }
+    .aw-price-box::before{content:'';position:absolute;top:-35px;right:-35px;width:110px;height:110px;border-radius:50%;background:rgba(34,197,94,.07);pointer-events:none;}
+    .aw-price-box::after{content:'';position:absolute;bottom:-20px;left:-20px;width:70px;height:70px;border-radius:50%;background:rgba(59,130,246,.05);pointer-events:none;}
+    .aw-price-lbl{font-size:.68rem;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem;}
+    .aw-price-val{font-family:'Space Mono',monospace;font-size:1.85rem;font-weight:700;color:var(--p);display:flex;align-items:baseline;gap:.4rem;}
+    .aw-price-currency{font-size:1rem;}
+
+    /* buy buttons */
+    .aw-buy-row{display:flex;gap:.625rem;margin-bottom:1.1rem;}
+    .aw-buy-btn{
+      flex:1;padding:.9rem;border-radius:13px;border:none;
+      font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;
+      transition:all .22s;display:flex;align-items:center;justify-content:center;gap:.45rem;
+    }
+    .aw-buy-btn.primary{background:var(--blue);color:#fff;}
+    .aw-buy-btn.primary:hover{background:#2563eb;transform:translateY(-1px);box-shadow:0 8px 24px rgba(59,130,246,.3);}
+    .aw-buy-btn.bid{background:linear-gradient(135deg,var(--purple),#6d28d9);color:#fff;}
+    .aw-buy-btn.bid:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(139,92,246,.3);}
+    .aw-buy-btn.disabled{background:var(--s3);color:var(--tx3);cursor:not-allowed;}
+
+    /* share */
+    .aw-share{padding-top:1rem;border-top:1px solid var(--b1);}
+    .aw-share-lbl{font-size:.68rem;color:var(--tx3);margin-bottom:.45rem;text-transform:uppercase;letter-spacing:.06em;}
+    .aw-share-row{display:flex;gap:.45rem;}
+    .aw-share-row input{flex:1;padding:.6rem .8rem;background:var(--bg3);border:1px solid var(--b1);border-radius:8px;color:var(--tx2);font-size:.8rem;font-family:inherit;}
+    .aw-share-row button{padding:.6rem .9rem;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--tx2);cursor:pointer;font-size:.9rem;transition:all .2s;}
+    .aw-share-row button:hover{background:var(--p);color:#000;border-color:var(--p);}
+
+    /* ════ RELATED SECTIONS ════ */
+    .aw-section{margin-top:4rem;}
+    .aw-section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.625rem;padding-bottom:.875rem;border-bottom:1px solid var(--b1);}
+    .aw-section-ttl{font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;color:var(--tx);letter-spacing:-.02em;}
+    .aw-see-all{display:inline-flex;align-items:center;gap:.35rem;font-size:.875rem;color:var(--p);font-weight:600;transition:gap .2s;}
+    .aw-see-all:hover{gap:.6rem;}
+
+    .aw-carousel{
+      display:flex;gap:1.125rem;overflow-x:auto;padding-bottom:.625rem;
+      scroll-behavior:smooth;-webkit-overflow-scrolling:touch;
+      -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 1.5rem,#000 calc(100% - 1.5rem),transparent 100%);
+      mask-image:linear-gradient(90deg,transparent 0,#000 1.5rem,#000 calc(100% - 1.5rem),transparent 100%);
+    }
+    .aw-carousel::-webkit-scrollbar{height:3px;}
+    .aw-carousel::-webkit-scrollbar-track{background:var(--s1);}
+    .aw-carousel::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px;}
+
+    .aw-c-card{
+      flex:0 0 230px;height:290px;position:relative;border-radius:17px;overflow:hidden;
+      cursor:pointer;flex-shrink:0;border:1px solid var(--b1);
+      transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .3s;
+    }
+    .aw-c-card:hover{transform:translateY(-6px);box-shadow:0 20px 48px rgba(0,0,0,.6);border-color:var(--b2);}
+    .aw-c-card img,.aw-c-card video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s var(--ease);}
+    .aw-c-card:hover img,.aw-c-card:hover video{transform:scale(1.06);}
+    .aw-c-card::before{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,transparent 35%,rgba(6,8,16,.85) 72%,rgba(6,8,16,.97) 100%);}
+    .aw-c-body{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:.8rem .95rem 1rem;}
+    .aw-c-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.875rem;color:#fff;line-height:1.2;margin-bottom:.18rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .aw-c-creator{font-size:.72rem;color:rgba(255,255,255,.48);margin-bottom:.45rem;}
+    .aw-c-footer{display:flex;align-items:center;justify-content:space-between;}
+    .aw-c-price{font-family:'Space Mono',monospace;font-size:.78rem;font-weight:700;color:var(--p);}
+    .aw-c-likes{display:flex;align-items:center;gap:.28rem;font-size:.72rem;color:rgba(255,255,255,.38);}
+
+    /* ════ LOADING ════ */
+    .aw-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:1.25rem;}
+    .aw-spinner{width:48px;height:48px;border-radius:50%;border:3px solid var(--b1);border-top-color:var(--p);animation:spin .8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .aw-loading h4{font-family:'Syne',sans-serif;font-size:1.2rem;color:var(--tx2);}
+
+    /* ════ FOOTER ════ */
+    .site-footer{background:var(--bg2);border-top:1px solid var(--b1);}
+
+    .ft-top{padding:4rem 0 3rem;border-bottom:1px solid var(--b1);}
+    .ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.3fr;gap:3rem;max-width:1380px;margin:0 auto;padding:0 2rem;}
+    @media(max-width:1024px){.ft-grid{grid-template-columns:1fr 1fr;}}
+    @media(max-width:600px){.ft-grid{grid-template-columns:1fr;}}
+
+    .ft-brand-img{height:38px;width:auto;margin-bottom:1.1rem;filter:brightness(1.1);}
+    .ft-tagline{color:var(--tx2);font-size:.875rem;line-height:1.7;max-width:270px;margin-bottom:1.375rem;}
+    .ft-social{display:flex;gap:.5rem;}
+    .ft-soc{width:36px;height:36px;border-radius:9px;background:var(--s1);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;color:var(--tx2);font-size:.9rem;cursor:pointer;text-decoration:none;transition:all .2s;}
+    .ft-soc:hover{background:var(--p);color:#000;border-color:var(--p);}
+
+    .ft-col h5{font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-bottom:1.1rem;}
+    .ft-links{list-style:none;display:flex;flex-direction:column;gap:.6rem;}
+    .ft-links li a{color:var(--tx2);font-size:.875rem;text-decoration:none;transition:color .2s;display:flex;align-items:center;gap:.4rem;}
+    .ft-links li a:hover{color:var(--p);}
+
+    .ft-status{display:flex;flex-direction:column;gap:.7rem;}
+    .ft-st-row{display:flex;align-items:center;justify-content:space-between;}
+    .ft-st-row span{font-size:.82rem;color:var(--tx2);}
+    .ft-st-dot{width:8px;height:8px;border-radius:50%;background:var(--p);box-shadow:0 0 8px var(--pg);animation:pdot 2s infinite;flex-shrink:0;}
+    .ft-st-dot.amber{background:var(--amber);box-shadow:0 0 8px rgba(245,158,11,.3);}
+    @keyframes pdot{0%,100%{opacity:1;}50%{opacity:.4;}}
+    .ft-chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem;}
+    .ft-chip{display:inline-block;padding:.22rem .65rem;border-radius:50px;font-size:.68rem;font-weight:600;background:var(--s2);color:var(--tx2);border:1px solid var(--b1);}
+
+    .ft-bottom{max-width:1380px;margin:0 auto;padding:1.375rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;}
+    .ft-bottom p{font-size:.8rem;color:var(--tx3);}
+    .ft-legal{display:flex;gap:1.25rem;}
+    .ft-legal a{font-size:.8rem;color:var(--tx3);text-decoration:none;transition:color .2s;}
+    .ft-legal a:hover{color:var(--tx2);}
+
+    /* ════ MISC ════ */
+    .back-btn{display:inline-flex;align-items:center;gap:.4rem;font-size:.875rem;color:var(--tx2);background:var(--s1);border:1px solid var(--b1);padding:.45rem 1rem;border-radius:8px;transition:all .2s;cursor:pointer;text-decoration:none;}
+    .back-btn:hover{color:var(--tx);border-color:var(--b2);background:var(--s2);}
+
+    @media(max-width:768px){
+      .aw-hero-breadcrumb{left:1rem;top:1rem;font-size:.75rem;}
+      .aw-hero-content{padding:0 1rem 2.5rem;}
+      .aw-main{padding:0 1rem 4rem;}
+      .aw-info{position:static;}
+      .aw-price-val{font-size:1.5rem;}
+      .aw-hero-right{flex-direction:row;align-items:center;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-in">
+    <a href="/index.html"><img src="./logo.png" width="150" height="50" alt="Ethergalleries" class="d-block"/></a>
+    <nav class="hdr-nav">
+      <a href="/index.html" class="hdr-link"><i class="bi bi-arrow-left"></i> Marketplace</a>
+      <a href="/login.html" class="hdr-link"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+      <a href="/signup.html" class="hdr-btn"><i class="bi bi-person-plus"></i> Sign Up</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO BANNER (populated by JS) -->
+<div id="heroSection"></div>
+<!-- STATS STRIP (populated by JS) -->
+<div id="statsStrip"></div>
+<!-- TABS BAR -->
+<div class="aw-tabs" id="tabsBar" style="display:none;">
+  <button class="aw-tab active" onclick="switchTab('overview',this)">Overview</button>
+  <button class="aw-tab" onclick="switchTab('provenance',this)">Provenance</button>
+  <button class="aw-tab" onclick="switchTab('bids',this)">Bids</button>
+</div>
+
+<!-- MAIN CONTENT (populated by JS) -->
+<div id="mainContent">
+  <div class="aw-loading" style="min-height:60vh;">
+    <div class="aw-spinner"></div>
+    <h4>Loading artwork…</h4>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="ft-top">
+    <div class="ft-grid">
+
+      <!-- brand -->
+      <div>
+        <img src="./logo.png" alt="Ethergalleries" class="ft-brand-img"/>
+        <p class="ft-tagline">The premier marketplace for rare digital art, NFTs, and on-chain collectibles.</p>
+        <div class="ft-social">
+          <a href="#" class="ft-soc" title="X / Twitter"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="ft-soc" title="Discord"><i class="bi bi-discord"></i></a>
+          <a href="#" class="ft-soc" title="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="ft-soc" title="Telegram"><i class="bi bi-telegram"></i></a>
+        </div>
       </div>
-    </div>
-    
-    <div class="vx-artwork-info">
-      <h1 class="vx-artwork-title">${currentNFT.name}</h1>
-      <span class="vx-artwork-category">${currentNFT.category || 'Art'}</span>
-      
-      <a href="artist.html?name=${creatorSlug}" class="vx-creator-link" data-testid="link-artist">
-        <div class="vx-creator-avatar">${creatorInitial}</div>
-        <div class="vx-creator-info">
-          <h6>${username || 'Unknown Artist'}</h6>
-          <small>Click to view profile</small>
-        </div>
-        <i class="bi bi-chevron-right ms-auto"></i>
-      </a>
-      
-      <div class="vx-stats">
-        <div class="vx-stat">
-          <i class="bi bi-heart-fill"></i>
-          <span>${currentNFT.likes || 0} likes</span>
-        </div>
-        <div class="vx-stat">
-          <i class="bi bi-eye-fill"></i>
-          <span>${currentNFT.views || 0} views</span>
-        </div>
+
+      <!-- explore -->
+      <div class="ft-col">
+        <h5>Explore</h5>
+        <ul class="ft-links">
+          <li><a href="/index.html"><i class="bi bi-compass"></i> Marketplace</a></li>
+          <li><a href="category.html"><i class="bi bi-grid"></i> Categories</a></li>
+          <li><a href="/index.html#collections"><i class="bi bi-collection"></i> Collections</a></li>
+          <li><a href="/index.html#auctions"><i class="bi bi-hammer"></i> Live Auctions</a></li>
+          <li><a href="/index.html#exhibitions"><i class="bi bi-building"></i> Exhibitions</a></li>
+        </ul>
       </div>
-      
-      <p class="vx-artwork-description">
-        ${currentNFT.description || 'No description available for this artwork.'}
-      </p>
-      
-      <div class="vx-meta-grid">
-        <div class="vx-meta-item">
-          <div class="vx-meta-label">Rarity</div>
-          <div class="vx-meta-value">${currentNFT.rarity || 'Common'}</div>
+
+      <!-- account -->
+      <div class="ft-col">
+        <h5>Account</h5>
+        <ul class="ft-links">
+          <li><a href="/dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+          <li><a href="/login.html"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
+          <li><a href="/signup.html"><i class="bi bi-person-plus"></i> Sign Up</a></li>
+          <li><a href="support.html"><i class="bi bi-lifepreserver"></i> Support</a></li>
+        </ul>
+      </div>
+
+      <!-- status -->
+      <div class="ft-col">
+        <h5>Platform Status</h5>
+        <div class="ft-status">
+          <div class="ft-st-row"><span>API Services</span><div class="ft-st-dot"></div></div>
+          <div class="ft-st-row"><span>Marketplace</span><div class="ft-st-dot"></div></div>
+          <div class="ft-st-row"><span>Auctions Engine</span><div class="ft-st-dot"></div></div>
+          <div class="ft-st-row"><span>Payment Gateway</span><div class="ft-st-dot amber"></div></div>
         </div>
-        <div class="vx-meta-item">
-          <div class="vx-meta-label">Token ID</div>
-          <div class="vx-meta-value">#${currentNFT.tokenId || currentNFT._id.slice(-6)}</div>
-        </div>
-        <div class="vx-meta-item">
-          <div class="vx-meta-label">Created</div>
-          <div class="vx-meta-value">
-            ${new Date(currentNFT.createdAt).toLocaleDateString()}
+        <div style="margin-top:1.5rem;">
+          <h5 style="margin-bottom:.6rem;">Accepted</h5>
+          <div class="ft-chips">
+            <span class="ft-chip">ETH</span>
+            <span class="ft-chip">MATIC</span>
+            <span class="ft-chip">SOL</span>
+            <span class="ft-chip">USDC</span>
           </div>
-        </div>
-        <div class="vx-meta-item">
-          <div class="vx-meta-label">Creator</div>
-          <div class="vx-meta-value">${currentNFT.creator || 'Unknown'}</div>
-        </div>
-      </div>
-      
-      <div class="vx-price-section">
-        <div class="vx-price-label">Current Price</div>
-        <div class="vx-price-value">
-          ${
-            currentNFT.price
-              ? currentNFT.price.toFixed(4) + ' ' + (currentNFT.currency || 'ETH')
-              : 'Not for sale'
-          }
-        </div>
-      </div>
-      
-      <div class="vx-buy-section">
-        ${buyButtonHTML}
-      </div>
-      
-      <div class="vx-share-section">
-        <div class="vx-share-label">Share this artwork</div>
-        <div class="vx-share-link">
-          <input type="text" id="shareLink" value="${window.location.href}" readonly>
-          <button onclick="copyLink()" data-testid="button-copy-link">
-            <i class="bi bi-copy"></i>
-          </button>
         </div>
       </div>
     </div>
   </div>
-  
-  ${renderArtistSection()}
-  ${renderCategorySection()}
-`;
 
-        }
-        
-        function renderArtistSection() {
-            if (artistNFTs.length === 0) return '';
-            
-            return `
-                <section class="vx-section">
-                    <div class="vx-section-header">
-                        <h2 class="vx-section-title">More from ${currentNFT.creator || 'this artist'}</h2>
-                        <a href="artist.html?name=${encodeURIComponent(currentNFT.creator || 'unknown')}" class="vx-see-all">View All <i class="bi bi-arrow-right"></i></a>
-                    </div>
-                    <div class="vx-carousel" id="artistCarousel">
-                        ${artistNFTs.slice(0, 10).map(nft => renderCarouselCard(nft)).join('')}
-                    </div>
-                </section>
-            `;
-        }
-        
-        function renderCategorySection() {
-            if (categoryNFTs.length === 0) return '';
-            
-            return `
-                <section class="vx-section">
-                    <div class="vx-section-header">
-                        <h2 class="vx-section-title">More in ${currentNFT.category || 'Art'}</h2>
-                        <a href="category.html?category=${encodeURIComponent(currentNFT.category || 'Art')}" class="vx-see-all">View All <i class="bi bi-arrow-right"></i></a>
-                    </div>
-                    <div class="vx-carousel" id="categoryCarousel">
-                        ${categoryNFTs.slice(0, 10).map(nft => renderCarouselCard(nft)).join('')}
-                    </div>
-                </section>
-            `;
-        }
-        
-        function renderCarouselCard(nft) {
-            return `
-                <a href="artwork.html?id=${nft._id}" class="vx-carousel-card" data-testid="card-carousel-${nft._id}">
-                    <img src="${nft.imageUrl}" alt="${nft.name}" class="vx-carousel-image">
-                    <div class="vx-carousel-content">
-                        <h6 class="vx-carousel-title">${nft.name}</h6>
-                        <p class="vx-carousel-creator">by ${nft.creator || 'Unknown'}</p>
-                        <div class="vx-carousel-price">${nft.price ? nft.price.toFixed(2) + ' ' + (nft.currency || 'ETH') : 'Not listed'}</div>
-                    </div>
-                </a>
-            `;
-        }
-        
-        async function toggleLike() {
-            if (!currentNFT) return;
-            
-            const isLiked = likedNFTs.includes(currentNFT._id);
-            if (isLiked) {
-                likedNFTs = likedNFTs.filter(id => id !== currentNFT._id);
-            } else {
-                likedNFTs.push(currentNFT._id);
-            }
-            localStorage.setItem('likedNFTs', JSON.stringify(likedNFTs));
-            
-            currentNFT.likes = isLiked ? Math.max(0, (currentNFT.likes || 0) - 1) : (currentNFT.likes || 0) + 1;
-            renderArtwork();
-            
-            try {
-const token = localStorage.getItem('token'); 
-    if (!token) throw new Error('No token found');
+  <div class="ft-bottom">
+    <p>© 2024 Ethergalleries. All rights reserved.</p>
+    <div class="ft-legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Cookie Policy</a>
+    </div>
+  </div>
+</footer>
 
-                await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${currentNFT._id}/like`, {
-                    method: 'POST',
-                     headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // ✅ Send JWT
-     },
-                    body: JSON.stringify({ unlike: isLiked })
-                });
-            } catch (err) {
-                console.error('Like sync error:', err);
-            }
-        }
-        
-        async function buyNFT() {
-            // const sessionRes = await fetch('https://changes-sample.onrender.com/api/auth/session');
-            const token =localStorage.getItem("token")
-            
-            if (!token) {
-                const result = await Swal.fire({
-                    icon: 'warning',
-                    title: 'Login Required',
-                    text: 'You need to login to purchase NFTs. Go to login page?',
-                    showCancelButton: true,
-                    confirmButtonText: 'Go to Login',
-                    confirmButtonColor: '#3b82f6'
-                });
-                if (result.isConfirmed) {
-                    window.location.href = '/dashboard.html';
-                }
-                return;
-            }
-            
-            const result = await Swal.fire({
-                icon: 'question',
-                title: 'Confirm Purchase',
-                text: `Are you sure you want to buy "${currentNFT.name}" for ${currentNFT.price} ${currentNFT.currency || 'ETH'}?`,
-                showCancelButton: true,
-                confirmButtonText: 'Buy Now',
-                confirmButtonColor: '#3b82f6'
-            });
-            if (!result.isConfirmed) return;
-            
-            try {
-const token = localStorage.getItem('token'); 
-    if (!token) throw new Error('No token found');
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  let currentNFT = null;
+  let artistNFTs = [];
+  let categoryNFTs = [];
+  let likedNFTs = JSON.parse(localStorage.getItem('likedNFTs') || '[]');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${currentNFT._id}/buy`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json',
-'Authorization': `Bearer ${token}`
-                     }
-                });
-                
-                if (!res.ok) {
-                    const error = await res.json();
-                    throw new Error(error.message || 'Purchase failed');
-                }
-                
-                await Swal.fire({
-                    icon: 'success',
-                    title: 'Congratulations!',
-                    text: `You now own "${currentNFT.name}". The artwork has been transferred to your collection.`,
-                    confirmButtonColor: '#3b82f6'
-                });
-                
-                window.location.reload();
-            } catch (err) {
-                await Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: err.message || 'Failed to complete purchase.',
-                    confirmButtonColor: '#3b82f6'
-                });
-            }
-        }
-        
-        async function placeBid() {
-            const { value: bidAmount } = await Swal.fire({
-                icon: 'question',
-                title: 'Place Bid',
-                input: 'number',
-                inputLabel: 'Enter your bid amount (ETH):',
-                inputPlaceholder: 'e.g., 1.5',
-                showCancelButton: true,
-                confirmButtonText: 'Submit Bid',
-                confirmButtonColor: '#3b82f6'
-            });
-            
-            if (bidAmount) {
-                await Swal.fire({
-                    icon: 'success',
-                    title: 'Bid Placed!',
-                    text: `Your bid of ${bidAmount} ETH has been submitted.`,
-                    confirmButtonColor: '#3b82f6'
-                });
-            }
-        }
-        
-        function shareArtwork() {
-            if (navigator.share) {
-                navigator.share({
-                    title: currentNFT.name,
-                    text: `Check out this NFT: ${currentNFT.name}`,
-                    url: window.location.href
-                });
-            } else {
-                copyLink();
-            }
-        }
-        
-        function copyLink() {
-            const input = document.getElementById('shareLink');
-            input.select();
-            document.execCommand('copy');
-            Swal.fire({
-                icon: 'success',
-                title: 'Copied!',
-                text: 'Link copied to clipboard',
-                timer: 1500,
-                showConfirmButton: false
-            });
-        }
-    </script>
-<!-- Smartsupp Live Chat script -->
-<script type="text/javascript">
-var _smartsupp = _smartsupp || {};
-_smartsupp.key = '22fedf8eb82b9e0a64db380756000ffa3577c808';
-window.smartsupp||(function(d) {
-  var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
-  s=d.getElementsByTagName('script')[0];c=d.createElement('script');
-  c.type='text/javascript';c.charset='utf-8';c.async=true;
-  c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
-})(document);
+  const RARITY_COLORS = {
+    Legendary:'#f59e0b', Epic:'#8b5cf6', Rare:'#3b82f6', Uncommon:'#14b8a6', Common:'#4a5568'
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const id = new URLSearchParams(window.location.search).get('id');
+    id ? loadArtwork(id) : showError('No artwork ID provided.');
+  });
+
+  function showError(msg) {
+    document.getElementById('heroSection').innerHTML = '';
+    document.getElementById('mainContent').innerHTML = `
+      <div class="aw-loading">
+        <i class="bi bi-exclamation-circle" style="font-size:3rem;color:var(--tx3);"></i>
+        <h4>${msg}</h4>
+        <a href="/index.html" class="back-btn" style="margin-top:1rem;"><i class="bi bi-arrow-left"></i> Back to Marketplace</a>
+      </div>`;
+  }
+
+  async function loadArtwork(nftId) {
+    try {
+      const res = await fetch('https://changes-sample.onrender.com/api/marketplace/nfts');
+      if (!res.ok) throw new Error('Failed to load');
+      const all = await res.json();
+      currentNFT = all.find(n => n._id === nftId);
+      if (!currentNFT) throw new Error('Artwork not found');
+      document.title = `${currentNFT.name} — Ethergalleries`;
+
+      try {
+        const token = localStorage.getItem('token');
+        if (token) await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${nftId}/view`, { method:'POST' });
+      } catch(_){}
+
+      artistNFTs   = all.filter(n => n.creator === currentNFT.creator && n._id !== nftId).slice(0,10);
+      categoryNFTs = all.filter(n => n.category === currentNFT.category && n._id !== nftId && n.creator !== currentNFT.creator).slice(0,10);
+
+      renderArtwork();
+    } catch(err) {
+      console.error(err);
+      showError(err.message || 'Error loading artwork.');
+    }
+  }
+
+  async function getUsernameFromEmail(email) {
+    try {
+      if (!email) return null;
+      const res = await fetch(
+        `https://changes-sample.onrender.com/api/user/by-email/${encodeURIComponent(email.trim().toLowerCase())}`,
+        { method:'GET', credentials:'include', headers:{'Accept':'application/json'} }
+      );
+      if (!res.ok) return null;
+      return (await res.json()).username;
+    } catch(_){ return null; }
+  }
+
+  async function renderArtwork() {
+    const username    = await getUsernameFromEmail(currentNFT.owner);
+    localStorage.setItem('creatorEmail', currentNFT.owner);
+
+    const isLiked     = likedNFTs.includes(currentNFT._id);
+    const creatorInit = (username || 'U')[0].toUpperCase();
+    const creatorSlug = encodeURIComponent(username || 'unknown');
+    const rarity      = currentNFT.rarity || 'Common';
+    const rarityColor = RARITY_COLORS[rarity] || '#4a5568';
+
+    /* ── HERO ── */
+    const statusClass = currentNFT.status === 'listed' ? 'sale' : currentNFT.status === 'auction' ? 'auction' : '';
+    const statusLabel = currentNFT.status === 'listed' ? 'For Sale' : currentNFT.status === 'auction' ? 'Auction' : '';
+    const thumbMedia  = currentNFT.mediaType === 'video'
+      ? `<video src="${currentNFT.imageUrl}" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover;display:block;"></video>`
+      : `<img src="${currentNFT.imageUrl}" alt="${currentNFT.name}">`;
+
+    document.getElementById('heroSection').innerHTML = `
+      <div class="aw-hero">
+        <nav class="aw-breadcrumb">
+          <a href="/index.html">Marketplace</a>
+          <span class="aw-breadcrumb-sep"> › </span>
+          <a href="category.html?category=${encodeURIComponent(currentNFT.category||'Art')}">${currentNFT.category||'Art'}</a>
+          <span class="aw-breadcrumb-sep"> › </span>
+          <span>${currentNFT.name}</span>
+        </nav>
+
+        <div class="aw-hero-body">
+          <!-- thumbnail -->
+          <div class="aw-hero-thumb">
+            ${thumbMedia}
+            ${statusClass ? `<span class="aw-thumb-status ${statusClass}">${statusLabel}</span>` : ''}
+          </div>
+
+          <!-- info -->
+          <div class="aw-hero-info">
+            <div class="aw-hero-eyebrow">
+              <span class="aw-hero-eyebrow-dot"></span>
+              ${currentNFT.category||'Art'}
+              <span style="opacity:.35;">·</span>
+              Token #${(currentNFT.tokenId||currentNFT._id.slice(-6)).toString().toUpperCase()}
+            </div>
+            <h1 class="aw-hero-title">${currentNFT.name}</h1>
+            <a href="artist.html?name=${creatorSlug}" class="aw-hero-creator-row" data-testid="link-artist">
+              <div class="aw-hero-creator-av">${creatorInit}</div>
+              <span>by ${username||currentNFT.creator||'Unknown'}</span>
+            </a>
+          </div>
+        </div>
+      </div>`;
+
+    /* ── STATS STRIP ── */
+    const mintDate = new Date(currentNFT.createdAt).toLocaleDateString('en-GB',{month:'short',year:'numeric'});
+    document.getElementById('statsStrip').innerHTML = `
+      <div class="aw-stats-strip">
+        <div class="aw-stat-cell">
+          <div class="aw-stat-val">${currentNFT.likes||0}</div>
+          <div class="aw-stat-label">Likes</div>
+        </div>
+        <div class="aw-stat-cell">
+          <div class="aw-stat-val">${currentNFT.views||0}</div>
+          <div class="aw-stat-label">Views</div>
+        </div>
+        <div class="aw-stat-cell">
+          <div class="aw-stat-val mono">${currentNFT.price ? currentNFT.price.toFixed(2) : '—'}</div>
+          <div class="aw-stat-label">Price (${currentNFT.currency||'ETH'})</div>
+        </div>
+        <div class="aw-stat-cell">
+          <div class="aw-stat-val" style="color:${rarityColor};">${rarity}</div>
+          <div class="aw-stat-label">Rarity</div>
+        </div>
+        <div class="aw-stat-cell">
+          <div class="aw-stat-val">${mintDate}</div>
+          <div class="aw-stat-label">Minted</div>
+        </div>
+      </div>`;
+
+    /* show tabs */
+    document.getElementById('tabsBar').style.display = 'flex';
+
+
+
+    /* ── MEDIA ── */
+    const mediaHTML = currentNFT.mediaType === 'video'
+      ? `<video src="${currentNFT.imageUrl}" muted autoplay loop controls playsinline></video>`
+      : `<img src="${currentNFT.imageUrl}" alt="${currentNFT.name}">`;
+
+    /* ── BUY BUTTON ── */
+    let buyHTML = '';
+    if (currentNFT.status === 'listed') {
+      buyHTML = `<button class="aw-buy-btn primary" onclick="buyNFT()" data-testid="button-buy-artwork">
+        <i class="bi bi-cart"></i> Buy Now — ${currentNFT.price} ${currentNFT.currency||'ETH'}
+      </button>`;
+    } else if (currentNFT.status === 'auction') {
+      buyHTML = `<button class="aw-buy-btn bid" onclick="placeBid()" data-testid="button-bid-artwork">
+        <i class="bi bi-hammer"></i> Place Bid
+      </button>`;
+    } else {
+      buyHTML = `<button class="aw-buy-btn disabled" disabled>
+        <i class="bi bi-lock"></i> Not Available for Sale
+      </button>`;
+    }
+
+    /* ── PRICE ── */
+    const priceHTML = currentNFT.price
+      ? `${currentNFT.price.toFixed(4)} <span class="aw-price-currency">${currentNFT.currency||'ETH'}</span>`
+      : `<span style="font-size:1.1rem;color:var(--tx2);">Not for sale</span>`;
+
+    document.getElementById('mainContent').innerHTML = `
+      <div class="aw-main">
+        <div class="aw-detail-wrap">
+          <div class="aw-grid">
+
+            <!-- LEFT: image -->
+            <div class="aw-img-panel">
+              <div class="aw-img-wrap">
+                ${mediaHTML}
+              </div>
+              <!-- stats strip -->
+              <div class="aw-img-footer">
+                <div class="aw-img-stat">
+                  <i class="bi bi-heart-fill" style="color:#f87171;"></i>
+                  <span class="val">${currentNFT.likes||0}</span>
+                  <span class="lbl">Likes</span>
+                </div>
+                <div class="aw-img-stat">
+                  <i class="bi bi-eye-fill"></i>
+                  <span class="val">${currentNFT.views||0}</span>
+                  <span class="lbl">Views</span>
+                </div>
+                <div class="aw-img-stat">
+                  <i class="bi bi-calendar3"></i>
+                  <span class="val">${new Date(currentNFT.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</span>
+                  <span class="lbl">Listed</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT: info panel -->
+            <div class="aw-info">
+              <div class="aw-category-pill"><i class="bi bi-tag"></i> ${currentNFT.category||'Art'}</div>
+              <h2 class="aw-info-title">${currentNFT.name}</h2>
+
+              <a href="artist.html?name=${creatorSlug}" class="aw-creator" data-testid="link-artist">
+                <div class="aw-creator-av">${creatorInit}</div>
+                <div>
+                  <div class="aw-creator-name">${username||'Unknown Artist'}</div>
+                  <div class="aw-creator-sub">View profile <i class="bi bi-arrow-right" style="font-size:.7rem;"></i></div>
+                </div>
+                <i class="bi bi-chevron-right ms-auto" style="color:var(--tx3);"></i>
+              </a>
+
+              <div class="aw-desc">${currentNFT.description||'No description available for this artwork.'}</div>
+
+              <div class="aw-meta-grid">
+                <div class="aw-meta-item">
+                  <div class="aw-meta-lbl">Rarity</div>
+                  <div class="aw-meta-val" style="color:${rarityColor};">${rarity}</div>
+                </div>
+                <div class="aw-meta-item">
+                  <div class="aw-meta-lbl">Token ID</div>
+                  <div class="aw-meta-val" style="font-family:'Space Mono',monospace;">#${currentNFT.tokenId||currentNFT._id.slice(-6)}</div>
+                </div>
+                <div class="aw-meta-item">
+                  <div class="aw-meta-lbl">Created</div>
+                  <div class="aw-meta-val">${new Date(currentNFT.createdAt).toLocaleDateString()}</div>
+                </div>
+                <div class="aw-meta-item">
+                  <div class="aw-meta-lbl">Creator</div>
+                  <div class="aw-meta-val" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${currentNFT.creator||'Unknown'}</div>
+                </div>
+              </div>
+
+              <div class="aw-price-box">
+                <div class="aw-price-lbl">Current Price</div>
+                <div class="aw-price-val">${priceHTML}</div>
+              </div>
+
+              <div class="aw-buy-row">${buyHTML}</div>
+
+              <div class="aw-share">
+                <div class="aw-share-lbl">Share</div>
+                <div class="aw-share-row">
+                  <input type="text" id="shareLink" value="${window.location.href}" readonly/>
+                  <button onclick="copyLink()" data-testid="button-copy-link"><i class="bi bi-copy"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        ${buildArtistSection()}
+        ${buildCategorySection()}
+      </div>`;
+  }
+
+  /* ── RELATED ── */
+  function buildArtistSection() {
+    if (!artistNFTs.length) return '';
+    return `
+      <section class="aw-section">
+        <div class="aw-section-hd">
+          <h2 class="aw-section-ttl">More from ${currentNFT.creator||'this artist'}</h2>
+          <a href="artist.html?name=${encodeURIComponent(currentNFT.creator||'unknown')}" class="aw-see-all">View all <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="aw-carousel">${artistNFTs.map(buildCard).join('')}</div>
+      </section>`;
+  }
+
+  function buildCategorySection() {
+    if (!categoryNFTs.length) return '';
+    return `
+      <section class="aw-section">
+        <div class="aw-section-hd">
+          <h2 class="aw-section-ttl">More in ${currentNFT.category||'Art'}</h2>
+          <a href="category.html?category=${encodeURIComponent(currentNFT.category||'Art')}" class="aw-see-all">View all <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="aw-carousel">${categoryNFTs.map(buildCard).join('')}</div>
+      </section>`;
+  }
+
+  function buildCard(nft) {
+    const price = nft.price ? `${nft.price.toFixed(2)} ${nft.currency||'ETH'}` : 'Unlisted';
+    const media = nft.mediaType === 'video'
+      ? `<video src="${nft.imageUrl}" autoplay loop muted playsinline></video>`
+      : `<img src="${nft.imageUrl}" alt="${nft.name}" loading="lazy">`;
+    return `
+      <a href="artwork.html?id=${nft._id}" class="aw-c-card" data-testid="card-carousel-${nft._id}">
+        ${media}
+        <div class="aw-c-body">
+          <div class="aw-c-title">${nft.name}</div>
+          <div class="aw-c-creator">by ${nft.creator||'Unknown'}</div>
+          <div class="aw-c-footer">
+            <span class="aw-c-price">${price}</span>
+            <span class="aw-c-likes"><i class="bi bi-heart-fill" style="color:#f87171;font-size:.6rem;"></i>${nft.likes||0}</span>
+          </div>
+        </div>
+      </a>`;
+  }
+
+  /* ── ACTIONS ── */
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.aw-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    // Overview is the only tab with content; others show a placeholder
+    if (tab !== 'overview') {
+      Swal.fire({ icon:'info', title: tab.charAt(0).toUpperCase()+tab.slice(1), text:'Coming soon.', confirmButtonColor:'#3b82f6', background:'#0e1018', color:'#eef2ff' });
+      btn.classList.remove('active');
+      document.querySelector('.aw-tab').classList.add('active');
+    }
+  }
+
+  async function toggleLike() {
+    if (!currentNFT) return;
+    const isLiked = likedNFTs.includes(currentNFT._id);
+    likedNFTs = isLiked ? likedNFTs.filter(id => id !== currentNFT._id) : [...likedNFTs, currentNFT._id];
+    localStorage.setItem('likedNFTs', JSON.stringify(likedNFTs));
+    currentNFT.likes = isLiked ? Math.max(0,(currentNFT.likes||0)-1) : (currentNFT.likes||0)+1;
+    renderArtwork();
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error();
+      await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${currentNFT._id}/like`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+        body:JSON.stringify({unlike:isLiked})
+      });
+    } catch(_){}
+  }
+
+  async function buyNFT() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      const r = await Swal.fire({icon:'warning',title:'Login Required',text:'You need to log in to purchase NFTs.',showCancelButton:true,confirmButtonText:'Go to Login',confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});
+      if (r.isConfirmed) window.location.href = '/dashboard.html';
+      return;
+    }
+    const r = await Swal.fire({icon:'question',title:'Confirm Purchase',text:`Buy "${currentNFT.name}" for ${currentNFT.price} ${currentNFT.currency||'ETH'}?`,showCancelButton:true,confirmButtonText:'Buy Now',confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});
+    if (!r.isConfirmed) return;
+    try {
+      const t = localStorage.getItem('token');
+      const res = await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${currentNFT._id}/buy`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t}`}});
+      if (!res.ok){const e=await res.json();throw new Error(e.message);}
+      await Swal.fire({icon:'success',title:'Congratulations!',text:`You now own "${currentNFT.name}". Added to your collection.`,confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});
+      window.location.reload();
+    } catch(err){
+      Swal.fire({icon:'error',title:'Error',text:err.message||'Purchase failed.',confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});
+    }
+  }
+
+  async function placeBid() {
+    const {value:amt} = await Swal.fire({icon:'question',title:'Place Bid',input:'number',inputLabel:'Bid amount (ETH):',inputPlaceholder:'e.g. 1.5',showCancelButton:true,confirmButtonText:'Submit Bid',confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});
+    if (amt) Swal.fire({icon:'success',title:'Bid Placed!',text:`Your bid of ${amt} ETH has been submitted.`,confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});
+  }
+
+  function shareArtwork() {
+    if (navigator.share) {
+      navigator.share({title:currentNFT?.name,text:`Check out this NFT: ${currentNFT?.name}`,url:window.location.href});
+    } else { copyLink(); }
+  }
+
+  function copyLink() {
+    const inp = document.getElementById('shareLink');
+    if (inp){inp.select();document.execCommand('copy');}
+    Swal.fire({icon:'success',title:'Copied!',text:'Link copied to clipboard.',timer:1500,showConfirmButton:false,background:'#0e1018',color:'#eef2ff'});
+  }
 </script>
-<noscript> Powered by <a href=“https://www.smartsupp.com” target=“_blank”>Smartsupp</a></noscript>
+
+<!-- Smartsupp -->
+<script type="text/javascript">
+var _smartsupp=_smartsupp||{};_smartsupp.key='22fedf8eb82b9e0a64db380756000ffa3577c808';
+window.smartsupp||(function(d){var s,c,o=smartsupp=function(){o._.push(arguments)};o._=[];s=d.getElementsByTagName('script')[0];c=d.createElement('script');c.type='text/javascript';c.charset='utf-8';c.async=true;c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);})(document);
+</script>
+<noscript>Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
 </body>
 </html>

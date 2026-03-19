@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collection — Ethergalleries</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   ETHERGALLERIES — EDITORIAL MAGAZINE THEME
+   Collection Page · Blue Scheme
+═══════════════════════════════════════ */
+:root {
+  --vx-primary: #22c55e;
+  --vx-primary-hover: #16a34a;
+  --vx-blue: #22c55e;
+  --vx-dark: #1a1a2e;
+  --vx-light: #f8fafc;
+  --vx-card-bg: #ffffff;
+  --vx-border: #e2e8f0;
+  --vx-text: #1e293b;
+  --vx-text-muted: #64748b;
+  --ink: #0a0a0f;
+  --paper: #f7f8fc;
+  --accent: #22c55e;
+  --accent-dark: #16a34a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --border-dark: #1a2236;
+  --indigo-muted: #86efac;
+  --white: #ffffff;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: "DM Sans", sans-serif; background: var(--paper); color: var(--ink); font-size: 15px; line-height: 1.6; }
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; }
+::selection { background: rgba(34,197,94,0.18); color: var(--ink); }
+
+body::after {
+  content: ""; position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.02; pointer-events: none; z-index: 9999;
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: rgba(34,197,94,0.25); border-radius: 3px; }
+
+/* ── HEADER ── */
+.mainHeader {
+  background: var(--ink); border-bottom: 1px solid var(--border-dark);
+  padding: 0 40px; height: 64px; position: sticky; top: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+}
+.brandLogo {
+  font-family: "Playfair Display", serif; font-style: italic; font-size: 1.4rem;
+  color: var(--indigo-muted); text-decoration: none;
+  display: flex; align-items: center; gap: 10px;
+}
+.navigationMenu { display: flex; align-items: center; gap: 32px; }
+.navLink {
+  color: rgba(247,248,252,0.6); font-family: "DM Mono", monospace; font-size: 11px;
+  font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  text-decoration: none; background: none; border: none; cursor: pointer;
+  transition: color 0.2s; position: relative;
+}
+.navLink::after { content: ""; position: absolute; bottom: -2px; left: 0; right: 100%; height: 1px; background: var(--accent); transition: right 0.3s; }
+.navLink:hover::after { right: 0; }
+.navLink:hover { color: #fff; }
+@media (max-width: 1024px) { .navigationMenu { display: none; } .mainHeader { padding: 0 20px; } }
+
+/* ── HERO / BANNER ── */
+.cd-hero {
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #0a0a18 0%, #131027 50%, #0a1020 100%);
+}
+.cd-hero::before {
+  content: ''; position: absolute; top: -80px; left: 8%;
+  width: 550px; height: 550px;
+  background: radial-gradient(circle, rgba(34,197,94,0.25) 0%, transparent 65%);
+  pointer-events: none;
+}
+.cd-hero::after {
+  content: ''; position: absolute; bottom: -80px; right: 5%;
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(34,197,94,0.15) 0%, transparent 65%);
+  pointer-events: none;
+}
+.cd-hero-mosaic {
+  position: absolute; inset: 0; display: grid;
+  grid-template-columns: repeat(4, 1fr); gap: 2px; opacity: 0.18;
+}
+.cd-mosaic-cell { overflow: hidden; }
+.cd-mosaic-cell img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.4); }
+.cd-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(10,10,24,0.6) 0%, rgba(10,10,24,0.92) 100%); }
+.cd-hero-inner {
+  position: relative; z-index: 2; max-width: 1280px; margin: 0 auto;
+  padding: 52px 40px 40px;
+}
+.cd-hero-eyebrow {
+  font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--indigo-muted); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.cd-hero-eyebrow::before { content: ""; display: block; width: 24px; height: 1px; background: var(--indigo-muted); }
+.cd-hero-title {
+  font-family: "Playfair Display", serif; font-style: italic;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  color: #fff; line-height: 1.1; margin-bottom: 10px;
+}
+.cd-hero-creator {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  padding: 8px 14px; border-radius: 2px; margin-bottom: 14px;
+}
+.cd-creator-av {
+  width: 28px; height: 28px; border-radius: 50%; background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 12px; font-family: "DM Mono", monospace;
+}
+.cd-creator-name { font-family: "DM Mono", monospace; font-size: 11px; color: rgba(255,255,255,0.7); letter-spacing: 0.05em; }
+.cd-hero-desc { font-size: 14px; color: rgba(255,255,255,0.45); max-width: 560px; line-height: 1.7; margin-bottom: 28px; }
+.cd-hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.cd-tag {
+  padding: 5px 14px; border-radius: 99px;
+  font-family: "DM Mono", monospace; font-size: 10px; font-weight: 500;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05);
+}
+
+/* Stats strip */
+.cd-stats-strip {
+  background: var(--white); border-bottom: 1px solid var(--border);
+  display: grid; grid-template-columns: repeat(5, 1fr);
+}
+@media (max-width: 640px) { .cd-stats-strip { grid-template-columns: repeat(3, 1fr); } }
+.cd-stat-cell { padding: 16px 20px; border-right: 1px solid var(--border); text-align: center; }
+.cd-stat-cell:last-child { border-right: none; }
+.cd-stat-val { font-family: "Playfair Display", serif; font-size: 1.4rem; font-weight: 700; color: var(--ink); }
+.cd-stat-label { font-family: "DM Mono", monospace; font-size: 9px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+
+/* ── MAIN CONTENT ── */
+.cd-main { max-width: 1280px; margin: 0 auto; padding: 36px 40px 80px; }
+@media (max-width: 768px) { .cd-main { padding: 24px 20px 60px; } }
+
+/* Toolbar */
+.cd-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; margin-bottom: 28px;
+  padding: 14px 18px;
+  background: var(--white); border: 1px solid var(--border); border-radius: 3px;
+}
+.cd-filter-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.cd-filter-select {
+  padding: 8px 14px; border: 1px solid var(--border); border-radius: 2px;
+  font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: 0.08em;
+  background: var(--paper); color: var(--ink); cursor: pointer;
+}
+.cd-filter-select:focus { outline: none; border-color: var(--accent); }
+.cd-count {
+  font-family: "DM Mono", monospace; font-size: 11px; color: var(--muted);
+  letter-spacing: 0.05em;
+}
+.cd-count span { color: var(--accent); font-weight: 600; }
+
+/* NFT Grid */
+.cd-nft-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 20px; }
+@media (max-width: 576px) { .cd-nft-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
+
+.cd-nft-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 3px;
+  overflow: hidden; transition: all 0.25s; display: block; color: inherit; text-decoration: none;
+}
+.cd-nft-card:hover { transform: translateY(-4px); box-shadow: 0 14px 36px rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); color: inherit; }
+.cd-img-wrap { position: relative; padding-top: 100%; overflow: hidden; }
+.cd-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+.cd-nft-card:hover .cd-img { transform: scale(1.05); }
+.cd-badge {
+  position: absolute; top: 10px; left: 10px;
+  background: var(--accent); color: #fff;
+  font-family: "DM Mono", monospace; font-size: 9px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 1px;
+}
+.cd-badge.auction { background: #d97706; }
+.cd-like-btn {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(255,255,255,0.92); border: none;
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 10; font-size: 12px; transition: all 0.2s;
+}
+.cd-like-btn:hover { transform: scale(1.1); }
+.cd-like-btn.liked { background: #ef4444; color: white; }
+.cd-likes-count { font-size: 9px; font-weight: 600; font-family: "DM Mono", monospace; }
+.cd-card-body { padding: 14px 16px; }
+.cd-card-title { font-family: "Playfair Display", serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cd-card-creator { font-family: "DM Mono", monospace; font-size: 10px; color: var(--muted); margin-bottom: 10px; }
+.cd-card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid var(--border); }
+.cd-price { font-weight: 700; font-size: 0.9rem; }
+.cd-price small { font-weight: 400; color: var(--muted); display: block; font-size: 10px; font-family: "DM Mono", monospace; }
+.cd-buy-btn {
+  background: var(--accent); color: white; border: none;
+  padding: 6px 14px; border-radius: 2px;
+  font-family: "DM Mono", monospace; font-weight: 500; font-size: 9px;
+  letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.2s;
+}
+.cd-buy-btn:hover { background: var(--accent-dark); }
+
+/* Empty state */
+.cd-empty { text-align: center; padding: 80px 24px; color: var(--muted); grid-column: 1/-1; }
+.cd-empty i { font-size: 3rem; display: block; margin-bottom: 16px; opacity: 0.25; }
+.cd-empty h4 { font-family: "Playfair Display", serif; font-weight: 700; margin-bottom: 8px; }
+
+/* Footer */
+.vx-footer { background: var(--ink); color: white; padding: 40px 0; border-top: 1px solid var(--border-dark); }
+.vx-footer-brand { font-family: "Playfair Display", serif; font-style: italic; font-size: 1.3rem; color: var(--indigo-muted); margin-bottom: 8px; }
+.vx-footer-copy { font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: 0.08em; color: rgba(255,255,255,0.3); text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.07); }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="mainHeader">
+  <a href="/index.html" class="brandLogo">
+    <img src="./logo.png" height="38" alt="Ethergalleries" style="height:38px;width:auto;">
+  </a>
+  <nav class="navigationMenu">
+    <a href="marketplace.html" class="navLink">Marketplace</a>
+    <a href="category.html" class="navLink">Explore</a>
+    <a href="allcollections.html" class="navLink">Collections</a>
+  </nav>
+</header>
+
+<!-- Hero (rendered dynamically) -->
+<div id="heroSection">
+  <div style="background:var(--ink);height:280px;display:flex;align-items:center;justify-content:center;">
+    <p style="font-family:'DM Mono',monospace;font-size:12px;color:rgba(255,255,255,0.4);letter-spacing:0.15em;text-transform:uppercase;">Loading collection…</p>
+  </div>
+</div>
+
+<!-- Stats Strip -->
+<div class="cd-stats-strip" id="statsStrip" style="display:none;">
+  <div class="cd-stat-cell"><div class="cd-stat-val" id="statItems">—</div><div class="cd-stat-label">Items</div></div>
+  <div class="cd-stat-cell"><div class="cd-stat-val" id="statListed">—</div><div class="cd-stat-label">For Sale</div></div>
+  <div class="cd-stat-cell"><div class="cd-stat-val" id="statAuctions">—</div><div class="cd-stat-label">Auctions</div></div>
+  <div class="cd-stat-cell"><div class="cd-stat-val" id="statLikes">—</div><div class="cd-stat-label">Total Likes</div></div>
+  <div class="cd-stat-cell"><div class="cd-stat-val" id="statViews">—</div><div class="cd-stat-label">Total Views</div></div>
+</div>
+
+<!-- Main Content -->
+<div class="cd-main">
+  <div class="cd-toolbar">
+    <div class="cd-count">Showing <span id="itemCount">0</span> items</div>
+    <div class="cd-filter-group">
+      <select class="cd-filter-select" id="sortSelect">
+        <option value="newest">Most Recent</option>
+        <option value="oldest">Oldest</option>
+        <option value="price-low">Price ↑</option>
+        <option value="price-high">Price ↓</option>
+        <option value="likes">Most Liked</option>
+      </select>
+      <select class="cd-filter-select" id="statusFilter">
+        <option value="all">All Status</option>
+        <option value="listed">For Sale</option>
+        <option value="auction">Auctions</option>
+      </select>
+    </div>
+  </div>
+  <div class="cd-nft-grid" id="nftGrid">
+    <div class="cd-empty">
+      <i class="bi bi-hourglass-split"></i>
+      <h4>Loading…</h4>
+    </div>
+  </div>
+</div>
+
+<footer class="vx-footer">
+  <div class="container">
+    <div class="vx-footer-brand">Ethergalleries</div>
+    <div class="vx-footer-copy">© 2024 Ethergalleries. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let collectionNFTs = [];
+let collectionData = null;
+let likedNFTs = JSON.parse(localStorage.getItem('likedNFTs') || '[]');
+
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const collectionId = params.get('id');
+  if (collectionId) loadCollection(collectionId);
+  else showError('No collection ID provided.');
+  document.getElementById('sortSelect').addEventListener('change', renderGrid);
+  document.getElementById('statusFilter').addEventListener('change', renderGrid);
+});
+
+async function loadCollection(id) {
+  try {
+    const [nftsRes, collRes] = await Promise.all([
+      fetch('https://changes-sample.onrender.com/api/marketplace/nfts'),
+      fetch(`https://changes-sample.onrender.com/api/collections/${id}`)
+    ]);
+    const allNFTs = nftsRes.ok ? await nftsRes.json() : [];
+    collectionData = collRes.ok ? await collRes.json() : null;
+
+    // Filter NFTs belonging to this collection
+    collectionNFTs = allNFTs.filter(n => n.collection === id || n.collectionId === id);
+    // Fallback: use all NFTs if none match (for demo)
+    if (!collectionNFTs.length && collectionData) {
+      collectionNFTs = allNFTs.slice(0, 20);
+    }
+
+    renderHero();
+    renderStats();
+    renderGrid();
+    document.getElementById('statsStrip').style.display = '';
+  } catch (err) {
+    console.error(err);
+    showError('Failed to load collection.');
+  }
+}
+
+function renderHero() {
+  const name = collectionData?.name || 'Untitled Collection';
+  const desc = collectionData?.description || 'A curated collection of unique digital artworks.';
+  const creator = collectionData?.creator || 'Unknown Artist';
+  const category = collectionData?.category || 'Art';
+  // Use first few NFT images as mosaic
+  const mosaicImgs = collectionNFTs.slice(0, 4).map(n => n.imageUrl).filter(Boolean);
+  const mosaicHtml = mosaicImgs.length
+    ? mosaicImgs.map(img => `<div class="cd-mosaic-cell"><img src="${img}" loading="lazy"></div>`).join('')
+    : '';
+
+  document.getElementById('heroSection').innerHTML = `
+    <div class="cd-hero">
+      ${mosaicHtml ? `<div class="cd-hero-mosaic">${mosaicHtml}</div>` : ''}
+      <div class="cd-hero-overlay"></div>
+      <div class="cd-hero-inner">
+        <div class="cd-hero-eyebrow">Collection</div>
+        <h1 class="cd-hero-title">${name}</h1>
+        <div class="cd-hero-creator">
+          <div class="cd-creator-av">${creator[0]?.toUpperCase() || 'A'}</div>
+          <a href="artist.html?name=${encodeURIComponent(creator)}" class="cd-creator-name">by ${creator}</a>
+        </div>
+        <p class="cd-hero-desc">${desc}</p>
+        <div class="cd-hero-tags">
+          <span class="cd-tag">${category}</span>
+          <span class="cd-tag">${collectionNFTs.length} items</span>
+        </div>
+      </div>
+    </div>`;
+  document.title = `${name} — Ethergalleries`;
+}
+
+function renderStats() {
+  const listed = collectionNFTs.filter(n => n.status === 'listed').length;
+  const auctions = collectionNFTs.filter(n => n.status === 'auction').length;
+  const totalLikes = collectionNFTs.reduce((s, n) => s + (n.likes || 0), 0);
+  const totalViews = collectionNFTs.reduce((s, n) => s + (n.views || 0), 0);
+  document.getElementById('statItems').textContent = collectionNFTs.length;
+  document.getElementById('statListed').textContent = listed;
+  document.getElementById('statAuctions').textContent = auctions;
+  document.getElementById('statLikes').textContent = totalLikes;
+  document.getElementById('statViews').textContent = totalViews;
+}
+
+function renderGrid() {
+  let filtered = [...collectionNFTs];
+  const status = document.getElementById('statusFilter').value;
+  if (status !== 'all') filtered = filtered.filter(n => n.status === status);
+  const sort = document.getElementById('sortSelect').value;
+  switch (sort) {
+    case 'oldest': filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)); break;
+    case 'price-low': filtered.sort((a, b) => (a.price || 0) - (b.price || 0)); break;
+    case 'price-high': filtered.sort((a, b) => (b.price || 0) - (a.price || 0)); break;
+    case 'likes': filtered.sort((a, b) => (b.likes || 0) - (a.likes || 0)); break;
+    default: filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+  document.getElementById('itemCount').textContent = filtered.length;
+  const grid = document.getElementById('nftGrid');
+  if (!filtered.length) { grid.innerHTML = `<div class="cd-empty"><i class="bi bi-image"></i><h4>No items found</h4><p style="font-size:13px;color:var(--muted);">Try adjusting your filters</p></div>`; return; }
+  grid.innerHTML = filtered.map(nft => {
+    const isLiked = likedNFTs.includes(nft._id);
+    const badgeClass = nft.status === 'auction' ? 'auction' : '';
+    const badgeText = nft.status === 'auction' ? 'Auction' : nft.status === 'listed' ? 'For Sale' : '';
+    return `<a href="artwork.html?id=${nft._id}" class="cd-nft-card">
+      <div class="cd-img-wrap">
+        ${nft.mediaType === 'video'
+          ? `<video src="${nft.imageUrl}" class="cd-img" autoplay loop muted playsinline></video>`
+          : `<img src="${nft.imageUrl}" alt="${nft.name}" class="cd-img" loading="lazy">`}
+        ${badgeText ? `<span class="cd-badge ${badgeClass}">${badgeText}</span>` : ''}
+        <button class="cd-like-btn ${isLiked ? 'liked' : ''}" onclick="event.preventDefault();event.stopPropagation();toggleLike('${nft._id}')">
+          <i class="bi bi-heart${isLiked ? '-fill' : ''}"></i>
+          <div class="cd-likes-count">${nft.likes || 0}</div>
+        </button>
+      </div>
+      <div class="cd-card-body">
+        <div class="cd-card-title">${nft.name}</div>
+        <div class="cd-card-creator">by ${nft.creator || 'Unknown'}</div>
+        <div class="cd-card-footer">
+          <div class="cd-price">${nft.price ? nft.price.toFixed(2) + ' ' + (nft.currency || 'ETH') : 'Not listed'}<small>Current Price</small></div>
+          ${nft.status === 'listed' ? `<button class="cd-buy-btn" onclick="event.preventDefault();event.stopPropagation();buyNFT('${nft._id}')">Buy</button>` : ''}
+        </div>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+async function toggleLike(nftId) {
+  const isLiked = likedNFTs.includes(nftId);
+  if (isLiked) likedNFTs = likedNFTs.filter(id => id !== nftId); else likedNFTs.push(nftId);
+  localStorage.setItem('likedNFTs', JSON.stringify(likedNFTs));
+  const nft = collectionNFTs.find(n => n._id === nftId);
+  if (nft) nft.likes = isLiked ? Math.max(0, (nft.likes || 0) - 1) : (nft.likes || 0) + 1;
+  renderGrid(); renderStats();
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${nftId}/like`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ unlike: isLiked }) });
+  } catch (e) { console.error(e); }
+}
+
+async function buyNFT(nftId) {
+  const nft = collectionNFTs.find(n => n._id === nftId);
+  if (!nft) return;
+  const token = localStorage.getItem('token');
+  if (!token) {
+    const r = await Swal.fire({ icon: 'warning', title: 'Login Required', text: 'Please login to purchase NFTs.', showCancelButton: true, confirmButtonText: 'Go to Login', confirmButtonColor: '#22c55e' });
+    if (r.isConfirmed) window.location.href = '/dashboard.html';
+    return;
+  }
+  const result = await Swal.fire({ icon: 'question', title: 'Confirm Purchase', text: `Buy "${nft.name}" for ${nft.price} ${nft.currency || 'ETH'}?`, showCancelButton: true, confirmButtonText: 'Buy Now', confirmButtonColor: '#22c55e' });
+  if (!result.isConfirmed) return;
+  try {
+    const res = await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${nftId}/buy`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.message || 'Purchase failed'); }
+    await Swal.fire({ icon: 'success', title: 'Success!', text: `You now own "${nft.name}".`, confirmButtonColor: '#22c55e' });
+    const params = new URLSearchParams(window.location.search);
+    loadCollection(params.get('id'));
+  } catch (e) { await Swal.fire({ icon: 'error', title: 'Error', text: e.message || 'Purchase failed.', confirmButtonColor: '#22c55e' }); }
+}
+
+function showError(msg) {
+  document.getElementById('heroSection').innerHTML = `<div style="background:var(--ink);height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;"><p style="font-family:'DM Mono',monospace;font-size:12px;color:rgba(255,255,255,0.5);">${msg}</p><a href="allcollections.html" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#86efac;">← All Collections</a></div>`;
+}
+</script>
+<script type="text/javascript">
+var _smartsupp = _smartsupp || {};
+_smartsupp.key = '22fedf8eb82b9e0a64db380756000ffa3577c808';
+window.smartsupp||(function(d){var s,c,o=smartsupp=function(){o._.push(arguments)};o._=[];s=d.getElementsByTagName('script')[0];c=d.createElement('script');c.type='text/javascript';c.charset='utf-8';c.async=true;c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s)})(document);
+</script>
+<noscript>Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
+</body>
+</html>

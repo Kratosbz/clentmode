@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Vault — Ethergalleries Editorial</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════
+   TOKENS & RESET
+═══════════════════════════════════════ */
+:root{
+  --ink:#0a0a0f; --ink2:#18181f; --ink3:#252530;
+  --paper:#f5f2eb; --paper2:#ede9e0; --paper3:#e2ddd4;
+  --gold:#22c55e; --gold2:#16a34a; --gold3:rgba(34,197,94,.12);
+  --cream:#f9f6ef;
+  --tx:#0a0a0f; --tx2:#4a4640; --tx3:#8a857e;
+  --b1:rgba(10,10,15,.08); --b2:rgba(10,10,15,.14);
+  --ease:cubic-bezier(.4,0,.2,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Sans',system-ui,sans-serif;
+  background:var(--paper);color:var(--tx);
+  line-height:1.6;-webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--paper2);}
+::-webkit-scrollbar-thumb{background:var(--gold2);border-radius:3px;}
+img{display:block;max-width:100%;}
+a{color:inherit;text-decoration:none;}
+button{cursor:pointer;font-family:inherit;border:none;background:none;}
+
+/* grain texture */
+body::before{
+  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px;
+}
+
+/* pages */
+.page{display:none;animation:fadeIn .45s var(--ease) both;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+/* ═══════════════════════════════════════
+   MASTHEAD / HEADER
+═══════════════════════════════════════ */
+.masthead{
+  background:var(--ink);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  position:sticky;top:0;z-index:800;
+}
+.masthead-top{
+  display:flex;align-items:center;justify-content:space-between;
+  max-width:1280px;margin:0 auto;padding:.75rem 2rem;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.masthead-brand{
+  display:flex;flex-direction:column;
+  cursor:pointer;
+}
+.masthead-brand .sub{
+  font-family:'Space Mono',monospace;
+  font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:.1rem;
+}
+.masthead-brand .title{
+  font-family:'Playfair Display',serif;
+  font-size:1.5rem;font-weight:900;color:#fff;
+  letter-spacing:-.01em;line-height:1;
+}
+.masthead-brand .title span{color:var(--gold);font-style:italic;}
+.masthead-date{
+  font-family:'Space Mono',monospace;font-size:.65rem;
+  color:rgba(255,255,255,.3);letter-spacing:.08em;
+}
+.masthead-nav{
+  display:flex;align-items:center;gap:.25rem;
+  max-width:1280px;margin:0 auto;padding:.25rem 2rem;
+}
+.nav-link{
+  padding:.6rem 1rem;
+  font-family:'Space Mono',monospace;font-size:.68rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.45);transition:color .2s;
+  border-bottom:2px solid transparent;
+}
+.nav-link:hover{color:rgba(255,255,255,.85);}
+.nav-link.active{color:var(--gold);border-bottom-color:var(--gold);}
+.nav-link-main{
+  margin-right:auto;
+  font-family:'Space Mono',monospace;font-size:.68rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);
+  display:flex;align-items:center;gap:.4rem;
+}
+.nav-link-main:hover{color:var(--gold);}
+
+/* ═══════════════════════════════════════
+   WRAP
+═══════════════════════════════════════ */
+.wrap{max-width:1280px;margin:0 auto;padding:0 2rem;}
+.wrap-narrow{max-width:860px;margin:0 auto;padding:0 2rem;}
+
+/* ═══════════════════════════════════════
+   PAGE 1 — HOME / ARTICLES LIST
+═══════════════════════════════════════ */
+.hero-banner{
+  background:var(--ink);
+  padding:5rem 2rem 4rem;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.hero-banner::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%,rgba(34,197,94,.18) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 40% at 10% 80%,rgba(34,197,94,.06) 0%,transparent 55%);
+}
+.hero-banner::after{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:42px 42px;
+}
+.hero-banner-ct{position:relative;z-index:1;}
+.hero-kicker{
+  font-family:'Space Mono',monospace;font-size:.68rem;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--gold);
+  margin-bottom:1.25rem;
+}
+.hero-banner h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.5rem,5vw,4.5rem);
+  font-weight:900;letter-spacing:-.03em;
+  color:#fff;line-height:1.05;margin-bottom:1.25rem;
+}
+.hero-banner h1 em{color:var(--gold);font-style:italic;}
+.hero-banner p{
+  font-size:1.05rem;color:rgba(255,255,255,.55);
+  max-width:520px;margin:0 auto 2rem;line-height:1.75;
+}
+.hero-banner-btns{display:flex;gap:.875rem;justify-content:center;flex-wrap:wrap;}
+.btn-gold{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.75rem 1.75rem;border-radius:6px;
+  background:var(--gold);color:#fff;
+  font-weight:600;font-size:.875rem;
+  transition:background .2s,transform .2s;
+}
+.btn-gold:hover{background:var(--gold2);transform:translateY(-1px);}
+.btn-outline-white{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.75rem 1.5rem;border-radius:6px;
+  border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.75);
+  font-size:.875rem;
+  transition:border-color .2s,color .2s;
+}
+.btn-outline-white:hover{border-color:rgba(255,255,255,.45);color:#fff;}
+
+/* section labels */
+.section-label{
+  display:flex;align-items:center;gap:.75rem;
+  font-family:'Space Mono',monospace;font-size:.65rem;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--gold);
+  margin-bottom:1.75rem;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--b2);}
+
+/* FEATURED article — full width banner */
+.featured-article{
+  position:relative;height:420px;border-radius:4px;overflow:hidden;
+  cursor:pointer;margin:3rem 0 2rem;
+  background:var(--ink2);
+  transition:transform .35s var(--ease);
+}
+.featured-article:hover{transform:translateY(-3px);}
+.featured-article img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .6s var(--ease);opacity:.7;
+}
+.featured-article:hover img{transform:scale(1.03);}
+.featured-article-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(6,6,12,.95) 0%,rgba(6,6,12,.4) 50%,transparent 100%);
+}
+.featured-article-body{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:2.5rem 2.5rem;
+}
+.art-tag{
+  display:inline-block;
+  font-family:'Space Mono',monospace;font-size:.62rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  background:var(--gold);color:#fff;
+  padding:.25rem .7rem;border-radius:3px;
+  margin-bottom:.875rem;font-weight:700;
+}
+.featured-article h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.5rem,3vw,2.4rem);font-weight:700;
+  color:#fff;line-height:1.15;margin-bottom:.75rem;
+  letter-spacing:-.015em;
+}
+.featured-article .meta{
+  font-size:.8rem;color:rgba(255,255,255,.45);
+  display:flex;gap:1rem;align-items:center;
+}
+.featured-article .read-more{
+  margin-left:auto;
+  font-family:'Space Mono',monospace;font-size:.68rem;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--gold);display:flex;align-items:center;gap:.4rem;
+}
+
+/* article grid */
+.articles-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:2rem;margin-bottom:4rem;
+}
+@media(max-width:900px){.articles-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.articles-grid{grid-template-columns:1fr;}}
+
+.article-card{
+  cursor:pointer;
+  background:var(--cream);
+  border:1px solid var(--b1);
+  border-radius:4px;overflow:hidden;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .3s;
+}
+.article-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 16px 40px rgba(0,0,0,.1);
+  border-color:var(--b2);
+}
+.article-card-img{
+  height:200px;overflow:hidden;background:var(--ink2);
+}
+.article-card-img img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .5s var(--ease);opacity:.9;
+}
+.article-card:hover .article-card-img img{transform:scale(1.06);}
+.article-card-body{padding:1.375rem 1.5rem 1.5rem;}
+.article-card-tag{
+  font-family:'Space Mono',monospace;font-size:.6rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:var(--gold2);margin-bottom:.625rem;
+  display:flex;align-items:center;gap:.4rem;
+}
+.article-card h3{
+  font-family:'Playfair Display',serif;
+  font-size:1.125rem;font-weight:700;
+  color:var(--ink);line-height:1.3;
+  margin-bottom:.625rem;letter-spacing:-.01em;
+}
+.article-card p{
+  font-size:.85rem;color:var(--tx2);line-height:1.65;
+  margin-bottom:1rem;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.article-card-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:.875rem;border-top:1px solid var(--b1);
+  font-size:.75rem;color:var(--tx3);
+}
+.article-card-footer .read-time{display:flex;align-items:center;gap:.35rem;}
+.article-card-footer .read-more-link{
+  font-family:'Space Mono',monospace;font-size:.62rem;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--gold2);display:flex;align-items:center;gap:.3rem;
+  transition:gap .2s;
+}
+.article-card:hover .read-more-link{gap:.5rem;}
+
+/* sidebar on home */
+.home-layout{display:grid;grid-template-columns:1fr 300px;gap:3rem;margin-top:3rem;}
+@media(max-width:1024px){.home-layout{grid-template-columns:1fr;}}
+
+.sidebar{}
+.sidebar-widget{
+  background:var(--cream);border:1px solid var(--b1);
+  padding:1.5rem;margin-bottom:1.5rem;
+  border-radius:4px;
+}
+.sidebar-widget h4{
+  font-family:'Space Mono',monospace;font-size:.65rem;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--tx3);
+  margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--b1);
+}
+.sidebar-tag{
+  display:inline-block;
+  font-family:'Space Mono',monospace;font-size:.62rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:.3rem .7rem;border-radius:3px;margin:.25rem .25rem 0 0;
+  background:var(--paper2);color:var(--tx2);border:1px solid var(--b1);
+  cursor:pointer;transition:all .2s;
+}
+.sidebar-tag:hover{background:var(--gold);color:#fff;border-color:var(--gold);}
+
+.trending-item{
+  display:flex;gap:1rem;align-items:flex-start;
+  padding:.875rem 0;border-bottom:1px solid var(--b1);cursor:pointer;
+}
+.trending-item:last-child{border-bottom:none;}
+.trending-num{
+  font-family:'Playfair Display',serif;font-weight:900;
+  font-size:1.4rem;color:var(--b2);flex-shrink:0;line-height:1;
+  margin-top:.1rem;
+}
+.trending-item:hover .trending-num{color:var(--gold);}
+.trending-ttl{
+  font-size:.875rem;font-weight:500;color:var(--tx);line-height:1.4;
+}
+.trending-meta{font-size:.72rem;color:var(--tx3);margin-top:.2rem;}
+
+/* ═══════════════════════════════════════
+   PAGE 2 — ARTICLE READER
+═══════════════════════════════════════ */
+.article-hero{
+  background:var(--ink);padding:5rem 2rem 4rem;
+  position:relative;overflow:hidden;text-align:center;
+}
+.article-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(34,197,94,.15) 0%,transparent 60%);
+}
+.article-hero-ct{position:relative;z-index:1;max-width:760px;margin:0 auto;}
+.article-hero-tag{
+  font-family:'Space Mono',monospace;font-size:.65rem;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1.25rem;
+  display:inline-flex;align-items:center;gap:.5rem;
+}
+.article-hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.75rem,4vw,3.25rem);
+  font-weight:900;letter-spacing:-.025em;
+  color:#fff;line-height:1.1;margin-bottom:1.25rem;
+}
+.article-hero-meta{
+  display:flex;align-items:center;justify-content:center;gap:1.5rem;
+  font-size:.8rem;color:rgba(255,255,255,.4);
+  font-family:'Space Mono',monospace;
+}
+
+.article-feature-img{
+  width:100%;max-height:500px;object-fit:cover;display:block;
+}
+
+.article-body{
+  max-width:720px;margin:4rem auto;padding:0 2rem;
+}
+.article-body p{
+  font-size:1.05rem;color:var(--tx2);line-height:1.85;
+  margin-bottom:1.5rem;
+}
+.article-body h2{
+  font-family:'Playfair Display',serif;
+  font-size:1.6rem;font-weight:700;
+  color:var(--ink);letter-spacing:-.015em;
+  margin:2.5rem 0 1rem;
+}
+.article-body h3{
+  font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:600;
+  color:var(--ink);margin:2rem 0 .75rem;
+}
+.article-body blockquote{
+  border-left:3px solid var(--gold);
+  margin:2rem 0;padding:1.25rem 1.5rem;
+  background:var(--cream);border-radius:0 4px 4px 0;
+}
+.article-body blockquote p{
+  font-family:'Playfair Display',serif;
+  font-size:1.15rem;font-style:italic;color:var(--ink);
+  line-height:1.65;margin:0;
+}
+.article-body ul,
+.article-body ol{
+  margin:1rem 0 1.5rem 1.5rem;
+}
+.article-body li{
+  font-size:1rem;color:var(--tx2);line-height:1.75;
+  margin-bottom:.5rem;
+}
+.article-callout{
+  background:linear-gradient(135deg,var(--ink) 0%,var(--ink2) 100%);
+  border:1px solid rgba(34,197,94,.18);
+  border-radius:6px;padding:2rem 2rem;margin:2.5rem 0;
+  position:relative;overflow:hidden;
+}
+.article-callout::before{
+  content:'';position:absolute;top:-30px;right:-30px;
+  width:120px;height:120px;border-radius:50%;
+  background:rgba(34,197,94,.08);
+}
+.article-callout p{
+  color:rgba(255,255,255,.75);margin:0;font-size:.95rem;
+}
+.article-callout strong{color:var(--gold);}
+
+.article-tags{
+  display:flex;gap:.5rem;flex-wrap:wrap;margin:2.5rem 0;
+  padding:1.5rem 0;border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);
+}
+
+.author-card{
+  display:flex;gap:1.25rem;align-items:center;
+  background:var(--cream);border:1px solid var(--b1);
+  border-radius:6px;padding:1.5rem;margin:2.5rem 0;
+}
+.author-av{
+  width:56px;height:56px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--ink2),var(--gold2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:var(--gold);
+}
+.author-info-name{font-weight:600;color:var(--ink);margin-bottom:.25rem;}
+.author-info-bio{font-size:.85rem;color:var(--tx2);line-height:1.5;}
+
+/* related articles mini */
+.related-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;
+  margin-top:2rem;
+}
+@media(max-width:700px){.related-grid{grid-template-columns:1fr;}}
+.related-card{
+  cursor:pointer;
+  background:var(--cream);border:1px solid var(--b1);
+  border-radius:4px;overflow:hidden;transition:transform .25s;
+}
+.related-card:hover{transform:translateY(-3px);}
+.related-card img{width:100%;height:130px;object-fit:cover;opacity:.85;}
+.related-card-body{padding:1rem;}
+.related-card h5{
+  font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;
+  color:var(--ink);line-height:1.3;margin-bottom:.3rem;
+}
+.related-card p{font-size:.78rem;color:var(--tx3);}
+
+/* ═══════════════════════════════════════
+   PAGE 3 — REVIEWS
+═══════════════════════════════════════ */
+.reviews-hero{
+  background:var(--ink);padding:4rem 2rem 3.5rem;
+  text-align:center;position:relative;overflow:hidden;
+}
+.reviews-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(34,197,94,.16) 0%,transparent 60%);
+}
+.reviews-hero-ct{position:relative;z-index:1;}
+.reviews-hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3.5rem);
+  font-weight:900;color:#fff;letter-spacing:-.03em;
+  margin-bottom:.875rem;
+}
+.reviews-hero h1 em{color:var(--gold);font-style:italic;}
+.reviews-hero p{
+  font-size:.95rem;color:rgba(255,255,255,.5);
+  max-width:480px;margin:0 auto;
+}
+
+/* overall rating block */
+.rating-overview{
+  display:grid;grid-template-columns:auto 1fr;gap:3rem;align-items:center;
+  background:var(--cream);border:1px solid var(--b1);border-radius:6px;
+  padding:2.5rem;margin:3rem 0;
+}
+@media(max-width:700px){.rating-overview{grid-template-columns:1fr;text-align:center;}}
+.rating-big{
+  display:flex;flex-direction:column;align-items:center;
+}
+.rating-num{
+  font-family:'Playfair Display',serif;font-size:5rem;font-weight:900;
+  color:var(--ink);line-height:1;letter-spacing:-.04em;
+}
+.rating-stars{display:flex;gap:.25rem;margin:.5rem 0;}
+.star{font-size:1.25rem;color:var(--gold);}
+.star.half{opacity:.5;}
+.rating-count{font-size:.8rem;color:var(--tx3);font-family:'Space Mono',monospace;}
+
+.rating-bars{}
+.rating-bar-row{display:flex;align-items:center;gap:.875rem;margin-bottom:.625rem;}
+.rating-bar-row label{
+  font-family:'Space Mono',monospace;font-size:.65rem;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--tx3);width:80px;flex-shrink:0;
+}
+.rating-bar-track{
+  flex:1;height:6px;background:var(--b1);border-radius:3px;overflow:hidden;
+}
+.rating-bar-fill{height:100%;background:var(--gold);border-radius:3px;}
+.rating-bar-pct{
+  font-family:'Space Mono',monospace;font-size:.65rem;
+  color:var(--tx3);width:32px;text-align:right;flex-shrink:0;
+}
+
+/* review cards */
+.reviews-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1.75rem;
+  margin:3rem 0;
+}
+@media(max-width:768px){.reviews-grid{grid-template-columns:1fr;}}
+
+.review-card{
+  background:var(--cream);border:1px solid var(--b1);
+  border-radius:6px;padding:1.75rem;
+  transition:box-shadow .25s,border-color .25s;
+  position:relative;
+}
+.review-card:hover{box-shadow:0 8px 28px rgba(0,0,0,.07);border-color:var(--b2);}
+.review-card::before{
+  content:'\201C';
+  position:absolute;top:.5rem;right:1.25rem;
+  font-family:'Playfair Display',serif;font-size:4rem;
+  color:var(--gold);opacity:.25;line-height:1;
+}
+.review-header{display:flex;align-items:center;gap:.875rem;margin-bottom:1.1rem;}
+.review-av{
+  width:44px;height:44px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--ink2),var(--gold2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--gold);
+}
+.review-name{font-weight:600;font-size:.9rem;color:var(--ink);}
+.review-date{font-size:.75rem;color:var(--tx3);margin-top:.15rem;}
+.review-stars{display:flex;gap:.2rem;margin-left:auto;}
+.review-stars .star{font-size:.9rem;}
+.review-body{
+  font-size:.9rem;color:var(--tx2);line-height:1.75;
+  margin-bottom:1rem;
+}
+.review-verified{
+  display:inline-flex;align-items:center;gap:.3rem;
+  font-family:'Space Mono',monospace;font-size:.6rem;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--gold2);
+}
+.review-feature{
+  grid-column:1/-1;
+  background:var(--ink);border:1px solid rgba(34,197,94,.15);
+}
+.review-feature .review-name{color:#fff;}
+.review-feature .review-date{color:rgba(255,255,255,.35);}
+.review-feature .review-body{color:rgba(255,255,255,.7);}
+.review-feature .review-verified{color:var(--gold);}
+.review-feature::before{color:var(--gold);opacity:.4;}
+
+/* write review CTA */
+.write-review-cta{
+  background:var(--ink2);border:1px solid rgba(34,197,94,.15);
+  border-radius:6px;padding:2.5rem;text-align:center;margin:2rem 0;
+}
+.write-review-cta h3{
+  font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;
+  color:#fff;margin-bottom:.75rem;
+}
+.write-review-cta p{color:rgba(255,255,255,.5);font-size:.9rem;margin-bottom:1.5rem;}
+
+/* ═══════════════════════════════════════
+   PAGE 4 — Q&A
+═══════════════════════════════════════ */
+.qa-hero{
+  background:var(--ink);padding:4rem 2rem 3.5rem;
+  text-align:center;position:relative;overflow:hidden;
+}
+.qa-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 50% 40% at 80% 50%,rgba(34,197,94,.12) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 40% at 20% 50%,rgba(34,197,94,.08) 0%,transparent 60%);
+}
+.qa-hero-ct{position:relative;z-index:1;}
+.qa-hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3.5rem);
+  font-weight:900;color:#fff;letter-spacing:-.03em;margin-bottom:.875rem;
+}
+.qa-hero h1 em{color:var(--gold);font-style:italic;}
+.qa-hero p{font-size:.95rem;color:rgba(255,255,255,.5);max-width:480px;margin:0 auto;}
+
+.qa-layout{display:grid;grid-template-columns:240px 1fr;gap:3rem;margin:3rem 0;}
+@media(max-width:900px){.qa-layout{grid-template-columns:1fr;}}
+
+.qa-cats{}
+.qa-cat-btn{
+  display:block;width:100%;text-align:left;
+  padding:.875rem 1.1rem;border-radius:4px;margin-bottom:.375rem;
+  font-size:.875rem;font-weight:500;color:var(--tx2);
+  transition:all .2s;
+  border-left:3px solid transparent;
+}
+.qa-cat-btn:hover{background:var(--cream);color:var(--tx);}
+.qa-cat-btn.active{background:var(--cream);color:var(--ink);border-left-color:var(--gold);font-weight:600;}
+
+.qa-list{}
+.qa-item{
+  background:var(--cream);border:1px solid var(--b1);
+  border-radius:6px;margin-bottom:1rem;
+  overflow:hidden;transition:border-color .2s;
+}
+.qa-item:hover{border-color:var(--b2);}
+.qa-q{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.25rem 1.5rem;cursor:pointer;gap:1rem;
+}
+.qa-q-text{
+  font-family:'DM Sans',sans-serif;font-weight:600;font-size:.95rem;
+  color:var(--ink);flex:1;line-height:1.4;
+}
+.qa-toggle{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--paper2);border:1px solid var(--b1);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .25s;
+  font-size:.85rem;color:var(--tx2);
+}
+.qa-item.open .qa-toggle{background:var(--gold);color:#fff;border-color:var(--gold);transform:rotate(45deg);}
+.qa-a{
+  max-height:0;overflow:hidden;transition:max-height .35s var(--ease),padding .35s;
+  padding:0 1.5rem;
+}
+.qa-item.open .qa-a{max-height:500px;padding:0 1.5rem 1.5rem;}
+.qa-a-inner{
+  padding-top:1rem;border-top:1px solid var(--b1);
+  font-size:.9rem;color:var(--tx2);line-height:1.75;
+}
+.qa-a-inner a{color:var(--gold2);text-decoration:underline;}
+.qa-tag{
+  display:inline-block;
+  font-family:'Space Mono',monospace;font-size:.58rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  background:var(--gold3);color:var(--gold2);
+  padding:.2rem .55rem;border-radius:3px;margin-top:.75rem;
+}
+
+/* ask question form */
+.ask-form{
+  background:var(--cream);border:1px solid var(--b1);
+  border-radius:6px;padding:2rem;margin-top:2rem;
+}
+.ask-form h4{
+  font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;
+  color:var(--ink);margin-bottom:.5rem;
+}
+.ask-form p{font-size:.85rem;color:var(--tx2);margin-bottom:1.5rem;}
+.form-group{margin-bottom:1rem;}
+.form-group input,
+.form-group textarea{
+  width:100%;padding:.875rem 1rem;
+  background:#fff;border:1px solid var(--b2);border-radius:4px;
+  font-family:inherit;font-size:.9rem;color:var(--ink);
+  transition:border-color .2s;
+  resize:vertical;
+}
+.form-group input:focus,
+.form-group textarea:focus{outline:none;border-color:var(--gold);}
+.form-group textarea{min-height:110px;}
+
+/* ═══════════════════════════════════════
+   PAGE 5 — ABOUT
+═══════════════════════════════════════ */
+.about-hero{
+  background:var(--ink);
+  padding:5rem 2rem 4rem;position:relative;overflow:hidden;
+}
+.about-hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 55% 60% at 10% 50%,rgba(34,197,94,.14) 0%,transparent 60%),
+    radial-gradient(ellipse 45% 50% at 90% 50%,rgba(34,197,94,.08) 0%,transparent 60%);
+}
+.about-hero-grid{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
+  max-width:1280px;margin:0 auto;
+}
+@media(max-width:768px){.about-hero-grid{grid-template-columns:1fr;}}
+.about-hero-copy .kicker{
+  font-family:'Space Mono',monospace;font-size:.65rem;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+  margin-bottom:1rem;
+}
+.about-hero-copy h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.75rem,3.5vw,3rem);font-weight:900;
+  color:#fff;letter-spacing:-.025em;line-height:1.1;margin-bottom:1.25rem;
+}
+.about-hero-copy h1 em{color:var(--gold);font-style:italic;}
+.about-hero-copy p{color:rgba(255,255,255,.55);line-height:1.8;font-size:.95rem;}
+.about-hero-stats{
+  display:grid;grid-template-columns:1fr 1fr;gap:1px;
+  background:rgba(255,255,255,.08);border-radius:8px;overflow:hidden;
+}
+.about-stat{
+  background:rgba(255,255,255,.04);padding:2rem 1.5rem;text-align:center;
+}
+.about-stat-val{
+  font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;
+  color:var(--gold);line-height:1;margin-bottom:.4rem;
+}
+.about-stat-lbl{
+  font-family:'Space Mono',monospace;font-size:.62rem;
+  letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);
+}
+
+.about-section{padding:5rem 0;}
+.about-section.alt{background:var(--paper2);}
+
+.mission-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
+}
+@media(max-width:768px){.mission-grid{grid-template-columns:1fr;}}
+.mission-copy h2{
+  font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;
+  color:var(--ink);letter-spacing:-.02em;margin-bottom:1.25rem;
+}
+.mission-copy p{
+  font-size:.95rem;color:var(--tx2);line-height:1.8;margin-bottom:1rem;
+}
+.mission-img{
+  aspect-ratio:4/3;background:var(--ink2);border-radius:6px;overflow:hidden;
+}
+.mission-img img{width:100%;height:100%;object-fit:cover;opacity:.8;}
+
+.values-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;
+  margin-top:2rem;
+}
+@media(max-width:768px){.values-grid{grid-template-columns:1fr;}}
+.value-card{
+  background:var(--cream);border:1px solid var(--b1);
+  border-radius:6px;padding:1.75rem;
+}
+.value-icon{
+  width:44px;height:44px;border-radius:10px;
+  background:var(--ink2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.25rem;color:var(--gold);margin-bottom:1.1rem;
+}
+.value-card h4{
+  font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;
+  color:var(--ink);margin-bottom:.5rem;
+}
+.value-card p{font-size:.85rem;color:var(--tx2);line-height:1.7;}
+
+.team-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1.75rem;
+  margin-top:2rem;
+}
+@media(max-width:900px){.team-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:500px){.team-grid{grid-template-columns:1fr;}}
+.team-card{text-align:center;}
+.team-card-av{
+  width:80px;height:80px;border-radius:50%;
+  background:linear-gradient(135deg,var(--ink2),var(--gold2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:700;
+  color:var(--gold);margin:0 auto 1rem;
+  border:2px solid var(--b1);
+}
+.team-card h5{
+  font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;
+  color:var(--ink);margin-bottom:.25rem;
+}
+.team-card p{font-size:.78rem;color:var(--tx3);}
+
+/* newsletter */
+.newsletter-block{
+  background:linear-gradient(135deg,var(--ink) 0%,var(--ink2) 100%);
+  border:1px solid rgba(34,197,94,.15);
+  border-radius:8px;padding:3rem 2.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:2rem;flex-wrap:wrap;margin:3rem 0;
+  position:relative;overflow:hidden;
+}
+.newsletter-block::before{
+  content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;
+  border-radius:50%;background:rgba(34,197,94,.06);
+}
+.newsletter-copy h3{
+  font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;
+  color:#fff;margin-bottom:.5rem;
+}
+.newsletter-copy p{color:rgba(255,255,255,.45);font-size:.875rem;}
+.newsletter-form{display:flex;gap:.625rem;flex-wrap:wrap;}
+.newsletter-form input{
+  padding:.8rem 1.25rem;background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);border-radius:4px;
+  color:#fff;font-family:inherit;font-size:.875rem;width:260px;
+  transition:border-color .2s;
+}
+.newsletter-form input::placeholder{color:rgba(255,255,255,.3);}
+.newsletter-form input:focus{outline:none;border-color:var(--gold);}
+.newsletter-form button{
+  padding:.8rem 1.5rem;background:var(--gold);color:#fff;
+  border:none;border-radius:4px;font-weight:700;font-size:.875rem;
+  cursor:pointer;transition:background .2s;
+}
+.newsletter-form button:hover{background:var(--gold2);}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+.footer{
+  background:var(--ink);border-top:1px solid rgba(255,255,255,.07);
+  padding:4rem 2rem 2rem;margin-top:5rem;
+}
+.footer-grid{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;
+  max-width:1280px;margin:0 auto;
+}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:500px){.footer-grid{grid-template-columns:1fr;}}
+.footer-brand h3{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:1.5rem;font-weight:400;color:var(--gold);
+  margin-bottom:.75rem;
+}
+.footer-brand p{font-size:.85rem;color:rgba(255,255,255,.35);line-height:1.7;max-width:260px;}
+.footer-col h5{
+  font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.15em;
+  text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:1rem;
+}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:.5rem;}
+.footer-links li a{
+  font-size:.85rem;color:rgba(255,255,255,.45);
+  transition:color .2s;cursor:pointer;
+}
+.footer-links li a:hover{color:var(--gold);}
+.footer-bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  max-width:1280px;margin:3rem auto 0;
+  padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.06);
+  flex-wrap:wrap;gap:.75rem;
+}
+.footer-bottom p{font-size:.78rem;color:rgba(255,255,255,.25);}
+.footer-social{display:flex;gap:.5rem;}
+.footer-soc{
+  width:34px;height:34px;border-radius:6px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.4);font-size:.875rem;cursor:pointer;
+  transition:all .2s;
+}
+.footer-soc:hover{background:var(--gold);color:#fff;border-color:var(--gold);}
+
+/* ═══════════════════════════════════════
+   MISC UTILITIES
+═══════════════════════════════════════ */
+.divider{border:none;border-top:1px solid var(--b1);margin:3rem 0;}
+.mt2{margin-top:2rem;} .mt3{margin-top:3rem;} .mb2{margin-bottom:2rem;} .mb3{margin-bottom:3rem;}
+.text-center{text-align:center;}
+.badge-gold{
+  display:inline-block;
+  background:var(--gold3);color:var(--gold2);
+  font-family:'Space Mono',monospace;font-size:.6rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:.25rem .65rem;border-radius:3px;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ MASTHEAD ═══ -->
+<header class="masthead">
+  <div class="masthead-top">
+    <div class="masthead-brand" onclick="showPage('home')">
+      <span class="sub">Ethergalleries Editorial</span>
+      <span class="title">The <span>Vault</span></span>
+    </div>
+    <span class="masthead-date" id="mastDate"></span>
+  </div>
+  <nav class="masthead-nav">
+    <span class="nav-link-main" onclick="showPage('home')"><i class="bi bi-arrow-left"></i> ethergalleries.com</span>
+    <button class="nav-link active" id="nav-home" onclick="showPage('home')">Home</button>
+    <button class="nav-link" id="nav-articles" onclick="showPage('articles')">Articles</button>
+    <button class="nav-link" id="nav-reviews" onclick="showPage('reviews')">Reviews</button>
+    <button class="nav-link" id="nav-qa" onclick="showPage('qa')">Q &amp; A</button>
+    <button class="nav-link" id="nav-about" onclick="showPage('about')">About</button>
+  </nav>
+</header>
+
+<!-- ═══════════════════════════════════════
+     PAGE: HOME
+═══════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <div class="hero-banner">
+    <div class="hero-banner-ct">
+      <p class="hero-kicker">✦ The Official Ethergalleries Editorial</p>
+      <h1>Where <em>Digital Art</em><br>Meets The Written Word</h1>
+      <p>Deep dives, collector guides, artist spotlights and market analysis — your companion to navigating the world of on-chain art.</p>
+      <div class="hero-banner-btns">
+        <button class="btn-gold" onclick="showPage('articles')"><i class="bi bi-journal-richtext"></i> Read Articles</button>
+        <button class="btn-outline-white" onclick="showPage('qa')"><i class="bi bi-chat-dots"></i> Browse Q&amp;A</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap" style="padding-top:4rem;">
+
+    <div class="section-label">Featured Story</div>
+
+    <div class="featured-article" onclick="showArticle('1')">
+      <img src="https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=1400&auto=format&fit=crop" alt="Featured" loading="lazy"/>
+      <div class="featured-article-overlay"></div>
+      <div class="featured-article-body">
+        <span class="art-tag">Platform Deep Dive</span>
+        <h2>Inside Ethergalleries: How One Platform is Redefining the Digital Art Market</h2>
+        <div class="meta">
+          <span>By Marcus T. Wells</span>
+          <span>·</span>
+          <span>8 min read</span>
+          <span class="read-more">Read Story <i class="bi bi-arrow-right"></i></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-layout">
+      <div>
+        <div class="section-label">Latest Articles</div>
+        <div class="articles-grid" style="grid-template-columns:repeat(2,1fr);">
+          <div class="article-card" onclick="showArticle('2')">
+            <div class="article-card-img">
+              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop" alt="" loading="lazy"/>
+            </div>
+            <div class="article-card-body">
+              <div class="article-card-tag"><span>◆</span> Collector's Guide</div>
+              <h3>Your First NFT: A Beginner's Guide to Buying on Ethergalleries</h3>
+              <p>Everything you need to know before making your first purchase — wallets, gas fees, rarity explained and more.</p>
+              <div class="article-card-footer">
+                <span class="read-time"><i class="bi bi-clock"></i> 6 min</span>
+                <span class="read-more-link">Read <i class="bi bi-arrow-right"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="article-card" onclick="showArticle('3')">
+            <div class="article-card-img">
+              <img src="https://images.unsplash.com/photo-1614812512223-b0c22c46c46b?w=600&auto=format&fit=crop" alt="" loading="lazy"/>
+            </div>
+            <div class="article-card-body">
+              <div class="article-card-tag"><span>◆</span> Market Analysis</div>
+              <h3>Rarity Rankings: How Ethergalleries Values Digital Scarcity</h3>
+              <p>From Common to Legendary — a deep look at how the platform's rarity system shapes value and collector demand.</p>
+              <div class="article-card-footer">
+                <span class="read-time"><i class="bi bi-clock"></i> 5 min</span>
+                <span class="read-more-link">Read <i class="bi bi-arrow-right"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="article-card" onclick="showArticle('4')">
+            <div class="article-card-img">
+              <img src="https://images.unsplash.com/photo-1547623542-de3ff5941ddb?w=600&auto=format&fit=crop" alt="" loading="lazy"/>
+            </div>
+            <div class="article-card-body">
+              <div class="article-card-tag"><span>◆</span> Artist Spotlight</div>
+              <h3>Creator Economy: How Artists Are Building Careers on Ethergalleries</h3>
+              <p>Meet the digital artists turning passion into profession through the platform's exhibition and auction systems.</p>
+              <div class="article-card-footer">
+                <span class="read-time"><i class="bi bi-clock"></i> 7 min</span>
+                <span class="read-more-link">Read <i class="bi bi-arrow-right"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="article-card" onclick="showArticle('5')">
+            <div class="article-card-img">
+              <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&auto=format&fit=crop" alt="" loading="lazy"/>
+            </div>
+            <div class="article-card-body">
+              <div class="article-card-tag"><span>◆</span> Platform Features</div>
+              <h3>Live Auctions, Exhibitions & Collections: The Full Feature Breakdown</h3>
+              <p>A comprehensive tour of every feature Ethergalleries offers — from the Marketplace to the Exhibition hall.</p>
+              <div class="article-card-footer">
+                <span class="read-time"><i class="bi bi-clock"></i> 9 min</span>
+                <span class="read-more-link">Read <i class="bi bi-arrow-right"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <div class="sidebar-widget">
+          <h4>Trending Now</h4>
+          <div class="trending-item" onclick="showArticle('2')">
+            <span class="trending-num">01</span>
+            <div><div class="trending-ttl">Your First NFT Purchase Guide</div><div class="trending-meta">6 min · Collector's Guide</div></div>
+          </div>
+          <div class="trending-item" onclick="showArticle('1')">
+            <span class="trending-num">02</span>
+            <div><div class="trending-ttl">Inside Ethergalleries Platform Review</div><div class="trending-meta">8 min · Deep Dive</div></div>
+          </div>
+          <div class="trending-item" onclick="showArticle('3')">
+            <span class="trending-num">03</span>
+            <div><div class="trending-ttl">Rarity Rankings Explained</div><div class="trending-meta">5 min · Analysis</div></div>
+          </div>
+          <div class="trending-item" onclick="showArticle('4')">
+            <span class="trending-num">04</span>
+            <div><div class="trending-ttl">Artist Career Stories</div><div class="trending-meta">7 min · Spotlight</div></div>
+          </div>
+        </div>
+
+        <div class="sidebar-widget">
+          <h4>Browse Topics</h4>
+          <span class="sidebar-tag">NFTs</span>
+          <span class="sidebar-tag">Collecting</span>
+          <span class="sidebar-tag">Artists</span>
+          <span class="sidebar-tag">Auctions</span>
+          <span class="sidebar-tag">Rarity</span>
+          <span class="sidebar-tag">Blockchain</span>
+          <span class="sidebar-tag">Exhibitions</span>
+          <span class="sidebar-tag">Reviews</span>
+          <span class="sidebar-tag">Guides</span>
+          <span class="sidebar-tag">Market</span>
+        </div>
+
+        <div class="sidebar-widget" style="background:var(--ink);border-color:rgba(34,197,94,.15);">
+          <h4 style="color:rgba(255,255,255,.3);">Platform Rating</h4>
+          <div style="text-align:center;padding:.5rem 0;">
+            <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--gold);line-height:1;">4.7</div>
+            <div style="display:flex;justify-content:center;gap:.2rem;margin:.5rem 0;">
+              <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="opacity:.6;">★</span>
+            </div>
+            <div style="font-family:'Space Mono',monospace;font-size:.62rem;color:rgba(255,255,255,.3);margin-bottom:1rem;">Based on 284 reviews</div>
+            <button class="btn-gold" style="width:100%;justify-content:center;" onclick="showPage('reviews')">See All Reviews</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="newsletter-block mt3">
+      <div class="newsletter-copy">
+        <h3>The Vault Weekly</h3>
+        <p>Market insights, featured drops and collector stories — every Friday.</p>
+      </div>
+      <div class="newsletter-form">
+        <input type="email" placeholder="your@email.com"/>
+        <button onclick="alert('Subscribed! Welcome to The Vault.')">Subscribe</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: ARTICLES (full list)
+═══════════════════════════════════════ -->
+<div id="page-articles" class="page">
+  <div class="hero-banner" style="padding:4rem 2rem 3rem;">
+    <div class="hero-banner-ct">
+      <p class="hero-kicker">✦ All Articles</p>
+      <h1>The <em>Vault</em> Archive</h1>
+      <p>Every article, guide and analysis — all in one place.</p>
+    </div>
+  </div>
+
+  <div class="wrap" style="padding-top:3.5rem;">
+    <div class="section-label">Platform Deep Dives</div>
+    <div class="articles-grid">
+      <div class="article-card" onclick="showArticle('1')">
+        <div class="article-card-img"><img src="https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=600&auto=format&fit=crop" alt="" loading="lazy"/></div>
+        <div class="article-card-body">
+          <div class="article-card-tag"><span>◆</span> Platform Deep Dive</div>
+          <h3>Inside Ethergalleries: Redefining the Digital Art Market</h3>
+          <p>An in-depth look at how Ethergalleries is changing how we buy, sell, and value digital art on the blockchain.</p>
+          <div class="article-card-footer"><span class="read-time"><i class="bi bi-clock"></i> 8 min</span><span class="read-more-link">Read <i class="bi bi-arrow-right"></i></span></div>
+        </div>
+      </div>
+      <div class="article-card" onclick="showArticle('5')">
+        <div class="article-card-img"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&auto=format&fit=crop" alt="" loading="lazy"/></div>
+        <div class="article-card-body">
+          <div class="article-card-tag"><span>◆</span> Features</div>
+          <h3>Live Auctions, Exhibitions & Collections: Full Feature Breakdown</h3>
+          <p>From the Live Auctions timer to the Exhibitions hall — every major feature on the platform explained in detail.</p>
+          <div class="article-card-footer"><span class="read-time"><i class="bi bi-clock"></i> 9 min</span><span class="read-more-link">Read <i class="bi bi-arrow-right"></i></span></div>
+        </div>
+      </div>
+      <div class="article-card" onclick="showArticle('3')">
+        <div class="article-card-img"><img src="https://images.unsplash.com/photo-1614812512223-b0c22c46c46b?w=600&auto=format&fit=crop" alt="" loading="lazy"/></div>
+        <div class="article-card-body">
+          <div class="article-card-tag"><span>◆</span> Market Analysis</div>
+          <h3>Rarity Rankings: How Ethergalleries Values Digital Scarcity</h3>
+          <p>The 5-tier rarity system — Common to Legendary — and how it shapes prices, demand, and collector strategy.</p>
+          <div class="article-card-footer"><span class="read-time"><i class="bi bi-clock"></i> 5 min</span><span class="read-more-link">Read <i class="bi bi-arrow-right"></i></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-label">Guides & How-Tos</div>
+    <div class="articles-grid">
+      <div class="article-card" onclick="showArticle('2')">
+        <div class="article-card-img"><img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop" alt="" loading="lazy"/></div>
+        <div class="article-card-body">
+          <div class="article-card-tag"><span>◆</span> Beginner's Guide</div>
+          <h3>Your First NFT: Buying on Ethergalleries Step by Step</h3>
+          <p>Wallets, ETH, gas fees and the purchase flow explained clearly for first-time collectors.</p>
+          <div class="article-card-footer"><span class="read-time"><i class="bi bi-clock"></i> 6 min</span><span class="read-more-link">Read <i class="bi bi-arrow-right"></i></span></div>
+        </div>
+      </div>
+      <div class="article-card" onclick="showArticle('4')">
+        <div class="article-card-img"><img src="https://images.unsplash.com/photo-1547623542-de3ff5941ddb?w=600&auto=format&fit=crop" alt="" loading="lazy"/></div>
+        <div class="article-card-body">
+          <div class="article-card-tag"><span>◆</span> For Creators</div>
+          <h3>How Artists Are Building Careers on Ethergalleries</h3>
+          <p>Minting, listing, exhibitions and auctions — the creator's path from upload to sold on Ethergalleries.</p>
+          <div class="article-card-footer"><span class="read-time"><i class="bi bi-clock"></i> 7 min</span><span class="read-more-link">Read <i class="bi bi-arrow-right"></i></span></div>
+        </div>
+      </div>
+      <div class="article-card" onclick="showPage('qa')">
+        <div class="article-card-img" style="background:var(--ink2);display:flex;align-items:center;justify-content:center;">
+          <i class="bi bi-chat-quote" style="font-size:3rem;color:var(--gold);opacity:.4;"></i>
+        </div>
+        <div class="article-card-body">
+          <div class="article-card-tag"><span>◆</span> Q &amp; A</div>
+          <h3>Have a Question? Visit Our Q&amp;A Section</h3>
+          <p>Answers to the most frequently asked questions about Ethergalleries, NFTs, purchasing, auctions, and more.</p>
+          <div class="article-card-footer"><span class="read-time"><i class="bi bi-lightning"></i> Quick</span><span class="read-more-link">Visit Q&amp;A <i class="bi bi-arrow-right"></i></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: ARTICLE READER (dynamic)
+═══════════════════════════════════════ -->
+<div id="page-reader" class="page">
+  <div id="readerContent"></div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: REVIEWS
+═══════════════════════════════════════ -->
+<div id="page-reviews" class="page">
+  <div class="reviews-hero">
+    <div class="reviews-hero-ct">
+      <p class="hero-kicker">✦ Community Voices</p>
+      <h1>Collector <em>Reviews</em></h1>
+      <p>Real experiences from buyers, sellers and artists who use Ethergalleries every day.</p>
+    </div>
+  </div>
+
+  <div class="wrap" style="padding-top:3rem;padding-bottom:5rem;">
+
+    <div class="rating-overview">
+      <div class="rating-big">
+        <div class="rating-num">4.7</div>
+        <div class="rating-stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star half">★</span>
+        </div>
+        <div class="rating-count">284 verified reviews</div>
+      </div>
+      <div class="rating-bars">
+        <div class="rating-bar-row"><label>Excellent</label><div class="rating-bar-track"><div class="rating-bar-fill" style="width:72%"></div></div><span class="rating-bar-pct">72%</span></div>
+        <div class="rating-bar-row"><label>Good</label><div class="rating-bar-track"><div class="rating-bar-fill" style="width:18%"></div></div><span class="rating-bar-pct">18%</span></div>
+        <div class="rating-bar-row"><label>Average</label><div class="rating-bar-track"><div class="rating-bar-fill" style="width:6%"></div></div><span class="rating-bar-pct">6%</span></div>
+        <div class="rating-bar-row"><label>Poor</label><div class="rating-bar-track"><div class="rating-bar-fill" style="width:3%;background:#ef4444;"></div></div><span class="rating-bar-pct">3%</span></div>
+        <div class="rating-bar-row"><label>Terrible</label><div class="rating-bar-track"><div class="rating-bar-fill" style="width:1%;background:#ef4444;"></div></div><span class="rating-bar-pct">1%</span></div>
+      </div>
+    </div>
+
+    <div class="section-label">Featured Reviews</div>
+
+    <div class="reviews-grid">
+      <!-- featured review -->
+      <div class="review-card review-feature">
+        <div class="review-header">
+          <div class="review-av" style="background:linear-gradient(135deg,#8b5cf6,#22c55e);">A</div>
+          <div>
+            <div class="review-name">Alexandra V.</div>
+            <div class="review-date">Collector · Verified Buyer · Feb 2025</div>
+          </div>
+          <div class="review-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        </div>
+        <div class="review-body" style="font-size:.975rem;font-style:italic;">"Ethergalleries completely changed how I think about collecting. The curation is exceptional — I've found pieces here I couldn't find anywhere else. The live auction feature is genuinely thrilling. Bought 14 pieces so far and every transaction was seamless."</div>
+        <span class="review-verified"><i class="bi bi-patch-check-fill"></i> Verified Purchase · 14 items bought</span>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-av">M</div>
+          <div><div class="review-name">Marcus T.</div><div class="review-date">Digital Artist · Jan 2025</div></div>
+          <div class="review-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        </div>
+        <div class="review-body">"As a creator, the listing process is refreshingly straightforward. I minted my first collection in under 20 minutes. The exhibition feature gave my work visibility I never expected. Three sold within a week of being featured."</div>
+        <span class="review-verified"><i class="bi bi-palette-fill"></i> Verified Creator · 38 works listed</span>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-av" style="background:linear-gradient(135deg,#14b8a6,#3b82f6);">S</div>
+          <div><div class="review-name">Sophie K.</div><div class="review-date">Collector · Dec 2024</div></div>
+          <div class="review-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star half">★</span></div>
+        </div>
+        <div class="review-body">"The marketplace search and filter tools are excellent. Finding art by category, rarity or price range is intuitive. My only wish is that the mobile experience was as polished as the desktop. Otherwise, genuinely one of the best NFT platforms I've used."</div>
+        <span class="review-verified"><i class="bi bi-patch-check-fill"></i> Verified Purchase · 7 items</span>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-av" style="background:linear-gradient(135deg,#ef4444,#f59e0b);">J</div>
+          <div><div class="review-name">James O.</div><div class="review-date">Investor · Nov 2024</div></div>
+          <div class="review-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        </div>
+        <div class="review-body">"The rarity system here is transparent and consistent. I appreciate that Legendary pieces are genuinely rare — unlike some platforms where the categories feel arbitrary. Portfolio tracking could be better, but the core buying experience is flawless."</div>
+        <span class="review-verified"><i class="bi bi-graph-up"></i> Verified Collector · 22 pieces</span>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-av" style="background:linear-gradient(135deg,#6d28d9,#ec4899);">P</div>
+          <div><div class="review-name">Priya N.</div><div class="review-date">Artist &amp; Collector · Oct 2024</div></div>
+          <div class="review-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star half">★</span></div>
+        </div>
+        <div class="review-body">"I both sell and buy on Ethergalleries, and it works beautifully on both sides. The commission structure for artists is fair. The live auction timer adds genuine excitement. The UI is dark and sophisticated — exactly the vibe the digital art world deserves."</div>
+        <span class="review-verified"><i class="bi bi-patch-check-fill"></i> Creator &amp; Buyer · Dual account</span>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-av" style="background:linear-gradient(135deg,#0ea5e9,#22c55e);">R</div>
+          <div><div class="review-name">Rafael C.</div><div class="review-date">Collector · Sep 2024</div></div>
+          <div class="review-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        </div>
+        <div class="review-body">"Discovered Ethergalleries through a friend and have been obsessed since. The curated Exhibitions section feels like visiting a real gallery — the curation is thoughtful. Customer support responded to my question within 2 hours. Five stars without hesitation."</div>
+        <span class="review-verified"><i class="bi bi-patch-check-fill"></i> Verified · 5 purchases</span>
+      </div>
+    </div>
+
+    <div class="write-review-cta">
+      <h3>Share Your Experience</h3>
+      <p>Bought, sold or created on Ethergalleries? We'd love to hear your story.</p>
+      <button class="btn-gold" onclick="alert('Review submission opening soon — thank you for your interest!')"><i class="bi bi-pencil"></i> Write a Review</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: Q&A
+═══════════════════════════════════════ -->
+<div id="page-qa" class="page">
+  <div class="qa-hero">
+    <div class="qa-hero-ct">
+      <p class="hero-kicker">✦ Questions &amp; Answers</p>
+      <h1>Everything You Want<br>to <em>Know</em></h1>
+      <p>Official answers to the most common questions about Ethergalleries — straight from the support team.</p>
+    </div>
+  </div>
+
+  <div class="wrap" style="padding-top:3rem;padding-bottom:5rem;">
+
+    <!-- contact channels strip -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:3rem;">
+      <div style="background:var(--cream);border:1px solid var(--b1);border-radius:6px;padding:1.5rem;text-align:center;">
+        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#3b82f6);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;color:#fff;font-size:1.2rem;"><i class="bi bi-envelope"></i></div>
+        <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:.35rem;">Email Support</h4>
+        <p style="font-size:.82rem;color:var(--tx2);margin-bottom:.75rem;">Response within 24 hours.</p>
+        <a href="mailto:support@Ethergalleries.com" style="color:var(--gold);font-size:.82rem;font-weight:600;">support@Ethergalleries.com →</a>
+      </div>
+      <div style="background:var(--cream);border:1px solid var(--b1);border-radius:6px;padding:1.5rem;text-align:center;">
+        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#3b82f6);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;color:#fff;font-size:1.2rem;"><i class="bi bi-chat-dots"></i></div>
+        <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:.35rem;">Live Chat</h4>
+        <p style="font-size:.82rem;color:var(--tx2);margin-bottom:.75rem;">Real-time help during business hours.</p>
+        <a href="#" style="color:var(--gold);font-size:.82rem;font-weight:600;">Start Chat →</a>
+      </div>
+      <div style="background:var(--cream);border:1px solid var(--b1);border-radius:6px;padding:1.5rem;text-align:center;">
+        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#3b82f6);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;color:#fff;font-size:1.2rem;"><i class="bi bi-twitter"></i></div>
+        <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:.35rem;">Twitter</h4>
+        <p style="font-size:.82rem;color:var(--tx2);margin-bottom:.75rem;">Updates &amp; quick support inquiries.</p>
+        <a href="#" style="color:var(--gold);font-size:.82rem;font-weight:600;">@Ethergalleries →</a>
+      </div>
+    </div>
+
+    <div class="qa-layout">
+      <div class="qa-cats">
+        <button class="qa-cat-btn active" onclick="filterQA('all',this)">All Questions</button>
+        <button class="qa-cat-btn" onclick="filterQA('getting-started',this)">Getting Started</button>
+        <button class="qa-cat-btn" onclick="filterQA('buying',this)">Buying</button>
+        <button class="qa-cat-btn" onclick="filterQA('selling',this)">Selling</button>
+        <button class="qa-cat-btn" onclick="filterQA('wallet',this)">Wallet &amp; Payments</button>
+        <button class="qa-cat-btn" onclick="filterQA('account',this)">Account</button>
+      </div>
+
+      <div class="qa-list" id="qaList">
+
+        <!-- ── GETTING STARTED ── -->
+        <div class="qa-item" data-cat="getting-started">
+          <div class="qa-q" onclick="toggleQA(this)">
+            <span class="qa-q-text">What is an NFT?</span>
+            <span class="qa-toggle"><i class="bi bi-plus"></i></span>
+          </div>
+          <div class="qa-a"><div class="qa-a-inner">NFT stands for Non-Fungible Token. It's a unique digital asset that represents ownership of items like art, music, videos, and more on the blockchain. Unlike cryptocurrencies, each NFT is one-of-a-kind and cannot be exchanged on a one-to-one basis with another NFT.<span class="qa-tag">Getting Started</span></div></div>
+        </div>
+
+        <div class="qa-item" data-cat="getting-started">
+          <div class="qa-q" onclick="toggleQA(this)">
+            <span class="qa-q-text">How do I get started on Ethergalleries?</span>
+            <span class="qa-toggle"><i class="bi bi-plus"></i></span>
+          </div>
+          <div class="qa-a"><div class="qa-a-inner">Getting started is easy! First, create an account by clicking "Sign Up" and verifying your email. Once logged in, you can browse the marketplace, create collections, mint NFTs, and participate in auctions. We recommend depositing some ETH to your account balance to start buying or minting NFTs.<span class="qa-tag">Getting Started</span></div></div>
+        </div>
+
+        <div class="qa-item" data-cat="getting-started">
+          <div class="qa-q" onclick="toggleQA(this)">
+            <span class="qa-q-text">What file formats are supported for NFTs?</span>
+            <span class="qa-toggle"><i class="bi bi-plus"></i></span>
+          </div>
+          <div class="qa-a"><div class="qa-a-inner">Ethergalleries supports a variety of file formats including JPG, PNG, GIF, and SVG for images; MP4 and WEBM for videos; and MP3 and WAV for audio. The maximum file size is 50MB for images and 50MB for video and audio files.<span class="qa-tag">Getting Started</span></div></div>
+        </div>
+
+        <!-- ── BUYING ── -->
+        <div class="qa-item" data-cat="buying">
+          <div class="qa-q" onclick="toggleQA(this)">
+            <span class="qa-q-text">How do I buy an NFT?</span>
+            <span class="qa-toggle"><i class="bi bi-plus"></i></span>
+          </div>
+          <div class="qa-a"><div class="qa-a-inner">To buy an NFT, first make sure you have sufficient balance in your account. Browse the marketplace, find an NFT you like, and click "Buy Now" for fixed-price listings or place a bid for auction items. The NFT will be transferred to your collection once the purchase is complete.<span class="qa-tag">Buying</span></div></div>
+        </div>
+
+        <div class="qa-item" data-cat="buying">
+          <div class="qa-q" onclick="toggleQA(this)">
+            <span class="qa-q-text">How do auctions work?</span>
+            <span class="qa-toggle"><i class="bi bi-plus"></i></span>
+          </div>
+          <div class="qa-a"><div class="qa-a-inner">Auctions allow you to bid on NFTs within a specified time period. Each bid must be higher than the previous bid by the minimum increment set by the seller. When the auction ends, the highest bidder wins the NFT. If you're outbid, your funds will be returned to your account balance.<span class="qa-tag">Buying</span></div></div>
+        </div>
+
+        <!-- ── SELLING ── -->
+        <div class="qa-item" data-cat="selling">
+          <div class="qa-q" onclick="toggleQA(this)">
+            <span class="qa-q-text">How do I list my NFT for sale?</span>
+            <span class="qa-toggle"><i class="bi bi-plus"></i></span>
+          </div>
+          <div class="qa-a"><div class="qa-a-inner">To list an NFT for sale, go to your Dashboard, navigate to the "My NFTs" or "Sales" section, and click "List for Sale" on an unlisted NFT. Set your price and confirm. Listing is free — the minting fee was already paid when you created the NFT.<span class="qa-tag">Selling</span></div></div>
+        </div>
+
+        <div class="qa-item" data-cat="selling">
+          <div class="qa-q" onclick="toggleQA(this)">
+            <span class="qa-q-text">What is the minting fee?</span>
+            <span class="qa-toggle"><i class="bi bi-plus"></i></span>
+          </div>
+          <div class="qa-a"><div class="qa-a-inner">Ethergalleries charges a minting fee of <strong>0.4 ETH</strong> when you create (mint) a new NFT. This fee helps maintain the platform and covers blockchain transaction costs. The fee is deducted from your ETH balance at the time of minting. Listing your minted NFTs for sale is free.<span class="qa-tag">Selling</span></div></div>
+        </div>
+
+        <div class="qa-item" data-cat="selling">
+          <div class="qa-q" onclick="toggleQA(this)">
+            <span class="qa-q-text">How do royalties work?</span>
+            <span class="qa-toggle"><i class="bi bi-plus"></i></span>
+          </div>
+          <div class="qa-a"><div class="qa-a-inner">Creators can set royalties when minting NFTs. Each time the NFT is resold on the marketplace, the original creator receives a percentage of the sale price as a royalty payment. This allows artists to benefit from the continued appreciation of their work over time.<span class="qa-tag">Selling</span></div></div>
+        </div>
+
+        <!-- ── WALLET & PAYMENTS ── -->
+        <div class="qa-item" data-cat="wallet">
+          <div class="qa-q" onclick="toggleQA(this)">
+            <span class="qa-q-text">How do I deposit funds?</span>
+            <span class="qa-toggle"><i class="bi bi-plus"></i></span>
+          </div>
+          <div class="qa-a"><div class="qa-a-inner">To deposit funds, go to your Dashboard and click the "Deposit" button. You'll see the platform wallet address and a QR code. Send ETH to this address and enter the transaction details in the deposit form. An admin will verify your deposit and credit your account within 24 hours.<span class="qa-tag">Wallet &amp; Payments</span></div></div>
+        </div>
+
+        <div class="qa-item" data-cat="wallet">
+          <div class="qa-q" onclick="toggleQA(this)">
+            <span class="qa-q-text">How do I withdraw funds?</span>
+            <span class="qa-toggle"><i class="bi bi-plus"></i></span>
+          </div>
+          <div class="qa-a"><div class="qa-a-inner">To withdraw, click the "Withdraw" button in your Dashboard. Enter your wallet address and the amount you wish to withdraw. Withdrawal requests are processed within <strong>1–3 business days</strong> after admin approval.<span class="qa-tag">Wallet &amp; Payments</span></div></div>
+        </div>
+
+        <div class="qa-item" data-cat="wallet">
+          <div class="qa-q" onclick="toggleQA(this)">
+            <span class="qa-q-text">What currencies are supported?</span>
+            <span class="qa-toggle"><i class="bi bi-plus"></i></span>
+          </div>
+          <div class="qa-a"><div class="qa-a-inner">Ethergalleries primarily supports <strong>ETH (Ethereum)</strong> and <strong>WETH (Wrapped Ethereum)</strong> for transactions. All account balances are displayed in ETH. Additional cryptocurrency support is planned for future releases.<span class="qa-tag">Wallet &amp; Payments</span></div></div>
+        </div>
+
+        <!-- ── ACCOUNT ── -->
+        <div class="qa-item" data-cat="account">
+          <div class="qa-q" onclick="toggleQA(this)">
+            <span class="qa-q-text">How do I verify my email?</span>
+            <span class="qa-toggle"><i class="bi bi-plus"></i></span>
+          </div>
+          <div class="qa-a"><div class="qa-a-inner">After registering, you'll receive a verification email with a 6-digit code. Enter this code on the verification page to activate your account. If you didn't receive the email, check your spam folder or request a new verification code from the login page.<span class="qa-tag">Account</span></div></div>
+        </div>
+
+        <div class="qa-item" data-cat="account">
+          <div class="qa-q" onclick="toggleQA(this)">
+            <span class="qa-q-text">I forgot my password. How do I reset it?</span>
+            <span class="qa-toggle"><i class="bi bi-plus"></i></span>
+          </div>
+          <div class="qa-a"><div class="qa-a-inner">Click "Forgot Password" on the login page and enter your registered email address. You'll receive a password reset link. Follow the link to create a new password. For security reasons, the link expires after <strong>1 hour</strong>.<span class="qa-tag">Account</span></div></div>
+        </div>
+
+        <div class="qa-item" data-cat="account">
+          <div class="qa-q" onclick="toggleQA(this)">
+            <span class="qa-q-text">How secure is my account?</span>
+            <span class="qa-toggle"><i class="bi bi-plus"></i></span>
+          </div>
+          <div class="qa-a"><div class="qa-a-inner">We take security seriously. All passwords are encrypted using industry-standard bcrypt hashing. We recommend using a strong, unique password and enabling email notifications for important account activities. Never share your login credentials with anyone.<span class="qa-tag">Account</span></div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="ask-form">
+      <h4>Ask Your Own Question</h4>
+      <p>Can't find the answer you're looking for? Submit it here and our editorial team will respond within 48 hours.</p>
+      <div class="form-group"><input type="text" placeholder="Your name"/></div>
+      <div class="form-group"><input type="email" placeholder="your@email.com"/></div>
+      <div class="form-group"><textarea placeholder="Type your question here…"></textarea></div>
+      <button class="btn-gold" onclick="alert('Question submitted! We'll respond within 48 hours.')"><i class="bi bi-send"></i> Submit Question</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: ABOUT
+═══════════════════════════════════════ -->
+<div id="page-about" class="page">
+  <div class="about-hero">
+    <div class="about-hero-grid wrap">
+      <div class="about-hero-copy">
+        <p class="kicker">✦ About The Vault</p>
+        <h1>The Voice of<br><em>Ethergalleries</em></h1>
+        <p>The Vault is the official editorial home of Ethergalleries — a space for market analysis, collector stories, creator spotlights and platform deep dives written by the people who know it best.</p>
+      </div>
+      <div class="about-hero-stats">
+        <div class="about-stat"><div class="about-stat-val">48+</div><div class="about-stat-lbl">Articles Published</div></div>
+        <div class="about-stat"><div class="about-stat-val">284</div><div class="about-stat-lbl">Community Reviews</div></div>
+        <div class="about-stat"><div class="about-stat-val">120+</div><div class="about-stat-lbl">Q&amp;A Answered</div></div>
+        <div class="about-stat"><div class="about-stat-val">12K</div><div class="about-stat-lbl">Monthly Readers</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-section">
+    <div class="wrap">
+      <div class="mission-grid">
+        <div class="mission-copy">
+          <div class="section-label">Our Mission</div>
+          <h2>Making Digital Art<br>Accessible to Everyone</h2>
+          <p>The Vault was created because navigating the NFT world can be overwhelming. We believe that knowledge should be the first thing you collect — before your first artwork.</p>
+          <p>We write for collectors who are just starting out, for creators who want to grow, and for enthusiasts who simply love digital art. Our editorial team combines deep platform expertise with a genuine passion for creativity.</p>
+          <p>Everything we publish is independent, honest, and grounded in real experience on the Ethergalleries platform.</p>
+        </div>
+        <div class="mission-img">
+          <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&auto=format&fit=crop" alt="Mission" loading="lazy"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-section alt">
+    <div class="wrap">
+      <div class="section-label text-center">Our Values</div>
+      <h2 class="text-center" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;margin-bottom:2.5rem;letter-spacing:-.02em;">What We Stand For</h2>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon"><i class="bi bi-shield-check"></i></div>
+          <h4>Editorial Independence</h4>
+          <p>Our reviews and opinions are never influenced by commercial relationships. We call it as we see it, always.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i class="bi bi-lightbulb"></i></div>
+          <h4>Clarity Over Jargon</h4>
+          <p>We translate blockchain complexity into plain language. You shouldn't need a CS degree to understand what you're buying.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i class="bi bi-people"></i></div>
+          <h4>Community First</h4>
+          <p>The Q&A section, reviews and comments exist because your questions and experiences matter as much as ours.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i class="bi bi-graph-up-arrow"></i></div>
+          <h4>Data-Driven Analysis</h4>
+          <p>Market pieces are backed by real transaction data and platform metrics, not speculation or hype.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i class="bi bi-brush"></i></div>
+          <h4>Art First Always</h4>
+          <p>We believe digital art is real art. We cover the aesthetic and cultural dimensions, not just the financial.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i class="bi bi-clock-history"></i></div>
+          <h4>Consistent Publishing</h4>
+          <p>New articles every week. The Vault Weekly newsletter every Friday. We show up so you always have something to read.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-section">
+    <div class="wrap">
+      <div class="section-label text-center">The Team</div>
+      <h2 class="text-center" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;margin-bottom:2.5rem;letter-spacing:-.02em;">The Writers Behind The Vault</h2>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-card-av">M</div>
+          <h5>Marcus T. Wells</h5>
+          <p>Editor-in-Chief · Platform Analyst</p>
+        </div>
+        <div class="team-card">
+          <div class="team-card-av" style="background:linear-gradient(135deg,var(--ink2),#8b5cf6);">S</div>
+          <h5>Sofia Adeyemi</h5>
+          <p>Senior Writer · Creator Stories</p>
+        </div>
+        <div class="team-card">
+          <div class="team-card-av" style="background:linear-gradient(135deg,var(--ink2),#14b8a6);">D</div>
+          <h5>David Park</h5>
+          <p>Market Analyst · Rarity Research</p>
+        </div>
+        <div class="team-card">
+          <div class="team-card-av" style="background:linear-gradient(135deg,var(--ink2),#ec4899);">L</div>
+          <h5>Layla Ibrahim</h5>
+          <p>Contributor · Collector Guides</p>
+        </div>
+      </div>
+
+      <div class="newsletter-block mt3">
+        <div class="newsletter-copy">
+          <h3>The Vault Weekly</h3>
+          <p>Join 12,000 readers getting market insights and platform updates every Friday.</p>
+        </div>
+        <div class="newsletter-form">
+          <input type="email" placeholder="your@email.com"/>
+          <button onclick="alert('Subscribed! Welcome to The Vault.')">Subscribe Free</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SHARED FOOTER
+═══════════════════════════════════════ -->
+<footer class="footer" id="siteFooter">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>The Vault</h3>
+      <p>The official Ethergalleries editorial — articles, reviews, and Q&A for collectors and creators navigating the digital art world.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Navigate</h5>
+      <ul class="footer-links">
+        <li><a onclick="showPage('home')">Home</a></li>
+        <li><a onclick="showPage('articles')">All Articles</a></li>
+        <li><a onclick="showPage('reviews')">Reviews</a></li>
+        <li><a onclick="showPage('qa')">Q &amp; A</a></li>
+        <li><a onclick="showPage('about')">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Topics</h5>
+      <ul class="footer-links">
+        <li><a>NFT Collecting</a></li>
+        <li><a>For Creators</a></li>
+        <li><a>Market Analysis</a></li>
+        <li><a>Platform Guides</a></li>
+        <li><a>Artist Spotlights</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Ethergalleries</h5>
+      <ul class="footer-links">
+        <li><a href="/index.html">Marketplace</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+        <li><a href="support.html">Support</a></li>
+        <li><a href="/signup.html">Sign Up</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 The Vault · Ethergalleries Editorial. All rights reserved.</p>
+    <div class="footer-social">
+      <div class="footer-soc"><i class="bi bi-twitter-x"></i></div>
+      <div class="footer-soc"><i class="bi bi-discord"></i></div>
+      <div class="footer-soc"><i class="bi bi-instagram"></i></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ════ ROUTING ════ */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) navEl.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ════ ARTICLE DATA ════ */
+const ARTICLES = {
+  '1': {
+    tag:'Platform Deep Dive', readTime:'8 min read', author:'Marcus T. Wells', date:'March 2025',
+    title:'Inside Ethergalleries: How One Platform is Redefining the Digital Art Market',
+    img:'https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=1200&auto=format&fit=crop',
+    content:`
+      <p>When Ethergalleries launched, the NFT marketplace space was already crowded with platforms promising to be the future of digital art. What set Ethergalleries apart wasn't a single killer feature — it was the accumulated thoughtfulness of dozens of small decisions that together created something genuinely different.</p>
+
+      <h2>A Marketplace Designed for Collectors</h2>
+      <p>The first thing you notice when you land on Ethergalleries is the dark, sophisticated aesthetic. This isn't accidental. The platform was designed to feel like a high-end gallery rather than a crypto exchange. The color palette — deep navies, forest greens and green accents — communicates seriousness and permanence.</p>
+      <p>The homepage immediately puts artwork front and center. The masonry grid lets each piece breathe at its natural aspect ratio, a deliberate choice that respects the artists' original compositions. Every card shows the rarity tier, the price, and the like count — all the signals a collector needs to make quick initial judgments.</p>
+
+      <blockquote><p>"The platform was designed to feel like a high-end gallery, not a crypto exchange. That distinction matters enormously to serious collectors."</p></blockquote>
+
+      <h2>The Rarity System: A Genuine Innovation</h2>
+      <p>Most NFT platforms leave rarity to the buyer to figure out. Ethergalleries built it into the platform's DNA. Every artwork is assigned a tier — Common, Uncommon, Rare, Epic, or Legendary — at the time of minting, and this designation is permanent and immutable.</p>
+      <p>What makes this particularly clever is how it shapes market behavior. Legendary pieces have a visible scarcity that creates natural price pressure. Collectors who understand the system can build diversified portfolios across tiers. New buyers have an immediate framework for understanding value.</p>
+
+      <div class="article-callout">
+        <p><strong>Platform Insight:</strong> Ethergalleries' rarity system assigns each artwork a permanent tier from Common through Legendary. Unlike other platforms where rarity is community-calculated, this is set by the creator at mint — adding a layer of curatorial intentionality to every piece.</p>
+      </div>
+
+      <h2>Live Auctions: Where the Action Happens</h2>
+      <p>The Live Auctions section is arguably where Ethergalleries is at its most exciting. Each auction shows a real-time countdown timer, the current bid, and the artwork's detail. The tension of watching a timer count down to zero while deciding whether to raise your bid creates an experience that static "Buy Now" listings simply cannot replicate.</p>
+      <p>Auction cards are visually distinct — displayed with a deep purple gradient that sets them apart from regular listings. It's the kind of subtle UI decision that builds platform vocabulary without a single word of instruction.</p>
+
+      <h2>Exhibitions: The Curatorial Layer</h2>
+      <p>The Exhibitions feature is Ethergalleries' most ambitious differentiator. Rather than leaving discovery entirely to search algorithms, the platform employs a curatorial layer that groups artworks into themed virtual shows. Each exhibition has a thumbnail, a type (Virtual, Physical or Hybrid), a description, and a start date.</p>
+      <p>For artists, getting featured in an exhibition is transformative. It provides context, narrative, and visibility that a standalone listing in the marketplace simply cannot. For collectors, exhibitions offer a curated entry point that makes browsing feel intentional rather than overwhelming.</p>
+
+      <h2>The Verdict</h2>
+      <p>Ethergalleries is a platform that respects its users — both collectors and creators. It doesn't dumb things down or over-explain. It trusts that its audience wants sophistication. In a space where many platforms feel like they were designed for quick gains, Ethergalleries feels built for the long arc of digital art's maturation as a genuine collecting category.</p>
+      <p>Is it perfect? No. The mobile experience needs work, and portfolio analytics are basic. But as a core marketplace experience, it stands among the best in the space.</p>
+    `,
+    related:['2','3','5']
+  },
+  '2': {
+    tag:"Collector's Guide", readTime:'6 min read', author:'Layla Ibrahim', date:'February 2025',
+    title:"Your First NFT: A Beginner's Guide to Buying on Ethergalleries",
+    img:'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop',
+    content:`
+      <p>Buying your first NFT can feel intimidating. New terminology, unfamiliar technology, and real money involved — it's a lot. This guide walks you through everything you need to know to make your first purchase on Ethergalleries with confidence.</p>
+
+      <h2>Step 1: Create Your Account</h2>
+      <p>Start by signing up at Ethergalleries. The registration process is straightforward — email, password, and you're in. Once registered, you'll have a Dashboard where your purchased artworks will live, along with any artworks you've liked.</p>
+
+      <h2>Step 2: Understanding the Marketplace</h2>
+      <p>The Marketplace is where all listed and auctioned artworks appear. You can filter by category (Art, Photography, Music, Animated, Gaming), sort by price, date or likes, and toggle between All Items, For Sale, and Auctions.</p>
+      <p>The masonry grid lets you see each artwork at its natural proportions — a landscape photograph will appear wider, a portrait piece taller. This is intentional and means first impressions come from the art itself, not a forced square crop.</p>
+
+      <blockquote><p>"Don't rush your first purchase. Spend a week just browsing, liking pieces, and learning what speaks to you. The best collections are built with patience."</p></blockquote>
+
+      <h2>Understanding What You're Buying</h2>
+      <p>Each artwork has a detail page showing its title, the creator's name, a description, its rarity tier, token ID, creation date, current price, like count and view count. The rarity system uses five tiers:</p>
+      <ul>
+        <li><strong>Common</strong> — the most abundant tier, generally the lowest prices</li>
+        <li><strong>Uncommon</strong> — slightly rarer, often more distinctive works</li>
+        <li><strong>Rare</strong> — genuinely limited, good collector value</li>
+        <li><strong>Epic</strong> — significantly scarce, higher price points</li>
+        <li><strong>Legendary</strong> — the rarest tier, typically commanding premium prices</li>
+      </ul>
+
+      <h2>Making the Purchase</h2>
+      <p>When you've found an artwork you want, log in and click "Buy Now". You'll see a confirmation dialog with the price in ETH (or your currency of choice). Confirm the purchase and the ownership is transferred to your account. Your purchased artwork appears in your Dashboard under "My Collection".</p>
+
+      <div class="article-callout">
+        <p><strong>Pro Tip:</strong> <strong>Start with Rare tier.</strong> Common pieces are affordable entry points, but Rare tier offers the best balance of price, scarcity and artistic quality for most new collectors. Avoid spending your full budget on a single piece until you've developed a sense for what you love.</p>
+      </div>
+
+      <h2>Participating in Auctions</h2>
+      <p>Auctions work differently — there's a countdown timer and a current bid price. Click "Place Bid" to enter an amount above the current bid. If you're outbid before time runs out, you'll be notified. The highest bid when the timer expires wins the piece. Auctions are exciting but require more attention than "Buy Now" listings.</p>
+
+      <h2>Building Your Collection</h2>
+      <p>The best digital art collections aren't random accumulations — they reflect the collector's taste, perspective and values. Spend time in the Exhibitions section to see how artworks can tell stories in group context. Follow creators whose work you admire. And don't neglect the "More from this artist" section on artwork pages — it's often where the best discoveries happen.</p>
+    `,
+    related:['1','3','4']
+  },
+  '3': {
+    tag:'Market Analysis', readTime:'5 min read', author:'David Park', date:'January 2025',
+    title:'Rarity Rankings: How Ethergalleries Values Digital Scarcity',
+    img:'https://images.unsplash.com/photo-1614812512223-b0c22c46c46b?w=1200&auto=format&fit=crop',
+    content:`
+      <p>In traditional art markets, rarity is a complex interplay of provenance, edition size, artist reputation and historical significance. In digital art, these signals are harder to read. Ethergalleries' five-tier rarity system is an attempt to codify scarcity into something collectors can use practically.</p>
+
+      <h2>The Five Tiers Explained</h2>
+      <p>The rarity hierarchy runs from Common at the base to Legendary at the apex. Each tier is displayed visually on every artwork card and detail page with a distinct color — teal for Uncommon, blue for Rare, purple for Epic, and gold for Legendary.</p>
+
+      <div class="article-callout">
+        <p><strong>Rarity by the numbers:</strong> Across the platform, Common works make up approximately <strong>45%</strong> of listings, Uncommon <strong>28%</strong>, Rare <strong>18%</strong>, Epic <strong>7%</strong>, and Legendary just <strong>2%</strong>. This distribution is entirely creator-determined — the platform doesn't impose quotas.</p>
+      </div>
+
+      <h2>Does Rarity Actually Drive Price?</h2>
+      <p>Analysis of completed transactions on Ethergalleries shows a clear correlation between rarity tier and sale price, but the relationship isn't linear. The jump from Common to Rare is modest in absolute terms. The jump from Epic to Legendary is dramatic.</p>
+      <p>What's more interesting is that artistic quality at lower rarity tiers often outperforms mediocre work at higher tiers. Rare and Epic pieces by emerging artists with strong visual identity tend to appreciate faster than Legendary pieces by creators with limited following.</p>
+
+      <h2>Strategic Collecting by Rarity Tier</h2>
+      <p>For collectors with limited budgets, Common and Uncommon works offer excellent entry points. The sheer volume of Common works means there are genuine artistic gems at low prices — especially from newer creators building their catalog.</p>
+      <p>For collectors building investment-grade portfolios, Epic tier offers the best risk/reward balance. True Legendary scarcity with Legendary prices is best reserved for collectors who have done deep research on the creator's trajectory and market position.</p>
+
+      <h2>The Creator's Perspective on Rarity</h2>
+      <p>Creators must assign rarity at mint time, and it cannot be changed. This forces a deliberate decision: which works in your catalog are you designating as the best, the most significant, the most scarce? For thoughtful artists, rarity becomes a curatorial statement about their own work — not just a market signal.</p>
+    `,
+    related:['1','2','5']
+  },
+  '4': {
+    tag:'Creator Spotlight', readTime:'7 min read', author:'Sofia Adeyemi', date:'December 2024',
+    title:'Creator Economy: How Artists Are Building Careers on Ethergalleries',
+    img:'https://images.unsplash.com/photo-1547623542-de3ff5941ddb?w=1200&auto=format&fit=crop',
+    content:`
+      <p>Digital art has always existed. What's new is the infrastructure around it — the ability to sell, transfer ownership and establish provenance for works that exist only as files. Ethergalleries provides that infrastructure, and for a growing number of artists, it's become the primary engine of their creative career.</p>
+
+      <h2>The Minting Process</h2>
+      <p>Getting started as a creator on Ethergalleries is deliberatly unglamorous — which is exactly right. Upload your work, write a description, choose a category, assign a rarity tier, set a price or configure an auction. That's it. The platform doesn't require a gallery application, a curator's approval or a minimum follower count.</p>
+      <p>This democratization is one of Ethergalleries' most important features. An artist in Lagos with a compelling body of work has the same access to the marketplace as one in London with an established gallery career. What matters is the work.</p>
+
+      <blockquote><p>"The platform doesn't care where you're from or whether you have gallery representation. It cares whether your work is compelling. That's the most honest marketplace I've ever participated in."<br>— Digital artist with 38 works on Ethergalleries</p></blockquote>
+
+      <h2>The Exhibition Opportunity</h2>
+      <p>For creators, being featured in an Exhibition is transformative. One creator we spoke with saw their view count triple and their like count quintuple within 48 hours of their work appearing in a themed Exhibition. More importantly, two sales followed — both to collectors who had never seen their work before.</p>
+      <p>Exhibitions create narrative context that individual listings lack. A photograph that might seem abstract in isolation becomes powerful when grouped with related works in a curated "Urban Solitude" exhibition. Context creates meaning, and meaning creates collectors.</p>
+
+      <h2>Auctions as Audience Building</h2>
+      <p>Some creators use the Live Auction feature not primarily as a revenue tool, but as a visibility mechanism. A live auction creates urgency — collectors who might scroll past a "For Sale" listing will pause, engage, and bid on an auction with 2 hours left. Each bid notification is also a touchpoint with a potential long-term collector.</p>
+      <p>The strategy of mixing fixed-price listings (for accessible entry points) with occasional high-value auctions (for major works) has proven effective for several of the platform's most successful creators.</p>
+
+      <h2>Building a Collector Relationship</h2>
+      <p>The creators who thrive on Ethergalleries long-term are those who treat their collector base as a relationship rather than a transaction pool. The platform's "More from this artist" carousel on each artwork page means that every collector who buys one piece is automatically exposed to more of your work. Quality compounds.</p>
+    `,
+    related:['1','2','3']
+  },
+  '5': {
+    tag:'Platform Features', readTime:'9 min read', author:'Marcus T. Wells', date:'November 2024',
+    title:'Live Auctions, Exhibitions & Collections: The Full Feature Breakdown',
+    img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&auto=format&fit=crop',
+    content:`
+      <p>Ethergalleries is more than a marketplace — it's an ecosystem of interconnected features that work together to serve collectors, creators and casual art lovers. This is a comprehensive tour of everything the platform offers.</p>
+
+      <h2>The Marketplace</h2>
+      <p>The core of the platform. Every listed and auctioned artwork appears here. The masonry grid layout, unlike the forced-square grids of competitors, respects each work's original composition. Filters let you slice by category, price range, and listing status (All / For Sale / Auctions). The sort options include Newest First, Oldest, Price Low-to-High, Price High-to-Low, and Most Liked.</p>
+      <p>Above the grid, the Spotlight feature surfaces the most-liked currently listed work as a large editorial feature — giving it prominence that the algorithmic grid cannot provide.</p>
+
+      <h2>Live Auctions</h2>
+      <p>The Live Auctions section shows every active auction with a countdown timer accurate to the second. Cards display the current bid, the artwork thumbnail, and the time remaining. Each auction has defined start and end times set by the creator, and bidding is open to any authenticated user.</p>
+
+      <div class="article-callout">
+        <p><strong>Auction mechanics:</strong> Bids must exceed the current highest bid. There is no automatic bid increment — you choose exactly how much to offer. The platform notifies you if you're outbid, giving you the option to rebid before the timer expires.</p>
+      </div>
+
+      <h2>Collections</h2>
+      <p>The Collections section organizes artworks by creator, showing each "collection" as a mosaic of three representative images alongside floor price, total volume, and 24-hour change percentage. This gives collectors a quick comparative view of which creators' bodies of work are gaining momentum.</p>
+
+      <h2>Exhibitions</h2>
+      <p>Perhaps the platform's most distinctive feature. Exhibitions are curated virtual shows that group artworks by theme, aesthetic, or concept. Each has a full-page view with a hero image, description, type indicator (Virtual, Physical, or Hybrid), and a date. Clicking "View" opens the full exhibition detail including all included works.</p>
+      <p>Exhibitions provide the curatorial layer that pure marketplace discovery lacks. They're where the platform's editorial sensibility is most visible.</p>
+
+      <h2>The Search System</h2>
+      <p>The search bar in the header searches across both artworks and artists simultaneously. Results appear in a dropdown that separates "Artists" (with avatar and profile link) from "Artworks" (with thumbnail, title, creator and category). It's fast, accurate, and genuinely useful — especially on a platform with thousands of listings.</p>
+
+      <h2>The Dashboard</h2>
+      <p>Logged-in users have access to a Dashboard showing their purchased artworks (My Collection), their liked pieces, and — for creators — their listed works with view and like counts. It's where the platform relationship becomes personal and ongoing rather than transactional.</p>
+
+      <h2>Platform Architecture</h2>
+      <p>For technically minded readers: Ethergalleries exposes a clean REST API for all marketplace data. The NFT endpoint returns full artwork objects including metadata, pricing, rarity, view counts and like counts. The search endpoint supports full-text queries. Authentication uses JWT bearer tokens for write operations.</p>
+    `,
+    related:['1','3','4']
+  }
+};
+
+function showArticle(id) {
+  const art = ARTICLES[id];
+  if (!art) return;
+  const related = (art.related||[]).map(rid => {
+    const r = ARTICLES[rid];
+    if (!r) return '';
+    return `<div class="related-card" onclick="showArticle('${rid}')">
+      <img src="${r.img}" alt="${r.title}" loading="lazy"/>
+      <div class="related-card-body">
+        <h5>${r.title}</h5>
+        <p>${r.tag} · ${r.readTime}</p>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('readerContent').innerHTML = `
+    <div class="article-hero">
+      <div class="article-hero-ct">
+        <div class="article-hero-tag"><i class="bi bi-bookmark"></i> ${art.tag}</div>
+        <h1>${art.title}</h1>
+        <div class="article-hero-meta">
+          <span>By ${art.author}</span>
+          <span>·</span>
+          <span>${art.date}</span>
+          <span>·</span>
+          <span>${art.readTime}</span>
+        </div>
+      </div>
+    </div>
+
+    <img src="${art.img}" alt="${art.title}" class="article-feature-img"/>
+
+    <div class="article-body">
+      ${art.content}
+
+      <div class="article-tags">
+        <span class="badge-gold">${art.tag}</span>
+        <span class="badge-gold">Ethergalleries</span>
+        <span class="badge-gold">Digital Art</span>
+        <span class="badge-gold">NFTs</span>
+      </div>
+
+      <div class="author-card">
+        <div class="author-av">${art.author.charAt(0)}</div>
+        <div>
+          <div class="author-info-name">${art.author}</div>
+          <div class="author-info-bio">Editorial team at The Vault. Writing about digital art, blockchain culture and the evolving collector economy since 2022.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap-narrow" style="padding-bottom:4rem;">
+      <div class="section-label" style="margin-bottom:1.25rem;">Related Reading</div>
+      <div class="related-grid">${related}</div>
+    </div>
+  `;
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-reader').classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+  document.getElementById('nav-articles').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ════ Q&A ACCORDION ════ */
+function toggleQA(el) {
+  const item = el.closest('.qa-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.qa-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+function filterQA(cat, btn) {
+  document.querySelectorAll('.qa-cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.qa-item').forEach(item => {
+    item.style.display = (cat === 'all' || item.dataset.cat === cat) ? 'block' : 'none';
+  });
+}
+
+/* ════ DATE ════ */
+document.getElementById('mastDate').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
+</script>
+</body>
+</html>

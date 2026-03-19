@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Collections — Ethergalleries</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   ETHERGALLERIES — EDITORIAL MAGAZINE THEME
+   All Collections · Blue Scheme
+═══════════════════════════════════════ */
+:root {
+  --vx-primary: #22c55e;
+  --vx-primary-hover: #16a34a;
+  --vx-blue: #22c55e;
+  --vx-dark: #1a1a2e;
+  --vx-light: #f8fafc;
+  --vx-card-bg: #ffffff;
+  --vx-border: #e2e8f0;
+  --vx-text: #1e293b;
+  --vx-text-muted: #64748b;
+  --ink: #0a0a0f;
+  --paper: #f7f8fc;
+  --accent: #22c55e;
+  --accent-dark: #16a34a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --border-dark: #1a2236;
+  --indigo-muted: #86efac;
+  --white: #ffffff;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: "DM Sans", sans-serif; background: var(--paper); color: var(--ink); font-size: 15px; line-height: 1.6; }
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; }
+::selection { background: rgba(34,197,94,0.18); }
+
+body::after {
+  content: ""; position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.02; pointer-events: none; z-index: 9999;
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: rgba(34,197,94,0.25); border-radius: 3px; }
+
+/* ── HEADER ── */
+.mainHeader {
+  background: var(--ink); border-bottom: 1px solid var(--border-dark);
+  padding: 0 40px; height: 64px; position: sticky; top: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+}
+.brandLogo {
+  font-family: "Playfair Display", serif; font-style: italic; font-size: 1.4rem;
+  color: var(--indigo-muted); text-decoration: none;
+  display: flex; align-items: center; gap: 10px;
+}
+.navigationMenu { display: flex; align-items: center; gap: 32px; }
+.navLink {
+  color: rgba(247,248,252,0.6); font-family: "DM Mono", monospace; font-size: 11px;
+  font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  text-decoration: none; background: none; border: none; cursor: pointer;
+  transition: color 0.2s; position: relative;
+}
+.navLink::after { content: ""; position: absolute; bottom: -2px; left: 0; right: 100%; height: 1px; background: var(--accent); transition: right 0.3s; }
+.navLink:hover::after { right: 0; }
+.navLink:hover { color: #fff; }
+.searchContainer {
+  flex: 1; max-width: 440px;
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(34,197,94,0.25); border-radius: 2px; padding: 8px 14px;
+  transition: border-color 0.2s; position: relative;
+}
+.searchContainer:focus-within { border-color: rgba(34,197,94,0.55); }
+.searchIcon { width: 18px; height: 18px; opacity: 0.5; flex-shrink: 0; color: var(--indigo-muted); }
+.searchInput { flex: 1; background: transparent; border: none; outline: none; color: #f7f8fc; font-family: "DM Sans", sans-serif; font-size: 13px; }
+.searchInput::placeholder { color: rgba(247,248,252,0.35); }
+.searchShortcut { background: rgba(34,197,94,0.2); border: none; color: var(--indigo-muted); font-family: "DM Mono", monospace; font-size: 10px; border-radius: 2px; padding: 3px 6px; }
+.headerActions { display: flex; align-items: center; gap: 16px; }
+.signInButton {
+  background: var(--accent); color: #fff;
+  font-family: "DM Mono", monospace; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  border: none; border-radius: 2px; padding: 10px 22px; cursor: pointer; transition: background 0.2s;
+}
+.signInButton:hover { background: var(--accent-dark); }
+@media (max-width: 1024px) { .navigationMenu { display: none; } .mainHeader { padding: 0 20px; } .searchContainer { display: none; } }
+
+/* ── HERO ── */
+.ac-hero {
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #0a0a18 0%, #131027 50%, #0a1020 100%);
+  padding: 72px 40px 60px;
+}
+.ac-hero::before {
+  content: ''; position: absolute; top: -100px; left: 5%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(34,197,94,0.2) 0%, transparent 65%);
+  pointer-events: none;
+}
+.ac-hero::after {
+  content: ''; position: absolute; bottom: -60px; right: 8%;
+  width: 350px; height: 350px;
+  background: radial-gradient(circle, rgba(34,197,94,0.13) 0%, transparent 65%);
+  pointer-events: none;
+}
+.ac-hero-inner { position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+.ac-hero-eyebrow {
+  font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--indigo-muted); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.ac-hero-eyebrow::before { content: ""; display: block; width: 24px; height: 1px; background: var(--indigo-muted); }
+.ac-hero-title {
+  font-family: "Playfair Display", serif; font-style: italic;
+  font-size: clamp(2rem, 4vw, 3.2rem); color: #fff; line-height: 1.1; margin-bottom: 10px;
+}
+.ac-hero-title em { font-style: normal; color: var(--indigo-muted); }
+.ac-hero-sub { font-size: 14px; color: rgba(255,255,255,0.42); max-width: 500px; line-height: 1.7; }
+.ac-hero-search {
+  display: flex; align-items: center; gap: 0;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(34,197,94,0.3); border-radius: 2px; overflow: hidden;
+  min-width: 280px;
+}
+.ac-hero-search input {
+  flex: 1; background: transparent; border: none; outline: none;
+  color: #fff; font-family: "DM Sans", sans-serif; font-size: 13px;
+  padding: 12px 16px;
+}
+.ac-hero-search input::placeholder { color: rgba(255,255,255,0.35); }
+.ac-hero-search button {
+  background: var(--accent); color: #fff; border: none; padding: 12px 20px;
+  font-family: "DM Mono", monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.2s;
+}
+.ac-hero-search button:hover { background: var(--accent-dark); }
+
+/* Stats */
+.ac-stats-strip {
+  background: var(--white); border-bottom: 1px solid var(--border);
+  display: grid; grid-template-columns: repeat(4, 1fr);
+}
+.ac-stat-cell { padding: 16px 20px; border-right: 1px solid var(--border); text-align: center; }
+.ac-stat-cell:last-child { border-right: none; }
+.ac-stat-val { font-family: "Playfair Display", serif; font-size: 1.4rem; font-weight: 700; color: var(--ink); }
+.ac-stat-label { font-family: "DM Mono", monospace; font-size: 9px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+
+/* ── MAIN ── */
+.ac-main { max-width: 1280px; margin: 0 auto; padding: 36px 40px 80px; }
+@media (max-width: 768px) { .ac-main { padding: 24px 20px 60px; } }
+
+/* Toolbar */
+.ac-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; margin-bottom: 28px;
+  padding: 14px 18px; background: var(--white); border: 1px solid var(--border); border-radius: 3px;
+}
+.ac-filter-group { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.ac-filter-btn {
+  padding: 8px 18px; border: 1px solid var(--border); border-radius: 2px; background: var(--paper);
+  font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); cursor: pointer; transition: all 0.15s;
+}
+.ac-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+.ac-filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.ac-sort-select {
+  padding: 8px 14px; border: 1px solid var(--border); border-radius: 2px;
+  font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: 0.08em;
+  background: var(--paper); color: var(--ink); cursor: pointer;
+}
+.ac-sort-select:focus { outline: none; border-color: var(--accent); }
+.ac-result-count { font-family: "DM Mono", monospace; font-size: 11px; color: var(--muted); }
+.ac-result-count span { color: var(--accent); font-weight: 600; }
+
+/* ── COLLECTION CARDS ── */
+.ac-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+}
+@media (max-width: 768px) { .ac-grid { grid-template-columns: 1fr; gap: 16px; } }
+@media (min-width: 1100px) { .ac-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.ac-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 3px;
+  overflow: hidden; transition: all 0.25s; display: block; color: inherit; text-decoration: none;
+}
+.ac-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); color: inherit; }
+
+/* Mosaic image grid */
+.ac-card-images {
+  height: 210px; display: grid; gap: 2px;
+  grid-template-columns: 2fr 1fr;
+}
+.ac-card-images.single { grid-template-columns: 1fr; }
+.ac-img-main { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ac-img-stack { display: grid; grid-template-rows: 1fr 1fr; gap: 2px; }
+.ac-img-stack img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ac-img-placeholder { width: 100%; height: 100%; background: linear-gradient(135deg, var(--paper) 0%, #dcfce7 100%); display: flex; align-items: center; justify-content: center; }
+.ac-img-placeholder i { font-size: 2rem; color: var(--accent); opacity: 0.3; }
+
+/* Card body */
+.ac-card-body { padding: 18px 20px; }
+.ac-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.ac-card-name { font-family: "Playfair Display", serif; font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
+.ac-card-badge {
+  background: rgba(34,197,94,0.08); color: var(--accent);
+  font-family: "DM Mono", monospace; font-size: 9px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 1px; border: 1px solid rgba(34,197,94,0.2);
+  white-space: nowrap; flex-shrink: 0;
+}
+.ac-card-creator {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+}
+.ac-creator-av {
+  width: 24px; height: 24px; border-radius: 50%; background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 10px; font-family: "DM Mono", monospace;
+  flex-shrink: 0;
+}
+.ac-creator-name { font-family: "DM Mono", monospace; font-size: 11px; color: var(--muted); }
+.ac-card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--border); }
+.ac-card-stats { display: flex; gap: 16px; }
+.ac-card-stat { text-align: center; }
+.ac-card-stat-val { font-family: "Playfair Display", serif; font-size: 1.05rem; font-weight: 700; line-height: 1; color: var(--ink); }
+.ac-card-stat-label { font-family: "DM Mono", monospace; font-size: 9px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+.ac-view-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px; background: var(--accent); color: #fff;
+  font-family: "DM Mono", monospace; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  border-radius: 2px; transition: background 0.2s;
+}
+.ac-view-btn:hover { background: var(--accent-dark); color: #fff; }
+
+/* Empty / Loading */
+.ac-empty { text-align: center; padding: 80px 24px; color: var(--muted); grid-column: 1/-1; }
+.ac-empty i { font-size: 3rem; display: block; margin-bottom: 16px; opacity: 0.25; }
+.ac-empty h4 { font-family: "Playfair Display", serif; font-weight: 700; margin-bottom: 8px; }
+
+/* Featured row (first 2 collections as large cards) */
+.ac-featured-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 36px; }
+@media (max-width: 768px) { .ac-featured-grid { grid-template-columns: 1fr; } }
+.ac-featured-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 3px;
+  overflow: hidden; transition: all 0.25s; display: block; color: inherit; text-decoration: none;
+}
+.ac-featured-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); color: inherit; }
+.ac-featured-img { width: 100%; height: 280px; object-fit: cover; display: block; }
+.ac-featured-body { padding: 22px 24px; }
+.ac-featured-eyebrow { font-family: "DM Mono", monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.ac-featured-eyebrow::before { content: ""; display: block; width: 14px; height: 1px; background: var(--accent); }
+.ac-featured-name { font-family: "Playfair Display", serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; line-height: 1.2; }
+.ac-featured-meta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+
+/* Section divider */
+.ac-section-head { margin-bottom: 20px; }
+.ac-section-eyebrow {
+  font-family: "DM Mono", monospace; font-size: 9px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+  display: flex; align-items: center; gap: 8px;
+}
+.ac-section-eyebrow::before { content: ""; display: block; width: 20px; height: 1px; background: var(--accent); }
+.ac-section-title { font-family: "Playfair Display", serif; font-size: 1.5rem; font-weight: 700; color: var(--ink); }
+
+/* Footer */
+.vx-footer { background: var(--ink); color: white; padding: 40px 0; border-top: 1px solid var(--border-dark); }
+.vx-footer-brand { font-family: "Playfair Display", serif; font-style: italic; font-size: 1.3rem; color: var(--indigo-muted); margin-bottom: 8px; }
+.vx-footer-copy { font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: 0.08em; color: rgba(255,255,255,0.3); text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.07); }
+.vx-footer a { color: rgba(255,255,255,0.5); text-decoration: none; margin-right: 16px; font-size: 13px; transition: color 0.2s; }
+.vx-footer a:hover { color: rgba(255,255,255,0.9); }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="mainHeader">
+  <a href="/index.html" class="brandLogo">
+    <img src="./logo.png" height="38" alt="Ethergalleries" style="height:38px;width:auto;">
+  </a>
+  <nav class="navigationMenu">
+    <a href="marketplace.html" class="navLink">Marketplace</a>
+    <a href="category.html" class="navLink">Explore</a>
+    <a href="allcollections.html" class="navLink">Collections</a>
+  </nav>
+  <div class="searchContainer">
+    <svg class="searchIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" class="searchInput" id="headerSearch" placeholder="Search collections…">
+    <span class="searchShortcut">⌘K</span>
+  </div>
+  <div class="headerActions">
+    <button class="signInButton" onclick="window.location.href='dashboard.html'">Sign In</button>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="ac-hero">
+  <div class="ac-hero-inner">
+    <div>
+      <div class="ac-hero-eyebrow">Curated NFT Collections</div>
+      <h1 class="ac-hero-title">All <em>Collections</em></h1>
+      <p class="ac-hero-sub">Browse every curated collection on Ethergalleries. Discover rare series, artist portfolios, and themed artworks hand-picked from our community.</p>
+    </div>
+    <div class="ac-hero-search">
+      <input type="text" id="heroSearch" placeholder="Search collections…">
+      <button onclick="filterCollections()">Search</button>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Strip -->
+<div class="ac-stats-strip">
+  <div class="ac-stat-cell"><div class="ac-stat-val" id="statCollections">—</div><div class="ac-stat-label">Collections</div></div>
+  <div class="ac-stat-cell"><div class="ac-stat-val" id="statItems">—</div><div class="ac-stat-label">Total Items</div></div>
+  <div class="ac-stat-cell"><div class="ac-stat-val" id="statArtists">—</div><div class="ac-stat-label">Artists</div></div>
+  <div class="ac-stat-cell"><div class="ac-stat-val" id="statCategories">—</div><div class="ac-stat-label">Categories</div></div>
+</div>
+
+<!-- Main -->
+<div class="ac-main">
+
+  <!-- Featured Collections -->
+  <div class="ac-section-head">
+    <div class="ac-section-eyebrow">Editor's Pick</div>
+    <h2 class="ac-section-title">Featured Collections</h2>
+  </div>
+  <div class="ac-featured-grid" id="featuredGrid">
+    <!-- Skeleton -->
+    <div style="height:380px;background:var(--white);border:1px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;">Loading…</div>
+    <div style="height:380px;background:var(--white);border:1px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;">Loading…</div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="ac-toolbar">
+    <div class="ac-result-count">Showing <span id="resultCount">0</span> collections</div>
+    <div class="ac-filter-group">
+      <button class="ac-filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
+      <button class="ac-filter-btn" data-filter="Art" onclick="setFilter('Art', this)">Art</button>
+      <button class="ac-filter-btn" data-filter="Photography" onclick="setFilter('Photography', this)">Photography</button>
+      <button class="ac-filter-btn" data-filter="Music" onclick="setFilter('Music', this)">Music</button>
+      <button class="ac-filter-btn" data-filter="Video" onclick="setFilter('Video', this)">Animated</button>
+    </div>
+    <select class="ac-sort-select" id="sortSelect" onchange="renderCollections()">
+      <option value="newest">Newest First</option>
+      <option value="oldest">Oldest First</option>
+      <option value="items">Most Items</option>
+    </select>
+  </div>
+
+  <!-- Grid -->
+  <div class="ac-section-head">
+    <div class="ac-section-eyebrow">Browse All</div>
+    <h2 class="ac-section-title">The Full Library</h2>
+  </div>
+  <div class="ac-grid" id="collectionsGrid">
+    <div class="ac-empty" style="grid-column:1/-1;">
+      <i class="bi bi-hourglass-split"></i>
+      <h4>Loading collections…</h4>
+    </div>
+  </div>
+</div>
+
+<footer class="vx-footer">
+  <div class="container">
+    <div class="vx-footer-brand">Ethergalleries</div>
+    <div style="margin-top:8px;"><a href="/index.html">Explore</a><a href="/dashboard.html">Dashboard</a><a href="marketplace.html">Marketplace</a></div>
+    <div class="vx-footer-copy">© 2024 Ethergalleries. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let allCollections = [];
+let allNFTs = [];
+let collectionNFTMap = {};
+let currentFilter = 'all';
+let searchQuery = '';
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadData();
+  document.getElementById('heroSearch').addEventListener('keypress', e => { if (e.key === 'Enter') filterCollections(); });
+  document.getElementById('headerSearch').addEventListener('input', e => { searchQuery = e.target.value.toLowerCase(); renderCollections(); });
+  document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); document.getElementById('headerSearch').focus(); } });
+});
+
+async function loadData() {
+  try {
+    const [colRes, nftsRes] = await Promise.all([
+      fetch('https://changes-sample.onrender.com/api/collections'),
+      fetch('https://changes-sample.onrender.com/api/marketplace/nfts')
+    ]);
+    allCollections = colRes.ok ? await colRes.json() : [];
+    allNFTs = nftsRes.ok ? await nftsRes.json() : [];
+
+    // Map NFTs to collections
+    allNFTs.forEach(nft => {
+      const cid = nft.collection || nft.collectionId;
+      if (cid) { if (!collectionNFTMap[cid]) collectionNFTMap[cid] = []; collectionNFTMap[cid].push(nft); }
+    });
+
+    updateStats();
+    renderFeatured();
+    renderCollections();
+  } catch (err) { console.error(err); showError(); }
+}
+
+function updateStats() {
+  const totalItems = Object.values(collectionNFTMap).reduce((s, arr) => s + arr.length, 0);
+  const artists = new Set(allCollections.map(c => c.creator).filter(Boolean));
+  const categories = new Set(allCollections.map(c => c.category).filter(Boolean));
+  document.getElementById('statCollections').textContent = allCollections.length;
+  document.getElementById('statItems').textContent = totalItems || allNFTs.length;
+  document.getElementById('statArtists').textContent = artists.size;
+  document.getElementById('statCategories').textContent = categories.size || 4;
+}
+
+function renderFeatured() {
+  const featured = allCollections.slice(0, 2);
+  if (!featured.length) { document.getElementById('featuredGrid').innerHTML = ''; return; }
+  document.getElementById('featuredGrid').innerHTML = featured.map(col => {
+    const nfts = collectionNFTMap[col._id] || [];
+    const coverImg = nfts[0]?.imageUrl || 'https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=800&auto=format&fit=crop';
+    const creator = col.creator || col.createdBy || 'Unknown Artist';
+    return `<a href="collection.html?id=${col._id}" class="ac-featured-card">
+      <img src="${coverImg}" alt="${col.name}" class="ac-featured-img" loading="lazy">
+      <div class="ac-featured-body">
+        <div class="ac-featured-eyebrow">Featured</div>
+        <div class="ac-featured-name">${col.name || 'Untitled Collection'}</div>
+        <div class="ac-featured-meta">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="ac-creator-av">${(creator[0] || 'A').toUpperCase()}</div>
+            <span class="ac-creator-name">by ${creator}</span>
+          </div>
+          <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">${nfts.length || '—'} items</span>
+        </div>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+function setFilter(filter, el) {
+  currentFilter = filter;
+  document.querySelectorAll('.ac-filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
+  renderCollections();
+}
+
+function filterCollections() {
+  searchQuery = document.getElementById('heroSearch').value.toLowerCase();
+  renderCollections();
+}
+
+function renderCollections() {
+  let filtered = [...allCollections];
+  if (currentFilter !== 'all') filtered = filtered.filter(c => c.category === currentFilter);
+  if (searchQuery) filtered = filtered.filter(c => (c.name || '').toLowerCase().includes(searchQuery) || (c.creator || '').toLowerCase().includes(searchQuery));
+  const sort = document.getElementById('sortSelect').value;
+  switch (sort) {
+    case 'oldest': filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)); break;
+    case 'items': filtered.sort((a, b) => (collectionNFTMap[b._id]?.length || 0) - (collectionNFTMap[a._id]?.length || 0)); break;
+    default: filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+  document.getElementById('resultCount').textContent = filtered.length;
+  const grid = document.getElementById('collectionsGrid');
+  if (!filtered.length) { grid.innerHTML = `<div class="ac-empty" style="grid-column:1/-1;"><i class="bi bi-collection"></i><h4>No collections found</h4><p style="font-size:13px;color:var(--muted);">Try a different search or filter</p></div>`; return; }
+  grid.innerHTML = filtered.map(col => {
+    const nfts = collectionNFTMap[col._id] || [];
+    const imgs = nfts.slice(0, 3).map(n => n.imageUrl).filter(Boolean);
+    const creator = col.creator || col.createdBy || 'Unknown Artist';
+    const category = col.category || 'Art';
+    const itemCount = nfts.length;
+    const listedCount = nfts.filter(n => n.status === 'listed').length;
+
+    let imagesHtml = '';
+    if (!imgs.length) {
+      imagesHtml = `<div class="ac-card-images single"><div class="ac-img-placeholder"><i class="bi bi-collection"></i></div></div>`;
+    } else if (imgs.length === 1) {
+      imagesHtml = `<div class="ac-card-images single"><img src="${imgs[0]}" class="ac-img-main" loading="lazy" alt="${col.name}"></div>`;
+    } else {
+      imagesHtml = `<div class="ac-card-images">
+        <img src="${imgs[0]}" class="ac-img-main" loading="lazy" alt="${col.name}">
+        <div class="ac-img-stack">
+          <img src="${imgs[1]}" loading="lazy" alt="">
+          ${imgs[2] ? `<img src="${imgs[2]}" loading="lazy" alt="">` : `<div class="ac-img-placeholder"><i class="bi bi-image"></i></div>`}
+        </div>
+      </div>`;
+    }
+
+    return `<a href="collection.html?id=${col._id}" class="ac-card">
+      ${imagesHtml}
+      <div class="ac-card-body">
+        <div class="ac-card-top">
+          <div class="ac-card-name">${col.name || 'Untitled Collection'}</div>
+          <span class="ac-card-badge">${category}</span>
+        </div>
+        <div class="ac-card-creator">
+          <div class="ac-creator-av">${(creator[0] || 'A').toUpperCase()}</div>
+          <span class="ac-creator-name">by ${creator}</span>
+        </div>
+        <div class="ac-card-footer">
+          <div class="ac-card-stats">
+            <div class="ac-card-stat">
+              <div class="ac-card-stat-val">${itemCount || '—'}</div>
+              <div class="ac-card-stat-label">Items</div>
+            </div>
+            <div class="ac-card-stat">
+              <div class="ac-card-stat-val">${listedCount || '—'}</div>
+              <div class="ac-card-stat-label">For Sale</div>
+            </div>
+          </div>
+          <span class="ac-view-btn">View <i class="bi bi-arrow-right ms-1"></i></span>
+        </div>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+function showError() {
+  document.getElementById('collectionsGrid').innerHTML = `<div class="ac-empty" style="grid-column:1/-1;"><i class="bi bi-exclamation-circle"></i><h4>Failed to load collections</h4><p style="font-size:13px;color:var(--muted);">Please try again later</p></div>`;
+}
+</script>
+<script type="text/javascript">
+var _smartsupp = _smartsupp || {};
+_smartsupp.key = '22fedf8eb82b9e0a64db380756000ffa3577c808';
+window.smartsupp||(function(d){var s,c,o=smartsupp=function(){o._.push(arguments)};o._=[];s=d.getElementsByTagName('script')[0];c=d.createElement('script');c.type='text/javascript';c.charset='utf-8';c.async=true;c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s)})(document);
+</script>
+<noscript>Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
+</body>
+</html>
