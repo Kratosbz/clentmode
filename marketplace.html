@@ -708,7 +708,7 @@ a { text-decoration: none; color: inherit; }
       <div class="vx-category-icon red"><i class="bi bi-music-note-beamed"></i></div>
       <div class="vx-category-info"><h6>Music</h6><small>Audio NFTs</small></div>
     </div>
-    <div class="vx-category-card" data-category="Video">
+    <div class="vx-category-card" data-category="Animation">
       <div class="vx-category-icon purple"><i class="bi bi-play-circle-fill"></i></div>
       <div class="vx-category-info"><h6>Animated</h6><small>Motion artworks</small></div>
     </div>
@@ -923,7 +923,7 @@ async function loadCarousels() {
     featuredDropsItems = shuffleArray([...nfts]).slice(0, 10);
     renderFeaturedDropsCarousel();
     startFeaturedDropsAutoSlide();
-    const categories = ['Art', 'Gaming', 'Music', 'Photography', 'Sports', '3D Art', 'Video'];
+    const categories = ['Art','Music', 'Photography', 'Sports', '3D Art', 'Video'];
     categoryArtItems = [];
     categories.forEach(cat => {
       const catNFTs = nfts.filter(n => n.category === cat);
