@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Artist — Ethergalleries</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></link>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════
    ETHERGALLERIES — EDITORIAL MAGAZINE THEME
@@ -220,10 +220,11 @@ body::after {
 
 /* ── COVER ── */
 .cover {
-  position: relative; width: 100%; height: 300px; overflow: hidden;
+  position: relative; width: 100%; height: 100px; overflow: hidden;
   background: var(--ink);
 }
-.cover-img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.5; }
+.cover-img { width: 100%; 
+  height: 300px; object-fit: cover; display: block; opacity: 0.5; }
 .cover-overlay {
   position: absolute; inset: 0;
   background: linear-gradient(to bottom, rgba(10,10,15,0.2) 0%, rgba(10,10,15,0.75) 100%);
@@ -231,7 +232,7 @@ body::after {
 .cover-glow {
   position: absolute; border-radius: 50%; pointer-events: none; filter: blur(90px);
 }
-.cg1 { width: 500px; height: 500px; background: rgba(34,197,94,0.25); opacity: 0.4; top: -180px; left: -80px; }
+.cg1 { width: 500px; height: 500px; background: rgba(34,197,94,0.3); opacity: 0.45; top: -180px; left: -80px; }
 .cg2 { width: 350px; height: 350px; background: rgba(34,197,94,0.2); opacity: 0.3; bottom: -100px; right: -60px; }
 
 /* ── PROFILE ZONE ── */
@@ -241,11 +242,13 @@ body::after {
 /* Avatar */
 .av-wrap { display: flex; flex-direction: column; align-items: center; margin-top: -70px; position: relative; z-index: 2; }
 .av-ring {
-  width: 130px; height: 130px; border-radius: 50%;
+  width: 140px; height: 140px; border-radius: 50%;
   border: 5px solid var(--paper);
-  box-shadow: 0 0 0 2px var(--accent), 0 10px 36px rgba(0,0,0,0.18);
+  box-shadow: 0 0 0 2.5px var(--accent), 0 0 0 5px rgba(34,197,94,0.12), 0 12px 40px rgba(0,0,0,0.2);
   overflow: hidden; background: var(--paper-light); flex-shrink: 0;
+  transition: box-shadow 0.3s;
 }
+.av-ring:hover { box-shadow: 0 0 0 2.5px var(--accent), 0 0 0 8px rgba(34,197,94,0.15), 0 16px 48px rgba(0,0,0,0.22); }
 .av-ring img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .av-init {
   width: 100%; height: 100%; font-size: 2.4rem; font-weight: 700;
@@ -258,29 +261,35 @@ body::after {
 /* Stats left */
 .stats-left { padding-top: 20px; }
 .stat-item { margin-bottom: 20px; }
-.stat-val { font-family: "Playfair Display", serif; font-size: 2rem; font-weight: 700; line-height: 1; color: var(--ink); }
+.stat-val { 
+  font-family: "DM Mono", monospace; font-size: 1.75rem; font-weight: 700; line-height: 1; 
+  color: var(--ink); letter-spacing: -0.02em;
+}
 .stat-lbl { font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
 
 /* Artist Info right */
 .artist-info { padding-top: 20px; }
-.artist-name { font-family: "Playfair Display", serif; font-size: 2rem; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.artist-name { 
+  font-family: "Syne", sans-serif; font-size: 2rem; font-weight: 800; 
+  color: var(--ink); margin-bottom: 6px; letter-spacing: -0.03em;
+}
+.artist-verified {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: "DM Mono", monospace; font-size: 9.5px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 12px;
+}
+.artist-verified i { font-size: 11px; }
 .artist-bio { color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 480px; margin-bottom: 20px; }
 .artist-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-.btn-follow {
-  background: var(--accent); color: #fff;
-  font-family: "DM Mono", monospace; font-size: 10px; font-weight: 700;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  border: none; border-radius: 2px; padding: 10px 24px; cursor: pointer; transition: background 0.2s;
-}
-.btn-follow:hover { background: var(--accent-dark); }
-.btn-follow.following { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
 .btn-share {
+  display: inline-flex; align-items: center; gap: 7px;
   background: transparent; color: var(--muted);
-  font-family: "DM Mono", monospace; font-size: 10px; font-weight: 500;
+  font-family: "DM Mono", monospace; font-size: 10px; font-weight: 600;
   letter-spacing: 0.1em; text-transform: uppercase;
   border: 1px solid var(--border); border-radius: 2px; padding: 10px 20px; cursor: pointer; transition: all 0.2s;
 }
-.btn-share:hover { border-color: var(--ink); color: var(--ink); }
+.btn-share:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ── MAIN CONTENT ── */
 .main-content { max-width: 1280px; margin: 0 auto; padding: 40px 40px 80px; }
@@ -294,15 +303,16 @@ body::after {
   display: flex; align-items: center; gap: 8px;
 }
 .section-eyebrow::before { content: ""; display: block; width: 20px; height: 1px; background: var(--accent); }
-.section-title { font-family: "Playfair Display", serif; font-size: 1.6rem; font-weight: 700; color: var(--ink); }
+.section-title { font-family: "Syne", sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--ink); letter-spacing: -0.025em; }
 
 .featured-artwork {
   display: grid; grid-template-columns: 1fr 1fr; gap: 0;
-  background: var(--white); border: 1px solid var(--border); border-radius: 3px; overflow: hidden;
-  box-shadow: 0 8px 32px rgba(34,197,94,0.08);
+  background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08);
 }
 @media (max-width: 768px) { .featured-artwork { grid-template-columns: 1fr; } }
-.featured-image { width: 100%; height: 420px; object-fit: cover; display: block; }
+.featured-image { width: 100%; height: 440px; object-fit: cover; display: block; transition: transform 0.5s cubic-bezier(.22,1,.36,1); }
+.featured-artwork:hover .featured-image { transform: scale(1.025); }
 .featured-info { padding: 36px 32px; display: flex; flex-direction: column; justify-content: center; }
 .featured-badge {
   display: inline-flex; align-items: center; gap: 6px;
@@ -329,11 +339,12 @@ body::after {
 @media (max-width: 576px) { .vx-nft-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
 
 .vx-nft-card {
-  background: var(--white); border: 1px solid var(--border); border-radius: 3px;
-  overflow: hidden; transition: all 0.25s; cursor: pointer;
+  background: var(--white); border: 1px solid var(--border); border-radius: 8px;
+  overflow: hidden; transition: all 0.28s cubic-bezier(.22,1,.36,1); cursor: pointer;
   text-decoration: none; color: inherit; display: block;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
-.vx-nft-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); color: inherit; }
+.vx-nft-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.1), 0 0 0 1px rgba(34,197,94,0.2); border-color: rgba(34,197,94,0.25); color: inherit; }
 .vx-nft-image-container { position: relative; padding-top: 100%; overflow: hidden; }
 .vx-nft-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
 .vx-nft-card:hover .vx-nft-image { transform: scale(1.05); }
@@ -377,6 +388,7 @@ body::after {
 @media (max-width: 900px) {
   .profile-row { grid-template-columns: 1fr; }
   .stats-left { display: flex; gap: 24px; padding-top: 0; }
+  .stats-left .stat-item:last-child { display: none; }
   .av-wrap { margin-top: -60px; }
   .profile-zone { padding: 0 20px; }
   .main-content { padding: 32px 20px 60px; }
@@ -384,6 +396,7 @@ body::after {
 @media (max-width: 600px) {
   .featured-artwork { grid-template-columns: 1fr; }
   .featured-image { height: 260px; }
+  .cover { height: 80px; }
 }
 
     /* ═══════════════════════════════════════
@@ -525,6 +538,140 @@ body::after {
     }
     /* ═══════════════════════════════════════ */
 
+    /* ── SOPHISTICATION UPGRADES ── */
+
+    /* Smooth page load fade */
+    #pageContent { animation: contentFade 0.5s ease both; }
+    @keyframes contentFade { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+    /* Profile zone elevation */
+    .profile-zone {
+      background: var(--paper);
+      position: relative; z-index: 1;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Avatar hover lift */
+    .av-wrap { transition: transform 0.3s; }
+    .av-wrap:hover { transform: translateY(-4px) scale(1.01); margin-top: -74px; }
+    @media (max-width: 900px) { .av-wrap:hover { margin-top: -60px; } }
+
+    /* Stats left — monospace punchy numbers */
+    .stats-left { padding-top: 24px; }
+    .stat-lbl { 
+      font-family: "DM Mono", monospace; font-size: 9px; letter-spacing: 0.15em; 
+      text-transform: uppercase; color: var(--muted); margin-top: 4px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .stat-lbl::before { content: ""; display:block; width:12px; height:1px; background: var(--accent); }
+
+    /* Artist info refinements */
+    .artist-info { padding-top: 24px; }
+
+    /* Share button upgrade */
+    .btn-share {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: transparent; color: var(--muted);
+      font-family: "DM Mono", monospace; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      border: 1px solid var(--border); border-radius: 4px; padding: 10px 18px; 
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-share:hover { border-color: var(--accent); color: var(--accent); background: rgba(34,197,94,0.04); }
+
+    /* Featured section border radius */
+    .featured-section { 
+      border-radius: 0;
+      padding-bottom: 8px;
+    }
+
+    /* Featured info padding upgrade */
+    .featured-info { padding: 40px 36px; }
+
+    /* Featured title typography */
+    .featured-title { 
+      font-family: "Syne", sans-serif; font-size: 1.6rem; font-weight: 800; 
+      line-height: 1.2; margin-bottom: 12px; letter-spacing: -0.025em;
+    }
+    .featured-price { 
+      font-family: "DM Mono", monospace; font-size: 1.4rem; font-weight: 700; 
+      margin-bottom: 24px; color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+    .featured-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(34,197,94,0.06); color: var(--accent);
+      font-family: "DM Mono", monospace; font-size: 9px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 2px; border: 1px solid rgba(34,197,94,0.18);
+      margin-bottom: 18px; width: fit-content;
+    }
+
+    /* NFT grid gap */
+    .vx-nft-grid { gap: 18px; }
+    .vx-nft-content { padding: 14px 16px 18px; }
+    .vx-nft-title { 
+      font-family: "Syne", sans-serif; font-weight: 700; font-size: 0.9rem; 
+      margin-bottom: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      letter-spacing: -0.01em;
+    }
+    .vx-nft-price { 
+      font-family: "DM Mono", monospace; font-weight: 700; font-size: 0.875rem;
+      color: var(--ink);
+    }
+    .vx-nft-price small { 
+      font-weight: 400; color: var(--muted); display: block; 
+      font-size: 9px; font-family: "DM Mono", monospace;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-top: 1px;
+    }
+
+    /* Section head upgrade */
+    .section-head { 
+      margin-bottom: 24px;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .section-eyebrow {
+      font-family: "DM Mono", monospace; font-size: 9px; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-eyebrow::before { content: ""; display: block; width: 24px; height: 1px; background: var(--accent); }
+
+    /* Back link refinement */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: "DM Mono", monospace; font-size: 9.5px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+      transition: color 0.2s;
+    }
+
+    /* Footer upgrade */
+    .vx-footer { 
+      background: var(--ink); padding: 48px 0 32px;
+      border-top: 1px solid rgba(34,197,94,0.12);
+    }
+    .vx-footer-brand { 
+      font-family: "Syne", sans-serif; font-size: 1.1rem; font-weight: 800;
+      color: #86efac; margin-bottom: 6px; letter-spacing: -0.02em;
+    }
+    .vx-footer-copy { 
+      font-family: "DM Mono", monospace; font-size: 10px; letter-spacing: 0.08em; 
+      color: rgba(255,255,255,0.2); text-align: center; 
+      margin-top: 24px; padding-top: 24px; 
+      border-top: 1px solid rgba(255,255,255,0.06); 
+    }
+
+    /* Smoother main content transition */
+    .main-content { 
+      max-width: 1280px; margin: 0 auto; padding: 48px 40px 100px;
+    }
+    @media (max-width: 900px) {
+      .main-content { padding: 36px 20px 72px; }
+      .featured-info { padding: 24px 22px; }
+    }
+    /* ── END SOPHISTICATION ── */
+
     </style>
 </head>
 <body>
@@ -596,7 +743,8 @@ body::after {
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
 async function doSearchDrop(q, dropEl) {
   if (!q || q.length < 2) { if(dropEl)dropEl.classList.remove('show'); return; }
   try {
@@ -612,7 +760,6 @@ async function doSearchDrop(q, dropEl) {
     if(dropEl){dropEl.innerHTML=h;dropEl.classList.add('show');}
   } catch(e){console.error(e);}
 }
-
 </script>
 <script>
 let artistName = '';
@@ -689,7 +836,7 @@ async function renderProfile() {
     document.getElementById('pageContent').innerHTML = `
       <!-- Cover -->
       <div class="cover">
-        <img src="https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=1600&auto=format&fit=crop" alt="" class="cover-img">
+        <img src="https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=1600&auto=format&fit=crop" alt=""  class="cover-img">
         <div class="cover-overlay"></div>
         <div class="cover-glow cg1"></div>
         <div class="cover-glow cg2"></div>
@@ -721,6 +868,7 @@ async function renderProfile() {
           <div class="artist-info">
             <a href="javascript:history.back()" class="back-link"><i class="bi bi-arrow-left me-1"></i>Back</a>
             <h1 class="artist-name">${artistName}</h1>
+            <div class="artist-verified"><i class="bi bi-patch-check-fill"></i> Verified Creator</div>
             ${bio ? `<p class="artist-bio">${bio}</p>` : ''}
             <div style="display:flex;gap:24px;margin-bottom:20px;">
               <div class="stat-item">
@@ -733,8 +881,7 @@ async function renderProfile() {
               </div>
             </div>
             <div class="artist-actions">
-              <button class="btn-follow" id="followBtn" onclick="toggleFollow()">♡ Follow</button>
-              <button class="btn-share" onclick="shareProfile()"><i class="bi bi-share me-1"></i>Share</button>
+              <button class="btn-share" onclick="shareProfile()"><i class="bi bi-share me-1"></i>Share Profile</button>
             </div>
           </div>
         </div>
