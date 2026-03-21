@@ -566,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadData() {
   try {
     const [colRes, nftsRes] = await Promise.all([
-      fetch('https://changes-sample.onrender.com/api/collections'),
+      fetch('https://changes-sample.onrender.com/api/marketplace/collections'),
       fetch('https://changes-sample.onrender.com/api/marketplace/nfts')
     ]);
     allCollections = colRes.ok ? await colRes.json() : [];
