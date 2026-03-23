@@ -421,7 +421,6 @@ body::after {
 </head>
 <body>
 
-<!-- Header -->
 <!-- ═══ SHARED NAVBAR ═══ -->
 <header class="hdr">
   <div class="hdr-in">
@@ -464,22 +463,19 @@ body::after {
     <a href="allcollections.html" class="mob-link"><i class="bi bi-collection"></i> Collections</a>
     <div class="mob-divider"></div>
     <div class="mob-label">Account</div>
-    <a href="support.html" class="mob-link"><i class="bi bi-question-circle"></i> Support</a> <a href="blog.html" class="mob-link"><i class="bi bi-question-circle"></i> Blog</a>
+    <a href="support.html" class="mob-link"><i class="bi bi-question-circle"></i> Support</a>
+    <a href="blog.html" class="mob-link"><i class="bi bi-question-circle"></i> Blog</a>
     <div class="mob-cta-row">
       <a href="/login.html" class="mob-login"><i class="bi bi-box-arrow-in-right"></i> Login</a>
       <a href="/signup.html" class="mob-signup"><i class="bi bi-person-plus"></i> Sign Up</a>
     </div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const token = localStorage.getItem("token");
-    const ctaRow = document.querySelector(".mob-cta-row");
-
-    if (token) {
-      ctaRow.style.display = "none";
-    }
-  });
-</script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const token = localStorage.getItem("token");
+        const ctaRow = document.querySelector(".mob-cta-row");
+        if (token) { ctaRow.style.display = "none"; }
+      });
+    </script>
   </nav>
 </div>
 <!-- ═══ END SHARED NAVBAR ═══ -->
@@ -516,7 +512,6 @@ body::after {
     <h2 class="ac-section-title">Featured Collections</h2>
   </div>
   <div class="ac-featured-grid" id="featuredGrid">
-    <!-- Skeleton -->
     <div style="height:380px;background:var(--white);border:1px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;">Loading…</div>
     <div style="height:380px;background:var(--white);border:1px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;">Loading…</div>
   </div>
@@ -569,9 +564,16 @@ let searchQuery = '';
 
 document.addEventListener('DOMContentLoaded', () => {
   loadData();
-  document.getElementById('heroSearch').addEventListener('keypress', e => { if (e.key === 'Enter') filterCollections(); });
-  // document.getElementById('headerSearch').addEventListener('input', e => { searchQuery = e.target.value.toLowerCase(); renderCollections(); });
-  document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); document.getElementById('headerSearch').focus(); } });
+  document.getElementById('heroSearch').addEventListener('keypress', e => {
+    if (e.key === 'Enter') filterCollections();
+  });
+  document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      const si = document.getElementById('searchInput');
+      if (si) si.focus();
+    }
+  });
 });
 
 async function loadData() {
@@ -586,13 +588,19 @@ async function loadData() {
     // Map NFTs to collections
     allNFTs.forEach(nft => {
       const cid = nft.collection || nft.collectionId;
-      if (cid) { if (!collectionNFTMap[cid]) collectionNFTMap[cid] = []; collectionNFTMap[cid].push(nft); }
+      if (cid) {
+        if (!collectionNFTMap[cid]) collectionNFTMap[cid] = [];
+        collectionNFTMap[cid].push(nft);
+      }
     });
 
     updateStats();
     renderFeatured();
     renderCollections();
-  } catch (err) { console.error(err); showError(); }
+  } catch (err) {
+    console.error(err);
+    showError();
+  }
 }
 
 function updateStats() {
@@ -631,28 +639,61 @@ function renderFeatured() {
 
 function setFilter(filter, el) {
   currentFilter = filter;
-  document.querySelectorAll('.ac-filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
+  document.querySelectorAll('.ac-filter-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.filter === filter)
+  );
   renderCollections();
 }
 
 function filterCollections() {
-  searchQuery = document.getElementById('heroSearch').value.toLowerCase();
+  searchQuery = document.getElementById('heroSearch').value.toLowerCase().trim();
   renderCollections();
 }
 
 function renderCollections() {
   let filtered = [...allCollections];
-  if (currentFilter !== 'all') filtered = filtered.filter(c => c.category === currentFilter);
-  if (searchQuery) filtered = filtered.filter(c => (c.name || '').toLowerCase().includes(searchQuery) || (c.creator || '').toLowerCase().includes(searchQuery));
+
+  // ✅ FIX: Case-insensitive + trimmed category comparison
+  if (currentFilter !== 'all') {
+    filtered = filtered.filter(c =>
+      (c.category || '').trim().toLowerCase() === currentFilter.trim().toLowerCase()
+    );
+  }
+
+  // Search filter
+  if (searchQuery) {
+    filtered = filtered.filter(c =>
+      (c.name || '').toLowerCase().includes(searchQuery) ||
+      (c.creator || '').toLowerCase().includes(searchQuery) ||
+      (c.category || '').toLowerCase().includes(searchQuery)
+    );
+  }
+
+  // Sort
   const sort = document.getElementById('sortSelect').value;
   switch (sort) {
-    case 'oldest': filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)); break;
-    case 'items': filtered.sort((a, b) => (collectionNFTMap[b._id]?.length || 0) - (collectionNFTMap[a._id]?.length || 0)); break;
-    default: filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    case 'oldest':
+      filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      break;
+    case 'items':
+      filtered.sort((a, b) => (collectionNFTMap[b._id]?.length || 0) - (collectionNFTMap[a._id]?.length || 0));
+      break;
+    default:
+      filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
+
   document.getElementById('resultCount').textContent = filtered.length;
   const grid = document.getElementById('collectionsGrid');
-  if (!filtered.length) { grid.innerHTML = `<div class="ac-empty" style="grid-column:1/-1;"><i class="bi bi-collection"></i><h4>No collections found</h4><p style="font-size:13px;color:var(--muted);">Try a different search or filter</p></div>`; return; }
+
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="ac-empty" style="grid-column:1/-1;">
+      <i class="bi bi-collection"></i>
+      <h4>No collections found</h4>
+      <p style="font-size:13px;color:var(--muted);">Try a different search or filter</p>
+    </div>`;
+    return;
+  }
+
   grid.innerHTML = filtered.map(col => {
     const nfts = collectionNFTMap[col._id] || [];
     const imgs = nfts.slice(0, 3).map(n => n.imageUrl).filter(Boolean);
@@ -706,15 +747,21 @@ function renderCollections() {
 }
 
 function showError() {
-  document.getElementById('collectionsGrid').innerHTML = `<div class="ac-empty" style="grid-column:1/-1;"><i class="bi bi-exclamation-circle"></i><h4>Failed to load collections</h4><p style="font-size:13px;color:var(--muted);">Please try again later</p></div>`;
+  document.getElementById('collectionsGrid').innerHTML = `<div class="ac-empty" style="grid-column:1/-1;">
+    <i class="bi bi-exclamation-circle"></i>
+    <h4>Failed to load collections</h4>
+    <p style="font-size:13px;color:var(--muted);">Please try again later</p>
+  </div>`;
 }
 </script>
+
 <script type="text/javascript">
 var _smartsupp = _smartsupp || {};
 _smartsupp.key = '22fedf8eb82b9e0a64db380756000ffa3577c808';
 window.smartsupp||(function(d){var s,c,o=smartsupp=function(){o._.push(arguments)};o._=[];s=d.getElementsByTagName('script')[0];c=d.createElement('script');c.type='text/javascript';c.charset='utf-8';c.async=true;c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s)})(document);
 </script>
 <noscript>Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
+
 <script>
   /* ── SHARED NAVBAR JS ── */
   (function(){
