@@ -543,8 +543,16 @@
       <a href="allcollections.html" class="hdr-nav-link"><i class="bi bi-collection"></i> Collections</a>
       <a href="support.html" class="hdr-nav-link"><i class="bi bi-question-circle"></i> Support</a>
       <a href="blog.html" class="hdr-nav-link"><i class="bi bi-question-circle"></i> Blog</a>
-      <a href="/login.html" class="hdr-nav-link"><i class="bi bi-box-arrow-in-right"></i> Login</a>
-      <a href="/signup.html" class="hdr-nav-btn"><i class="bi bi-person-plus"></i> Sign Up</a>
+     <a href="/login.html" class="formob hdr-nav-link"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+      <a href="/signup.html" class="formob hdr-nav-btn"><i class="bi bi-person-plus"></i> Sign Up</a>
+ <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const token = localStorage.getItem("token");
+        const ctaRow = document.querySelector(".formob");
+        if (token) { ctaRow.style.display = "none"; }
+      });
+    </script>
+
     </nav>
     <button class="hdr-burger" id="navBurgerBtn" aria-label="Open menu" aria-expanded="false">
       <i class="bi bi-list" id="navBurgerIcon"></i>
