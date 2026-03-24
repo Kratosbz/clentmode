@@ -596,7 +596,7 @@ async function loadData() {
 
     updateStats();
     renderFeatured();
-    renderCollections();
+    await renderCollections();
   } catch (err) {
     console.error(err);
     showError();
@@ -613,30 +613,54 @@ function updateStats() {
   document.getElementById('statCategories').textContent = categories.size || 4;
 }
 
-function renderFeatured() {
+async function renderFeatured() {
   const featured = allCollections.slice(0, 2);
-  if (!featured.length) { document.getElementById('featuredGrid').innerHTML = ''; return; }
-  document.getElementById('featuredGrid').innerHTML = featured.map(col => {
-    const nfts = collectionNFTMap[col._id] || [];
-    const coverImg = nfts[0]?.imageUrl || 'https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=800&auto=format&fit=crop';
-    const creator = col.creator || col.createdBy || 'Unknown Artist';
-    return `<a href="collection.html?id=${col._id}" class="ac-featured-card">
-      <img src="${coverImg}" alt="${col.name}" class="ac-featured-img" loading="lazy">
-      <div class="ac-featured-body">
-        <div class="ac-featured-eyebrow">Featured</div>
-        <div class="ac-featured-name">${col.name || 'Untitled Collection'}</div>
-        <div class="ac-featured-meta">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <div class="ac-creator-av">${(creator[0] || 'A').toUpperCase()}</div>
-            <span class="ac-creator-name">by ${creator}</span>
-          </div>
-          <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">${nfts.length || '—'} items</span>
-        </div>
-      </div>
-    </a>`;
-  }).join('');
-}
+  const grid = document.getElementById('featuredGrid');
 
+  if (!featured.length) {
+    grid.innerHTML = '';
+    return;
+  }
+
+  const cards = await Promise.all(featured.map(async (col) => {
+    const nfts = collectionNFTMap[col._id] || [];
+
+    const coverImg = nfts[0]?.imageUrl ||
+      'https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=800&auto=format&fit=crop';
+
+    // ✅ FIXED creator line
+    const creator = await getOwner(col.owner);
+
+    return `
+      <a href="collection.html?id=${col._id}" class="ac-featured-card">
+        <img src="${coverImg}" alt="${col.name}" class="ac-featured-img" loading="lazy">
+
+        <div class="ac-featured-body">
+          <div class="ac-featured-eyebrow">Featured</div>
+
+          <div class="ac-featured-name">
+            ${col.name || 'Untitled Collection'}
+          </div>
+
+          <div class="ac-featured-meta">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="ac-creator-av">
+                ${(creator[0] || 'A').toUpperCase()}
+              </div>
+              <span class="ac-creator-name">by ${creator}</span>
+            </div>
+
+            <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">
+              ${nfts.length || '—'} items
+            </span>
+          </div>
+        </div>
+      </a>
+    `;
+  }));
+
+  grid.innerHTML = cards.join('');
+}
 function setFilter(filter, el) {
   currentFilter = filter;
   document.querySelectorAll('.ac-filter-btn').forEach(b =>
@@ -645,15 +669,35 @@ function setFilter(filter, el) {
   renderCollections();
 }
 
+let ownerCache = {};
+
+async function getOwner(email) {
+  if (!email) return 'Unknown Artist';
+  if (ownerCache[email]) return ownerCache[email];
+
+  try {
+    const res = await fetch(`https://changes-sample.onrender.com/api/user/by-email/${encodeURIComponent(email)}`);
+    if (res.ok) {
+      const data = await res.json();
+      ownerCache[email] = data.username || data.email || 'Unknown Artist';
+      return ownerCache[email];
+    }
+  } catch (err) {
+    console.error('Owner fetch failed:', err);
+  }
+
+  return 'Unknown Artist';
+}
+
 function filterCollections() {
   searchQuery = document.getElementById('heroSearch').value.toLowerCase().trim();
   renderCollections();
 }
 
-function renderCollections() {
+async function renderCollections() {
   let filtered = [...allCollections];
 
-  // ✅ FIX: Case-insensitive + trimmed category comparison
+  // Category filter
   if (currentFilter !== 'all') {
     filtered = filtered.filter(c =>
       (c.category || '').trim().toLowerCase() === currentFilter.trim().toLowerCase()
@@ -676,7 +720,10 @@ function renderCollections() {
       filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
       break;
     case 'items':
-      filtered.sort((a, b) => (collectionNFTMap[b._id]?.length || 0) - (collectionNFTMap[a._id]?.length || 0));
+      filtered.sort((a, b) =>
+        (collectionNFTMap[b._id]?.length || 0) -
+        (collectionNFTMap[a._id]?.length || 0)
+      );
       break;
     default:
       filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -686,67 +733,92 @@ function renderCollections() {
   const grid = document.getElementById('collectionsGrid');
 
   if (!filtered.length) {
-    grid.innerHTML = `<div class="ac-empty" style="grid-column:1/-1;">
-      <i class="bi bi-collection"></i>
-      <h4>No collections found</h4>
-      <p style="font-size:13px;color:var(--muted);">Try a different search or filter</p>
-    </div>`;
+    grid.innerHTML = `
+      <div class="ac-empty" style="grid-column:1/-1;">
+        <i class="bi bi-collection"></i>
+        <h4>No collections found</h4>
+        <p style="font-size:13px;color:var(--muted);">
+          Try a different search or filter
+        </p>
+      </div>`;
     return;
   }
 
-  grid.innerHTML = filtered.map(col => {
+  // ✅ Async mapping (fixed)
+  const cards = await Promise.all(filtered.map(async (col) => {
     const nfts = collectionNFTMap[col._id] || [];
     const imgs = nfts.slice(0, 3).map(n => n.imageUrl).filter(Boolean);
-    const creator = col.creator || col.createdBy || 'Unknown Artist';
+
+    const creator = await getOwner(col.owner); // ✅ FIXED
     const category = col.category || 'Art';
     const itemCount = nfts.length;
     const listedCount = nfts.filter(n => n.status === 'listed').length;
 
     let imagesHtml = '';
     if (!imgs.length) {
-      imagesHtml = `<div class="ac-card-images single"><div class="ac-img-placeholder"><i class="bi bi-collection"></i></div></div>`;
+      imagesHtml = `
+        <div class="ac-card-images single">
+          <div class="ac-img-placeholder">
+            <i class="bi bi-collection"></i>
+          </div>
+        </div>`;
     } else if (imgs.length === 1) {
-      imagesHtml = `<div class="ac-card-images single"><img src="${imgs[0]}" class="ac-img-main" loading="lazy" alt="${col.name}"></div>`;
+      imagesHtml = `
+        <div class="ac-card-images single">
+          <img src="${imgs[0]}" class="ac-img-main" loading="lazy" alt="${col.name}">
+        </div>`;
     } else {
-      imagesHtml = `<div class="ac-card-images">
-        <img src="${imgs[0]}" class="ac-img-main" loading="lazy" alt="${col.name}">
-        <div class="ac-img-stack">
-          <img src="${imgs[1]}" loading="lazy" alt="">
-          ${imgs[2] ? `<img src="${imgs[2]}" loading="lazy" alt="">` : `<div class="ac-img-placeholder"><i class="bi bi-image"></i></div>`}
-        </div>
-      </div>`;
+      imagesHtml = `
+        <div class="ac-card-images">
+          <img src="${imgs[0]}" class="ac-img-main" loading="lazy" alt="${col.name}">
+          <div class="ac-img-stack">
+            <img src="${imgs[1]}" loading="lazy" alt="">
+            ${imgs[2]
+              ? `<img src="${imgs[2]}" loading="lazy" alt="">`
+              : `<div class="ac-img-placeholder"><i class="bi bi-image"></i></div>`}
+          </div>
+        </div>`;
     }
 
-    return `<a href="collection.html?id=${col._id}" class="ac-card">
-      ${imagesHtml}
-      <div class="ac-card-body">
-        <div class="ac-card-top">
-          <div class="ac-card-name">${col.name || 'Untitled Collection'}</div>
-          <span class="ac-card-badge">${category}</span>
-        </div>
-        <div class="ac-card-creator">
-          <div class="ac-creator-av">${(creator[0] || 'A').toUpperCase()}</div>
-          <span class="ac-creator-name">by ${creator}</span>
-        </div>
-        <div class="ac-card-footer">
-          <div class="ac-card-stats">
-            <div class="ac-card-stat">
-              <div class="ac-card-stat-val">${itemCount || '—'}</div>
-              <div class="ac-card-stat-label">Items</div>
-            </div>
-            <div class="ac-card-stat">
-              <div class="ac-card-stat-val">${listedCount || '—'}</div>
-              <div class="ac-card-stat-label">For Sale</div>
-            </div>
+    return `
+      <a href="collection.html?id=${col._id}" class="ac-card">
+        ${imagesHtml}
+        <div class="ac-card-body">
+          <div class="ac-card-top">
+            <div class="ac-card-name">${col.name || 'Untitled Collection'}</div>
+            <span class="ac-card-badge">${category}</span>
           </div>
-          <span class="ac-view-btn">View <i class="bi bi-arrow-right ms-1"></i></span>
-        </div>
-      </div>
-    </a>`;
-  }).join('');
-}
 
-function showError() {
+          <div class="ac-card-creator">
+            <div class="ac-creator-av">
+              ${(creator[0] || 'A').toUpperCase()}
+            </div>
+            <span class="ac-creator-name">by ${creator}</span>
+          </div>
+
+          <div class="ac-card-footer">
+            <div class="ac-card-stats">
+              <div class="ac-card-stat">
+                <div class="ac-card-stat-val">${itemCount}</div>
+                <div class="ac-card-stat-label">Items</div>
+              </div>
+              <div class="ac-card-stat">
+                <div class="ac-card-stat-val">${listedCount}</div>
+                <div class="ac-card-stat-label">For Sale</div>
+              </div>
+            </div>
+
+            <span class="ac-view-btn">
+              View <i class="bi bi-arrow-right ms-1"></i>
+            </span>
+          </div>
+        </div>
+      </a>`;
+  }));
+
+  // ✅ Render
+  grid.innerHTML = cards.join('');
+}function showError() {
   document.getElementById('collectionsGrid').innerHTML = `<div class="ac-empty" style="grid-column:1/-1;">
     <i class="bi bi-exclamation-circle"></i>
     <h4>Failed to load collections</h4>
