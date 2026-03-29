@@ -2840,11 +2840,7 @@ categorySelect.addEventListener('change', (e) => {
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Amount to Convert <span class="text-danger">*</span></label>
                     <div class="d-flex gap-2">
-                      <div class="percentage-buttons">
-  <button class="percent-btn disabled" type="button" disabled>50%</button>
-  <button class="percent-btn " type="button">75%</button>
-  <button class="percent-btn" type="button">100%</button>
-</div>
+                      <div class="percentage-buttons" id="percentageButtons"></div>
 
 <style>
 .percentage-buttons {
@@ -2919,6 +2915,12 @@ categorySelect.addEventListener('change', (e) => {
   cursor: not-allowed;
   box-shadow: none;
   opacity: 0.7;
+}
+
+.percent-btn.active {
+  border-color: #22c55e;
+  box-shadow: 0 0 12px rgba(34,197,94,0.4);
+  background: linear-gradient(145deg, #1a1a1a, #222);
 }
 </style>
                     </div>
@@ -4963,6 +4965,65 @@ document.querySelectorAll('.percent-btn').forEach(btn => {
         updateConvertSummary();
     }
     
+
+    function renderConversionButtons(user) {
+    const container = document.getElementById('percentageButtons');
+    container.innerHTML = '';
+
+    let rates = [];
+
+    // Handle both formats
+    if (Array.isArray(user.conversionRate)) {
+        rates = user.conversionRate;
+    } else if (typeof user.conversionRate === 'number') {
+        rates = [user.conversionRate];
+    } else {
+        rates = [50]; // fallback
+    }
+
+    rates.forEach(percent => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'percent-btn';
+        btn.textContent = percent + '%';
+
+        btn.onclick = () => {
+            localStorage.setItem('convertPercent', percent);
+
+            // remove active state from all
+            document.querySelectorAll('.percent-btn').forEach(b => b.classList.remove('active'));
+
+            btn.classList.add('active');
+
+            updateConvertSummary(percent);
+        };
+
+        container.appendChild(btn);
+    });
+
+    // set default
+    const defaultPercent = rates[0];
+    localStorage.setItem('convertPercent', defaultPercent);
+
+    // activate first button
+    setTimeout(() => {
+        container.querySelector('.percent-btn')?.classList.add('active');
+        updateConvertSummary(defaultPercent);
+    }, 0);
+}
+
+function updateConvertSummary(percent) {
+    const amount = userWethBalance * (percent / 100);
+    const fee = amount * 0.125;
+    const receive = amount - fee;
+
+    document.getElementById('convertSummaryAmount').textContent = `${amount.toFixed(4)} WETH`;
+    document.getElementById('convertFeeAmount').textContent = `-${fee.toFixed(4)} ETH`;
+    document.getElementById('convertReceiveAmount').textContent = `${receive.toFixed(4)} ETH`;
+}
+
+
+
     async function submitConvert(event) {
     event.preventDefault();
 
@@ -5945,7 +6006,8 @@ function checkAuthStatus() {
   loadDashboardStats();
   setupPercentageButtons();
     loadUserBalances();
-   
+    const user=JSON.parse(localStorage.getItem("userBalance"))
+   renderConversionButtons(user);
     // loadUserLevelOnly();
 }
 
