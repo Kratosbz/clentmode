@@ -4812,7 +4812,7 @@ function updateConvertSummary() {
     const summaryAmountEl = document.getElementById('convertSummaryAmount');
     const feeAmountEl = document.getElementById('convertFeeAmount');
     const receiveAmountEl = document.getElementById('convertReceiveAmount');
-const rate=document.document.getElementById('rate')
+const rate=document.getElementById('rate')
     if (summaryAmountEl) {
         summaryAmountEl.textContent = amount.toFixed(4) + ' WETH';
     }
@@ -4828,7 +4828,7 @@ const rate=document.document.getElementById('rate')
 
      if (rate) {
           console.log("rate")
-        rate.innerHTML = localStorage.getItem("convertPercent") + ' %';
+        rate.innerHTML = localStorage.getItem("convertPercent");
     }
 }
 
@@ -5017,15 +5017,15 @@ document.getElementsByClassName('rate').innerHTML=data.conversionRate[0]
 //     }, 0);
 // }
 
-function updateConvertSummary(percent) {
-    const amount = userWethBalance * (percent / 100);
-    const fee = amount * 0.125;
-    const receive = amount - fee;
+// function updateConvertSummary(percent) {
+//     const amount = userWethBalance * (percent / 100);
+//     const fee = amount * 0.125;
+//     const receive = amount - fee;
 
-    document.getElementById('convertSummaryAmount').textContent = `${amount.toFixed(4)} WETH`;
-    document.getElementById('convertFeeAmount').textContent = `-${fee.toFixed(4)} ETH`;
-    document.getElementById('convertReceiveAmount').textContent = `${receive.toFixed(4)} ETH`;
-}
+//     document.getElementById('convertSummaryAmount').textContent = `${amount.toFixed(4)} WETH`;
+//     document.getElementById('convertFeeAmount').textContent = `-${fee.toFixed(4)} ETH`;
+//     document.getElementById('convertReceiveAmount').textContent = `${receive.toFixed(4)} ETH`;
+// }
 
 
 
