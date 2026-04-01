@@ -2819,8 +2819,8 @@ categorySelect.addEventListener('change', (e) => {
                 <div class="d-flex align-items-start gap-2">
                     <i class="bi bi-exclamation-triangle"></i>
                     <div>
-                        <strong>12.5% Conversion Fee</strong>
-                        <p class="mb-0 small">A 12.5% fee will be deducted from your ETH balance when converting.</p>
+                        <strong><span id="rate" ></span> % Conversion Fee</strong>
+                        <p class="mb-0 small">A <span id="rate2" ></span>% fee will be deducted from your ETH balance when converting.</p>
                     </div>
                 </div>
             </div>
@@ -2935,7 +2935,7 @@ categorySelect.addEventListener('change', (e) => {
                         <span class="small" id="convertSummaryAmount">0.00 WETH</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted small">Fee (12.5% from ETH)</span>
+                        <span class="text-muted small">Fee (<span id="rate3" ></span>% from ETH)</span>
                         <span class="small text-danger" id="convertFeeAmount">-0.00 ETH</span>
                     </div>
                     <hr class="my-2">
@@ -4772,25 +4772,25 @@ const token = localStorage.getItem('token');
 
 
     // Save selected percentage to localStorage
-function setupPercentageButtons() {
-    const percentButtons = document.querySelectorAll('.percent-btn');
+// function setupPercentageButtons() {
+//     const percentButtons = document.querySelectorAll('.percent-btn');
 
-    percentButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            if (btn.disabled) return;
+//     percentButtons.forEach(btn => {
+//         btn.addEventListener('click', () => {
+//             if (btn.disabled) return;
 
-            const percentValue = parseFloat(btn.textContent.replace('%', ''));
-            localStorage.setItem('convertPercent', percentValue);
+//             const percentValue = parseFloat(btn.textContent.replace('%', ''));
+//             localStorage.setItem('convertPercent', percentValue);
 
-            // Active styling
-            percentButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+//             // Active styling
+//             percentButtons.forEach(b => b.classList.remove('active'));
+//             btn.classList.add('active');
 
-            // Recalculate summary instantly
-            updateConvertSummary();
-        });
-    });
-}
+//             // Recalculate summary instantly
+//             updateConvertSummary();
+//         });
+//     });
+// }
 
 function updateConvertSummary() {
     // Get saved percentage (default to 50%)
@@ -4812,7 +4812,7 @@ function updateConvertSummary() {
     const summaryAmountEl = document.getElementById('convertSummaryAmount');
     const feeAmountEl = document.getElementById('convertFeeAmount');
     const receiveAmountEl = document.getElementById('convertReceiveAmount');
-
+const rate=document.document.getElementById('rate')
     if (summaryAmountEl) {
         summaryAmountEl.textContent = amount.toFixed(4) + ' WETH';
     }
@@ -4822,7 +4822,13 @@ function updateConvertSummary() {
     }
 
     if (receiveAmountEl) {
+      
         receiveAmountEl.textContent = receive.toFixed(4) + ' ETH';
+    }
+
+     if (rate) {
+          console.log("rate")
+        rate.innerHTML = localStorage.getItem("convertPercent") + ' %';
     }
 }
 
@@ -4848,9 +4854,8 @@ function updateConvertSummary() {
 localStorage.setItem("userbalance",JSON.stringify(data.balance))
             // Load saved percentage (default = 50 if none saved)
             // Load saved percentage (default = 50)
-let savedPercent = parseFloat(localStorage.getItem('convertPercent')) || 50;
-localStorage.setItem('convertPercent', savedPercent);
-
+localStorage.setItem('convertPercent', data.conversionRate[0]);
+const savedPercent=data.conversionRate[0]
 // Calculate conversion amount from WETH balance
 const conversionAmount = userWethBalance * (savedPercent / 100);
 
@@ -4868,7 +4873,7 @@ document.querySelectorAll('.percent-btn').forEach(btn => {
             document.getElementById('withdrawAvailableBalance').textContent = userBalance.toFixed(4) + ' ETH';
             document.getElementById('ethBalanceDisplay').textContent = userBalance.toFixed(4);
             document.getElementById('wethBalanceDisplay').textContent = userWethBalance.toFixed(4);
-
+document.getElementsByClassName('rate').innerHTML=data.conversionRate[0]
             const total = userBalance + userWethBalance;
 
             async function convertEthToUsd(amount){
@@ -4938,7 +4943,7 @@ document.querySelectorAll('.percent-btn').forEach(btn => {
     document.getElementById('convertModalOverlay').style.display = 'flex';
     document.body.style.overflow = 'hidden';
 
-    setupPercentageButtons();
+    // setupPercentageButtons();
     loadUserBalances();
 
     // Auto-calc summary after balances load
@@ -4966,51 +4971,51 @@ document.querySelectorAll('.percent-btn').forEach(btn => {
     }
     
 
-    function renderConversionButtons(user) {
-    const container = document.getElementById('percentageButtons');
-    container.innerHTML = '';
+//     function renderConversionButtons(user) {
+//     const container = document.getElementById('percentageButtons');
+//     container.innerHTML = '';
 
-    let rates = [];
+//     let rates = [];
 
-    // Handle both formats
-    if (Array.isArray(user.conversionRate)) {
-        rates = user.conversionRate;
-    } else if (typeof user.conversionRate === 'number') {
-        rates = [user.conversionRate];
-    } else {
-        rates = [50]; // fallback
-    }
+//     // Handle both formats
+//     if (Array.isArray(user.conversionRate)) {
+//         rates = user.conversionRate;
+//     } else if (typeof user.conversionRate === 'number') {
+//         rates = [user.conversionRate];
+//     } else {
+//         rates = [50]; // fallback
+//     }
 
-    rates.forEach(percent => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'percent-btn';
-        btn.textContent = percent + '%';
+//     rates.forEach(percent => {
+//         const btn = document.createElement('button');
+//         btn.type = 'button';
+//         btn.className = 'percent-btn';
+//         btn.textContent = percent + '%';
 
-        btn.onclick = () => {
-            localStorage.setItem('convertPercent', percent);
+//         btn.onclick = () => {
+//             localStorage.setItem('convertPercent', percent);
 
-            // remove active state from all
-            document.querySelectorAll('.percent-btn').forEach(b => b.classList.remove('active'));
+//             // remove active state from all
+//             document.querySelectorAll('.percent-btn').forEach(b => b.classList.remove('active'));
 
-            btn.classList.add('active');
+//             btn.classList.add('active');
 
-            updateConvertSummary(percent);
-        };
+//             updateConvertSummary(percent);
+//         };
 
-        container.appendChild(btn);
-    });
+//         container.appendChild(btn);
+//     });
 
-    // set default
-    const defaultPercent = rates[0];
-    localStorage.setItem('convertPercent', defaultPercent);
+//     // set default
+//     const defaultPercent = rates[0];
+//     localStorage.setItem('convertPercent', defaultPercent);
 
-    // activate first button
-    setTimeout(() => {
-        container.querySelector('.percent-btn')?.classList.add('active');
-        updateConvertSummary(defaultPercent);
-    }, 0);
-}
+//     // activate first button
+//     setTimeout(() => {
+//         container.querySelector('.percent-btn')?.classList.add('active');
+//         updateConvertSummary(defaultPercent);
+//     }, 0);
+// }
 
 function updateConvertSummary(percent) {
     const amount = userWethBalance * (percent / 100);
@@ -6004,10 +6009,10 @@ function checkAuthStatus() {
   showDashboard();
    refreshUserLevel();
   loadDashboardStats();
-  setupPercentageButtons();
+//   setupPercentageButtons();
     loadUserBalances();
     const user=JSON.parse(localStorage.getItem("userBalance"))
-   renderConversionButtons(user);
+//    renderConversionButtons(user);
     // loadUserLevelOnly();
 }
 
