@@ -4817,6 +4817,10 @@ function updateConvertSummary() {
     const feeAmountEl = document.getElementById('convertFeeAmount');
     const receiveAmountEl = document.getElementById('convertReceiveAmount');
 const rate=document.getElementById('rate')
+const rate2=document.getElementById('rate2')
+const rate3=document.getElementById('rate3')
+
+
     if (summaryAmountEl) {
         summaryAmountEl.textContent = amount.toFixed(4) + ' WETH';
     }
@@ -4833,6 +4837,8 @@ const rate=document.getElementById('rate')
      if (rate) {
           console.log("rate")
         rate.innerHTML = localStorage.getItem("convertPercent");
+          rate2.innerHTML = localStorage.getItem("convertPercent");
+            rate3.innerHTML = localStorage.getItem("convertPercent");
     }
 }
 
