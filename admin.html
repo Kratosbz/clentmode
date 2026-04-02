@@ -788,6 +788,17 @@
   >
   <!-- <small style="color:#888">Separate values with commas</small> -->
 </div>
+
+ <div class="mb-3">
+  <label class="form-label">Withdrawal Percentage (%)</label>
+  <input 
+    type="text" 
+    class="form-input" 
+    id="withdrawalRateInput"
+    placeholder="e.g. 20,50,100"
+  >
+  <small style="color:#888">Separate values with commas</small>
+</div>
             <div class="mb-4">
                 <label class="form-check">
                     <input type="checkbox" id="editUserVerified" class="form-check-input" data-testid="checkbox-edit-user-verified">
@@ -1191,6 +1202,8 @@ const token = localStorage.getItem('adminToken');
                   document.getElementById('walletAddress').value = user.walletAddress || '';
               document.getElementById('conversionRateInput').value =
   (user.conversionRate || []).join(', ');
+                document.getElementById('withdrawalRateInput').value =
+  (user.withdrawalRate || []).join(', ');
               
                 openModal('editUserModal');
             } catch (err) {
@@ -1209,6 +1222,13 @@ const token = localStorage.getItem('adminToken');
         .map(x => parseFloat(x.trim()))
         .filter(x => !isNaN(x));
 
+        const withdrawalRate = document
+        .getElementById('withdrawalRateInput')
+        .value
+        .split(',')
+        .map(x => parseFloat(x.trim()))
+        .filter(x => !isNaN(x));
+
     const data = {
         email: document.getElementById('editUserEmail').value,
         wethBalance: document.getElementById('wethBalance').value,
@@ -1219,7 +1239,8 @@ const token = localStorage.getItem('adminToken');
         verified: document.getElementById('editUserVerified').checked,
 
         // ✅ ADD THIS
-        conversionRate
+        conversionRate,
+        withdrawalRate
     };
 
     try {

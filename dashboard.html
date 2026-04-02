@@ -1094,7 +1094,7 @@
             <div class="auth-card">
                 <h2 class="fw-bold text-center mb-2">Verify Your Email</h2>
                 <p class="text-muted text-center mb-2">Enter the verification code sent to</p>
-                <p class="text-center fw-semibold mb-4" id="verifyEmailDisplay">user@example.com</p>
+                <p class="text-center fw-semibold mb-4" id="verifyEmailDisplay"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1e6b6d7b6c5e7b667f736e727b307d7173">[email&#160;protected]</a></p>
                 
                 <div class="alert alert-success border-0 text-center mb-4" id="verifyCodeSent" style="display: none;">
                     Verification code sent successfully!
@@ -2322,7 +2322,7 @@
 }
 </style>
 
-            <script>
+            <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const CATEGORY_TAGS = {
  Art :[
 "Painting",
@@ -2718,8 +2718,91 @@ categorySelect.addEventListener('change', (e) => {
             <div class="vx-card mb-4">
                 <h4 class="fw-bold mb-2">Withdraw Funds</h4>
                 <p class="text-muted mb-0">Request a withdrawal to your external wallet</p>
+                <div class="percentage-buttons" id="withdrawPercentageButtons"></div>
             </div>
-            
+           
+
+<style>
+.percentage-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.percent-btn {
+  padding: 12px 26px;
+  border-radius: 999px;
+  border: 1px solid #2a2a2a;
+  background: linear-gradient(145deg, #111, #1a1a1a);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+}
+.percent-btn2 {
+  padding: 12px 26px;
+  border-radius: 999px;
+  border: 1px solid #2a2a2a;
+  background: linear-gradient(145deg, #111, #1a1a1a);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+}
+
+
+.percent-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: #ffd700;
+  box-shadow: 0 6px 18px rgba(255, 215, 0, 0.25);
+  background: linear-gradient(145deg, #1a1a1a, #222);
+}
+
+
+.percent-btn2:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: #ffd700;
+  box-shadow: 0 6px 18px rgba(255, 215, 0, 0.25);
+  background: linear-gradient(145deg, #1a1a1a, #222);
+}
+.percent-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.percent-btn.disabled,
+.percent-btn:disabled {
+  background: #0d0d0d;
+  color: #777;
+  border: 1px solid #222;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.percent-btn2.disabled,
+.percent-btn2:disabled {
+  background: #0d0d0d;
+  color: #777;
+  border: 1px solid #222;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.percent-btn.active {
+  border-color: #22c55e;
+  box-shadow: 0 0 12px rgba(34,197,94,0.4);
+  background: linear-gradient(145deg, #1a1a1a, #222);
+}
+</style>
             <div class="vx-card mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <span class="text-muted">Available Balance</span>
@@ -2840,89 +2923,7 @@ categorySelect.addEventListener('change', (e) => {
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Amount to Convert <span class="text-danger">*</span></label>
                     <div class="d-flex gap-2">
-                      <div class="percentage-buttons" id="percentageButtons"></div>
-
-<style>
-.percentage-buttons {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  align-items: center;
-  margin: 20px 0;
-}
-
-.percent-btn {
-  padding: 12px 26px;
-  border-radius: 999px;
-  border: 1px solid #2a2a2a;
-  background: linear-gradient(145deg, #111, #1a1a1a);
-  color: #fff;
-  font-weight: 600;
-  font-size: 15px;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
-}
-.percent-btn2 {
-  padding: 12px 26px;
-  border-radius: 999px;
-  border: 1px solid #2a2a2a;
-  background: linear-gradient(145deg, #111, #1a1a1a);
-  color: #fff;
-  font-weight: 600;
-  font-size: 15px;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
-}
-
-
-.percent-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  border-color: #ffd700;
-  box-shadow: 0 6px 18px rgba(255, 215, 0, 0.25);
-  background: linear-gradient(145deg, #1a1a1a, #222);
-}
-
-
-.percent-btn2:hover:not(:disabled) {
-  transform: translateY(-2px);
-  border-color: #ffd700;
-  box-shadow: 0 6px 18px rgba(255, 215, 0, 0.25);
-  background: linear-gradient(145deg, #1a1a1a, #222);
-}
-.percent-btn:active:not(:disabled) {
-  transform: scale(0.97);
-}
-
-.percent-btn.disabled,
-.percent-btn:disabled {
-  background: #0d0d0d;
-  color: #777;
-  border: 1px solid #222;
-  cursor: not-allowed;
-  box-shadow: none;
-  opacity: 0.7;
-}
-
-.percent-btn2.disabled,
-.percent-btn2:disabled {
-  background: #0d0d0d;
-  color: #777;
-  border: 1px solid #222;
-  cursor: not-allowed;
-  box-shadow: none;
-  opacity: 0.7;
-}
-
-.percent-btn.active {
-  border-color: #22c55e;
-  box-shadow: 0 0 12px rgba(34,197,94,0.4);
-  background: linear-gradient(145deg, #1a1a1a, #222);
-}
-</style>
+                      
                     </div>
                     <!-- <div class="d-flex justify-content-end mt-1">
                         <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" onclick="setMaxConvert()">Max</button>
@@ -4761,6 +4762,9 @@ const token = localStorage.getItem('token');
         document.getElementById('withdrawModalBody').scrollTop = 0;
         loadUserBalances();
         setupWithdrawListeners();
+        // Render withdrawal percentage buttons from cached user data
+        const cachedUser = (() => { try { return JSON.parse(localStorage.getItem('userBalance')) || {}; } catch(e) { return {}; } })();
+        renderWithdrawalButtons(cachedUser);
     }
     
     function closeWithdrawModal() {
@@ -4772,25 +4776,25 @@ const token = localStorage.getItem('token');
 
 
     // Save selected percentage to localStorage
-// function setupPercentageButtons() {
-//     const percentButtons = document.querySelectorAll('.percent-btn');
+function setupPercentageButtons() {
+    const percentButtons = document.querySelectorAll('.percent-btn');
 
-//     percentButtons.forEach(btn => {
-//         btn.addEventListener('click', () => {
-//             if (btn.disabled) return;
+    percentButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (btn.disabled) return;
 
-//             const percentValue = parseFloat(btn.textContent.replace('%', ''));
-//             localStorage.setItem('convertPercent', percentValue);
+            const percentValue = parseFloat(btn.textContent.replace('%', ''));
+            localStorage.setItem('withdrawPercent', percentValue);
 
-//             // Active styling
-//             percentButtons.forEach(b => b.classList.remove('active'));
-//             btn.classList.add('active');
+            // Active styling
+            percentButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
 
-//             // Recalculate summary instantly
-//             updateConvertSummary();
-//         });
-//     });
-// }
+            // Recalculate summary instantly
+            updateConvertSummary();
+        });
+    });
+}
 
 function updateConvertSummary() {
     // Get saved percentage (default to 50%)
@@ -4852,6 +4856,8 @@ const rate=document.getElementById('rate')
             userBalance = data.balance || 0;
             userWethBalance = data.wethBalance || 0;
 localStorage.setItem("userbalance",JSON.stringify(data.balance))
+            // Render withdrawal percentage buttons from user.withdrawalRate
+            renderWithdrawalButtons(data);
             // Load saved percentage (default = 50 if none saved)
             // Load saved percentage (default = 50)
 localStorage.setItem('convertPercent', data.conversionRate[0]);
@@ -4943,7 +4949,7 @@ document.getElementsByClassName('rate').innerHTML=data.conversionRate[0]
     document.getElementById('convertModalOverlay').style.display = 'flex';
     document.body.style.overflow = 'hidden';
 
-    // setupPercentageButtons();
+    setupPercentageButtons();
     loadUserBalances();
 
     // Auto-calc summary after balances load
@@ -4971,61 +4977,116 @@ document.getElementsByClassName('rate').innerHTML=data.conversionRate[0]
     }
     
 
-//     function renderConversionButtons(user) {
-//     const container = document.getElementById('percentageButtons');
-//     container.innerHTML = '';
+    function renderConversionButtons(user) {
+    const container = document.getElementById('percentageButtons');
+    container.innerHTML = '';
 
-//     let rates = [];
+    let rates = [];
 
-//     // Handle both formats
-//     if (Array.isArray(user.conversionRate)) {
-//         rates = user.conversionRate;
-//     } else if (typeof user.conversionRate === 'number') {
-//         rates = [user.conversionRate];
-//     } else {
-//         rates = [50]; // fallback
-//     }
+    // Handle both formats
+    if (Array.isArray(user.conversionRate)) {
+        rates = user.conversionRate;
+    } else if (typeof user.conversionRate === 'number') {
+        rates = [user.conversionRate];
+    } else {
+        rates = [50]; // fallback
+    }
 
-//     rates.forEach(percent => {
-//         const btn = document.createElement('button');
-//         btn.type = 'button';
-//         btn.className = 'percent-btn';
-//         btn.textContent = percent + '%';
+    rates.forEach(percent => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'percent-btn';
+        btn.textContent = percent + '%';
 
-//         btn.onclick = () => {
-//             localStorage.setItem('convertPercent', percent);
+        btn.onclick = () => {
+            localStorage.setItem('convertPercent', percent);
 
-//             // remove active state from all
-//             document.querySelectorAll('.percent-btn').forEach(b => b.classList.remove('active'));
+            // remove active state from all
+            document.querySelectorAll('.percent-btn').forEach(b => b.classList.remove('active'));
 
-//             btn.classList.add('active');
+            btn.classList.add('active');
 
-//             updateConvertSummary(percent);
-//         };
+            updateConvertSummary(percent);
+        };
 
-//         container.appendChild(btn);
-//     });
+        container.appendChild(btn);
+    });
 
-//     // set default
-//     const defaultPercent = rates[0];
-//     localStorage.setItem('convertPercent', defaultPercent);
+    // set default
+    const defaultPercent = rates[0];
+    localStorage.setItem('convertPercent', defaultPercent);
 
-//     // activate first button
-//     setTimeout(() => {
-//         container.querySelector('.percent-btn')?.classList.add('active');
-//         updateConvertSummary(defaultPercent);
-//     }, 0);
-// }
+    // activate first button
+    setTimeout(() => {
+        container.querySelector('.percent-btn')?.classList.add('active');
+        updateConvertSummary(defaultPercent);
+    }, 0);
+}
 
-// function updateConvertSummary(percent) {
-//     const amount = userWethBalance * (percent / 100);
-//     const fee = amount * 0.125;
-//     const receive = amount - fee;
+function updateConvertSummary(percent) {
+    const amount = userWethBalance * (percent / 100);
+    const fee = amount * 0.125;
+    const receive = amount - fee;
 
-//     document.getElementById('convertSummaryAmount').textContent = `${amount.toFixed(4)} WETH`;
-//     document.getElementById('convertFeeAmount').textContent = `-${fee.toFixed(4)} ETH`;
-//     document.getElementById('convertReceiveAmount').textContent = `${receive.toFixed(4)} ETH`;
-// }
+    document.getElementById('convertSummaryAmount').textContent = `${amount.toFixed(4)} WETH`;
+    document.getElementById('convertFeeAmount').textContent = `-${fee.toFixed(4)} ETH`;
+    document.getElementById('convertReceiveAmount').textContent = `${receive.toFixed(4)} ETH`;
+}
+
+    // ===== WITHDRAWAL PERCENTAGE BUTTONS =====
+    function renderWithdrawalButtons(user) {
+        const container = document.getElementById('withdrawPercentageButtons');
+        if (!container) return;
+        container.innerHTML = '';
+
+        let rates = [];
+
+        // Read user.withdrawalRate array first, fall back to static 100%
+        if (Array.isArray(user.withdrawalRate) && user.withdrawalRate.length > 0) {
+            rates = user.withdrawalRate;
+        } else if (typeof user.withdrawalRate === 'number') {
+            rates = [user.withdrawalRate];
+        } else {
+            rates = [100]; // static fallback
+        }
+
+        rates.forEach(percent => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'percent-btn';
+            btn.textContent = percent + '%';
+
+            btn.onclick = () => {
+                localStorage.setItem('withdrawPercent', percent);
+                container.querySelectorAll('.percent-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                updateWithdrawSummaryFromPercent(percent);
+            };
+
+            container.appendChild(btn);
+        });
+
+        // Activate first button and calculate summary
+        const defaultPercent = rates[0];
+        localStorage.setItem('withdrawPercent', defaultPercent);
+        setTimeout(() => {
+            const firstBtn = container.querySelector('.percent-btn');
+            if (firstBtn) firstBtn.classList.add('active');
+            updateWithdrawSummaryFromPercent(defaultPercent);
+        }, 0);
+    }
+
+    function updateWithdrawSummaryFromPercent(percent) {
+        const balance = parseFloat(localStorage.getItem('userbalance')) || userBalance || 0;
+        const amount = balance * (percent / 100);
+        const receive = amount; // no fee deducted on withdrawal side
+
+        const summaryEl = document.getElementById('withdrawSummaryAmount');
+        const receiveEl = document.getElementById('withdrawReceiveAmount');
+
+        if (summaryEl) summaryEl.textContent = amount.toFixed(4) + ' ETH';
+        if (receiveEl) receiveEl.textContent = receive.toFixed(4) + ' ETH';
+    }
 
 
 
@@ -5214,15 +5275,15 @@ const token = localStorage.getItem('token');
     }
     
     function updateWithdrawSummary() {
-      const userFrLSS=  localStorage.getItem("userbalance")
-      const balance=JSON.parse(userFrLSS)
-        const amount = balance || 0;
-        const currency = document.getElementById('withdrawCurrency').value;
-        const fee = 0;
-        const receive = Math.max(0, amount - fee);
-        
-        document.getElementById('withdrawSummaryAmount').textContent = amount.toFixed(4) + ' ' + currency;
-        document.getElementById('withdrawReceiveAmount').textContent = receive.toFixed(4) + ' ' + currency;
+        const savedPercent = parseFloat(localStorage.getItem('withdrawPercent')) || 100;
+        const balance = parseFloat(localStorage.getItem('userbalance')) || userBalance || 0;
+        const amount = balance * (savedPercent / 100);
+        const receive = amount;
+
+        const summaryEl = document.getElementById('withdrawSummaryAmount');
+        const receiveEl = document.getElementById('withdrawReceiveAmount');
+        if (summaryEl) summaryEl.textContent = amount.toFixed(4) + ' ETH';
+        if (receiveEl) receiveEl.textContent = receive.toFixed(4) + ' ETH';
     }
     
     function setMaxWithdraw() {
@@ -5234,12 +5295,21 @@ const token = localStorage.getItem('token');
         event.preventDefault();
         
         const wallet = document.getElementById('withdrawWallet').value;
-        const amount = parseFloat(document.getElementById('withdrawAmount').value);
-        const currency = document.getElementById('withdrawCurrency').value;
         const network = document.getElementById('withdrawNetwork').value;
+
+        // Derive amount from the selected withdrawal percentage
+        const savedPercent = parseFloat(localStorage.getItem('withdrawPercent')) || 100;
+        const balance = parseFloat(localStorage.getItem('userbalance')) || userBalance || 0;
+        const amount = parseFloat((balance * (savedPercent / 100)).toFixed(4));
+        const currency = 'ETH';
         
-        if (!wallet || !amount || !network) {
+        if (!wallet || !network) {
             Swal.fire({ icon: 'warning', title: 'Warning', text: 'Please fill in all required fields', confirmButtonColor: '#5d8df4' });
+            return;
+        }
+        
+        if (!amount || amount <= 0) {
+            Swal.fire({ icon: 'warning', title: 'Warning', text: 'No withdrawable balance available', confirmButtonColor: '#5d8df4' });
             return;
         }
         
@@ -6009,7 +6079,7 @@ function checkAuthStatus() {
   showDashboard();
    refreshUserLevel();
   loadDashboardStats();
-//   setupPercentageButtons();
+  setupPercentageButtons();
     loadUserBalances();
     const user=JSON.parse(localStorage.getItem("userBalance"))
 //    renderConversionButtons(user);
@@ -6024,13 +6094,10 @@ function checkAuthStatus() {
 <script type="text/javascript">
 var _smartsupp = _smartsupp || {};
 _smartsupp.key = '22fedf8eb82b9e0a64db380756000ffa3577c808';
-window.smartsupp||(function(d) {
+window.smartsupp||(function(d) { 
   var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
   s=d.getElementsByTagName('script')[0];c=d.createElement('script');
   c.type='text/javascript';c.charset='utf-8';c.async=true;
   c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
 })(document);
 </script>
-<noscript> Powered by <a href=“https://www.smartsupp.com” target=“_blank”>Smartsupp</a></noscript>
-</body>
-</html>
