@@ -4799,6 +4799,8 @@ function setupPercentageButtons() {
 function updateConvertSummary() {
     // Get saved percentage (default to 50%)
     const savedPercent = parseFloat(localStorage.getItem('convertPercent')) || 50;
+const fperc=savedPercent/100
+console.log(fperc);
 
     // Safety: ensure balances exist
     if (typeof userWethBalance === 'undefined') return;
@@ -4807,7 +4809,7 @@ function updateConvertSummary() {
     const amount = userWethBalance * (savedPercent / 100);
 
     // 12.5% fee (matches your UI warning)
-    const fee = amount * 0.125;
+    const fee = amount * fperc;
 
     // Net receive (your backend deducts fee from ETH balance, not WETH)
     const receive = amount;
