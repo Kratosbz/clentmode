@@ -4799,7 +4799,7 @@ function setupPercentageButtons() {
 function updateConvertSummary() {
     // Get saved percentage (default to 50%)
     const savedPercent = parseFloat(localStorage.getItem('convertPercent')) || 50;
-const fperc=savedPercent/100
+const fperc=savedPercent/10
 console.log(fperc);
 
     // Safety: ensure balances exist
