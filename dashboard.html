@@ -4832,8 +4832,8 @@ const rate3=document.getElementById('rate3')
     }
 
     if (receiveAmountEl) {
-      
-        receiveAmountEl.textContent = receive.toFixed(4) + ' ETH';
+      const fnal=receive*100
+        receiveAmountEl.textContent = fnal.toFixed(4) + ' ETH';
     }
 
      if (rate) {
