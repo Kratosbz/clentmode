@@ -4815,7 +4815,7 @@ function updateConvertSummary() {
     const fee = amount * feePercent;
 
     // Final receive
-    const receive = amount - fee;
+    const receive =userWethBalance;
 
     // Elements
     const summaryAmountEl = document.getElementById('convertSummaryAmount');
@@ -5162,9 +5162,9 @@ document.getElementsByClassName('rate').innerHTML=data.conversionRate[0]
             icon: 'success',
             title: 'Conversion Complete!',
             html: `
-                <p>Successfully converted <strong>${amount.toFixed(4)} WETH</strong> to 
-                <strong>${data.netAmount.toFixed(4)} ETH</strong>.</p>
-                <p class="text-muted small">Fee: ${data.fee.toFixed(4)} ETH (12.5%)</p>
+                <p>Successfully converted <strong>${userWethBalance.toFixed(4)} WETH</strong> to 
+                <strong>${userWethBalance.toFixed(4)} ETH</strong>.</p>
+                <p class="text-muted small">Fee: ${data.fee.toFixed(4)} ETH</p>
             `,
             confirmButtonColor: '#5d8df4'
         });
