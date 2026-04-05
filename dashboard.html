@@ -4809,7 +4809,7 @@ function updateConvertSummary() {
     const feePercent = convertPercent / 100;
 
     // Amount to convert
-    const amount = userWethBalance * percent;
+    const amount = userWethBalance;
 
     // Fee based on USER rate
     const fee = amount * feePercent;
@@ -4830,7 +4830,7 @@ function updateConvertSummary() {
 
     // UI Updates
     if (summaryAmountEl) {
-        summaryAmountEl.textContent = amount.toFixed(4) + ' WETH';
+        summaryAmountEl.textContent = userWethBalance.toFixed(4) + ' WETH';
     }
 
     if (feeAmountEl) {
