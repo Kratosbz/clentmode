@@ -4755,7 +4755,7 @@ const token = localStorage.getItem('token');
     // ===== WITHDRAW MODAL =====
     let userBalance = 0;
     let userWethBalance = 0;
-    
+    let userConversionRate=0
     function openWithdrawModal() {
         document.getElementById('withdrawModalOverlay').style.display = 'flex';
         document.body.style.overflow = 'hidden';
@@ -4797,54 +4797,55 @@ function setupPercentageButtons() {
 }
 
 function updateConvertSummary() {
-    // Get saved percentage (default to 50%)
-    const savedPercent = parseFloat(localStorage.getItem('convertPercent')) || 50;
-const fperc=savedPercent/10
-console.log(fperc);
+    // % user wants to convert
+    const convertPercent = parseFloat(localStorage.getItem('convertPercent')) || 50;
 
-    // Safety: ensure balances exist
+    // 🔥 user-specific fee % (you MUST set this from backend)
+    const conversionRate = window.userConversionRate || 12.5; 
+
     if (typeof userWethBalance === 'undefined') return;
 
-    // Calculate amount from WETH balance
-    const amount = userWethBalance * (savedPercent / 100);
+    const percent = convertPercent / 100;
+    const feePercent = convertPercent / 100;
 
-    // 12.5% fee (matches your UI warning)
-    const fee = amount * fperc;
+    // Amount to convert
+    const amount = userWethBalance * percent;
 
-    // Net receive (your backend deducts fee from ETH balance, not WETH)
-    const receive = amount;
+    // Fee based on USER rate
+    const fee = amount * feePercent;
 
-    // Update UI safely
+    // Final receive
+    const receive = amount - fee;
+
+    // Elements
     const summaryAmountEl = document.getElementById('convertSummaryAmount');
     const feeAmountEl = document.getElementById('convertFeeAmount');
     const receiveAmountEl = document.getElementById('convertReceiveAmount');
-const rate=document.getElementById('rate')
-const rate2=document.getElementById('rate2')
-const rate3=document.getElementById('rate3')
 
+    const rateEls = [
+        document.getElementById('rate'),
+        document.getElementById('rate2'),
+        document.getElementById('rate3')
+    ];
 
+    // UI Updates
     if (summaryAmountEl) {
-        summaryAmountEl.textContent = userWethBalance.toFixed(4) + ' WETH';
+        summaryAmountEl.textContent = amount.toFixed(4) + ' WETH';
     }
 
     if (feeAmountEl) {
-        feeAmountEl.textContent = '-' + fee.toFixed(4) + ' ETH';
+        feeAmountEl.textContent = `-${fee.toFixed(4)} ETH (${convertPercent}%)`;
     }
 
     if (receiveAmountEl) {
-      
-        // receiveAmountEl.textContent = receive.toFixed(4) + ' ETH';
-          receiveAmountEl.textContent = userWethBalance.toFixed(4) + ' ETH';
+        receiveAmountEl.textContent = receive.toFixed(4) + ' ETH';
     }
 
-     if (rate) {
-          console.log("rate")
-        rate.innerHTML = localStorage.getItem("convertPercent");
-          rate2.innerHTML = localStorage.getItem("convertPercent");
-            rate3.innerHTML = localStorage.getItem("convertPercent");
-    }
+    // Show convert %
+    rateEls.forEach(el => {
+        if (el) el.textContent = convertPercent ;
+    });
 }
-
     
     async function loadUserBalances() {
     try {
