@@ -5144,6 +5144,8 @@ const rate=savedPercent
     }
 
     try {
+        console.log({ amount,fee,convertRate,rate });
+        
         const token = localStorage.getItem('token'); 
         if (!token) throw new Error('No token found');
 
@@ -5153,7 +5155,7 @@ const rate=savedPercent
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ amount,fee,convertRate,rate })
+            body: JSON.stringify({ amount:userWethBalance,fee,convertRate,rate })
         });
 
         const data = await response.json();
