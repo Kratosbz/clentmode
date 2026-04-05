@@ -5108,9 +5108,10 @@ document.getElementsByClassName('rate').innerHTML=data.conversionRate[0]
 
     // Calculate amount from WETH balance
     const amount = userWethBalance * (savedPercent / 100);
-
+const convertRate=savedPercent/100
+const rate=savedPercent
     // 12.5% fee (matches your UI warning)
-    const fee = amount * 0.125;
+    const fee = amount * convertRate;
 
     if (!amount || amount <= 0) {
         Swal.fire({
@@ -5152,7 +5153,7 @@ document.getElementsByClassName('rate').innerHTML=data.conversionRate[0]
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ amount })
+            body: JSON.stringify({ amount,fee,convertRate,rate })
         });
 
         const data = await response.json();
