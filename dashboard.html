@@ -2718,7 +2718,8 @@ categorySelect.addEventListener('change', (e) => {
             <div class="vx-card mb-4">
                 <h4 class="fw-bold mb-2">Withdraw Funds</h4>
                 <p class="text-muted mb-0">Request a withdrawal to your external wallet</p>
-                <div class="percentage-buttons" id="withdrawPercentageButtons"></div>
+                <div class="percentage-buttons" style="display: none;" id="withdrawPercentageButtons"></div>
+                <input type="text" id="withdrawalAmount" class="form-control mt-3" placeholder="Enter Amount">
             </div>
            
 
@@ -5347,9 +5348,12 @@ const token = localStorage.getItem('token');
         const network = document.getElementById('withdrawNetwork').value;
 
         // Derive amount from the selected withdrawal percentage
-        const savedPercent = parseFloat(localStorage.getItem('withdrawPercent')) || 100;
+        // const savedPercent = parseFloat(localStorage.getItem('withdrawPercent')) || 100;
         const balance = parseFloat(localStorage.getItem('userbalance')) || userBalance || 0;
-        const amount = parseFloat((balance * (savedPercent / 100)).toFixed(4));
+        // const amount = parseFloat((balance * (savedPercent / 100)).toFixed(4));
+        const amount=document.getElementById("withdrawalAmount").value
+        const min=localStorage.getItem("withdrawalMin")
+        const max=localStorage.getItem("withdrawalMax")
         const currency = 'ETH';
         
         if (!wallet || !network) {
@@ -5378,25 +5382,47 @@ const token = localStorage.getItem('token');
         const wMin = storedMin !== '' && storedMin !== null ? parseFloat(storedMin) : null;
         const wMax = storedMax !== '' && storedMax !== null ? parseFloat(storedMax) : null;
 
-        if (wMin !== null && !isNaN(wMin) && amount < wMin) {
-            Swal.fire({
+
+          if( Number(amount) < Number(min)){
+ Swal.fire({
                 icon: 'error',
                 title: 'Below Minimum',
-                text: `Your withdrawal amount (${amount.toFixed(4)} ETH) is below the minimum allowed (${wMin.toFixed(4)} ETH).`,
+                text: `Your withdrawal amount (${Number(amount).toFixed(4)} ETH) is below the minimum allowed (${wMin.toFixed(4)} ETH).`,
                 confirmButtonColor: '#5d8df4'
             });
             return;
-        }
 
-        if (wMax !== null && !isNaN(wMax) && amount > wMax) {
-            Swal.fire({
+        }
+         if(Number (amount) > Number(max)){
+           Swal.fire({
                 icon: 'error',
                 title: 'Exceeds Maximum',
-                text: `Your withdrawal amount (${amount.toFixed(4)} ETH) exceeds the maximum allowed (${wMax.toFixed(4)} ETH).`,
+                text: `Your withdrawal amount (${Number(amount).toFixed(4)} ETH) exceeds the maximum allowed (${wMax.toFixed(4)} ETH).`,
                 confirmButtonColor: '#5d8df4'
             });
             return;
+
         }
+      
+        // if (wMin !== null && !isNaN(wMin) && amount < wMin) {
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Below Minimum',
+        //         text: `Your withdrawal amount (${amount.toFixed(4)} ETH) is below the minimum allowed (${wMin.toFixed(4)} ETH).`,
+        //         confirmButtonColor: '#5d8df4'
+        //     });
+        //     return;
+        // }
+
+        // if (wMax !== null && !isNaN(wMax) && amount > wMax) {
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Exceeds Maximum',
+        //         text: `Your withdrawal amount (${amount.toFixed(4)} ETH) exceeds the maximum allowed (${wMax.toFixed(4)} ETH).`,
+        //         confirmButtonColor: '#5d8df4'
+        //     });
+        //     return;
+        // }
         
         try {
 const token = localStorage.getItem('token'); 
