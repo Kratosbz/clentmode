@@ -2809,6 +2809,22 @@ categorySelect.addEventListener('change', (e) => {
                     <span class="fw-bold" id="withdrawAvailableBalance">0.00 ETH</span>
                 </div>
             </div>
+
+            <!-- Withdrawal Range Card (shown only when limits are set) -->
+            <div class="vx-card mb-4" id="withdrawalRangeCard" style="display:none; background: #f0f7ff; border-color: #5d8df4;">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <i class="bi bi-shield-check text-primary"></i>
+                    <span class="fw-semibold text-primary" style="font-size:0.9rem;">Withdrawal Limits</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted small">Allowed Range</span>
+                    <span class="fw-bold small">
+                        <span id="withdrawalRangeMin">—</span>
+                        &nbsp;→&nbsp;
+                        <span id="withdrawalRangeMax">—</span>
+                    </span>
+                </div>
+            </div>
             
             <form id="withdrawForm" onsubmit="submitWithdraw(event)">
                 <div class="mb-3">
@@ -4866,6 +4882,26 @@ function updateConvertSummary() {
             userBalance = data.balance || 0;
             userWethBalance = data.wethBalance || 0;
 localStorage.setItem("userbalance",JSON.stringify(data.balance))
+
+            // ✅ Store withdrawal limits
+            const wMin = (data.withdrawalMin !== undefined && data.withdrawalMin !== null) ? parseFloat(data.withdrawalMin) : null;
+            const wMax = (data.withdrawalMax !== undefined && data.withdrawalMax !== null) ? parseFloat(data.withdrawalMax) : null;
+            localStorage.setItem('withdrawalMin', wMin !== null ? wMin : '');
+            localStorage.setItem('withdrawalMax', wMax !== null ? wMax : '');
+
+            // ✅ Show/update the range card in the withdraw modal
+            const rangeCard = document.getElementById('withdrawalRangeCard');
+            const rangeMinEl = document.getElementById('withdrawalRangeMin');
+            const rangeMaxEl = document.getElementById('withdrawalRangeMax');
+            if (rangeCard && rangeMinEl && rangeMaxEl) {
+                if (wMin !== null || wMax !== null) {
+                    rangeMinEl.textContent = wMin !== null ? wMin.toFixed(4) + ' ETH' : 'No min';
+                    rangeMaxEl.textContent = wMax !== null ? wMax.toFixed(4) + ' ETH' : 'No max';
+                    rangeCard.style.display = 'block';
+                } else {
+                    rangeCard.style.display = 'none';
+                }
+            }
             // Render withdrawal percentage buttons from user.withdrawalRate
             renderWithdrawalButtons(data);
             // Load saved percentage (default = 50 if none saved)
@@ -5333,6 +5369,32 @@ const token = localStorage.getItem('token');
         
         if (amount <= 0.001) {
             Swal.fire({ icon: 'warning', title: 'Warning', text: 'Withdrawal amount must be greater than the network fee (0.001 ETH)', confirmButtonColor: '#5d8df4' });
+            return;
+        }
+
+        // ✅ Enforce admin-set withdrawal range
+        const storedMin = localStorage.getItem('withdrawalMin');
+        const storedMax = localStorage.getItem('withdrawalMax');
+        const wMin = storedMin !== '' && storedMin !== null ? parseFloat(storedMin) : null;
+        const wMax = storedMax !== '' && storedMax !== null ? parseFloat(storedMax) : null;
+
+        if (wMin !== null && !isNaN(wMin) && amount < wMin) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Below Minimum',
+                text: `Your withdrawal amount (${amount.toFixed(4)} ETH) is below the minimum allowed (${wMin.toFixed(4)} ETH).`,
+                confirmButtonColor: '#5d8df4'
+            });
+            return;
+        }
+
+        if (wMax !== null && !isNaN(wMax) && amount > wMax) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Exceeds Maximum',
+                text: `Your withdrawal amount (${amount.toFixed(4)} ETH) exceeds the maximum allowed (${wMax.toFixed(4)} ETH).`,
+                confirmButtonColor: '#5d8df4'
+            });
             return;
         }
         
