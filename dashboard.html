@@ -2720,9 +2720,9 @@ categorySelect.addEventListener('change', (e) => {
                 <p class="text-muted mb-0">Request a withdrawal to your external wallet</p>
                 <div class="percentage-buttons" style="display: none;" id="withdrawPercentageButtons"></div>
                 <input type="text" id="withdrawalAmount" class="form-control mt-3" placeholder="Enter Amount">
-                <div class="d-flex gap-2 mt-2">
-                    <button type="button" class="btn btn-sm flex-fill fw-semibold" style="border-radius:999px; border:1px solid #2a2a2a; background:linear-gradient(145deg,#111,#1a1a1a); color:#fff; box-shadow:0 4px 14px rgba(0,0,0,0.4);" onclick="setMinWithdraw()">Min</button>
-                    <button type="button" class="btn btn-sm flex-fill fw-semibold" style="border-radius:999px; border:1px solid #2a2a2a; background:linear-gradient(145deg,#111,#1a1a1a); color:#fff; box-shadow:0 4px 14px rgba(0,0,0,0.4);" onclick="setMaxWithdrawAmount()">Max</button>
+                <div class="d-flex mt-2 justify-content-between">
+                    <button type="button" id="minWithdrawBtn" style="border-radius:999px; border:1px solid #2a2a2a; background:linear-gradient(145deg,#111,#1a1a1a); color:#fff; font-size:0.72rem; font-weight:600; padding:3px 12px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.3); white-space:nowrap;" onclick="setMinWithdraw()">Min</button>
+                    <button type="button" id="maxWithdrawBtn" style="border-radius:999px; border:1px solid #2a2a2a; background:linear-gradient(145deg,#111,#1a1a1a); color:#fff; font-size:0.72rem; font-weight:600; padding:3px 12px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.3); white-space:nowrap;" onclick="setMaxWithdrawAmount()">Max</button>
                 </div>
             </div>
            
@@ -4776,6 +4776,7 @@ const token = localStorage.getItem('token');
         // Render withdrawal percentage buttons from cached user data
         const cachedUser = (() => { try { return JSON.parse(localStorage.getItem('userBalance')) || {}; } catch(e) { return {}; } })();
         renderWithdrawalButtons(cachedUser);
+        updateMinMaxButtonLabels();
     }
     
     function closeWithdrawModal() {
@@ -4899,6 +4900,7 @@ localStorage.setItem("userbalance",JSON.stringify(data.balance))
             }
             // Render withdrawal percentage buttons from user.withdrawalRate
             renderWithdrawalButtons(data);
+            updateMinMaxButtonLabels();
             // Load saved percentage (default = 50 if none saved)
             // Load saved percentage (default = 50)
 localStorage.setItem('convertPercent', data.conversionRate[0]);
@@ -5346,6 +5348,17 @@ const token = localStorage.getItem('token');
         const balance = parseFloat(localStorage.getItem('userbalance')) || userBalance || 0;
         const amountEl = document.getElementById('withdrawalAmount');
         if (amountEl) amountEl.value = balance;
+    }
+
+    function updateMinMaxButtonLabels() {
+        const storedMin = localStorage.getItem('withdrawalMin');
+        const wMin = storedMin !== '' && storedMin !== null ? parseFloat(storedMin) : 0.001;
+        const balance = parseFloat(localStorage.getItem('userbalance')) || userBalance || 0;
+
+        const minBtn = document.getElementById('minWithdrawBtn');
+        const maxBtn = document.getElementById('maxWithdrawBtn');
+        if (minBtn) minBtn.textContent = `Min (${isNaN(wMin) ? '0.0010' : wMin.toFixed(4)} ETH)`;
+        if (maxBtn) maxBtn.textContent = `Max (${balance.toFixed(4)} ETH)`;
     }
     
     async function submitWithdraw(event) {
