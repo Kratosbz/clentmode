@@ -5310,20 +5310,15 @@ const token = localStorage.getItem('token');
     }
     
     function setupWithdrawListeners() {
-        const amountInput = document.getElementById('withdrawAmount');
-        const currencySelect = document.getElementById('withdrawCurrency');
-        
+        const amountInput = document.getElementById('withdrawalAmount');
+        if (!amountInput) return;
         amountInput.removeEventListener('input', updateWithdrawSummary);
-        currencySelect.removeEventListener('change', updateWithdrawSummary);
-        
         amountInput.addEventListener('input', updateWithdrawSummary);
-        currencySelect.addEventListener('change', updateWithdrawSummary);
     }
     
     function updateWithdrawSummary() {
-        const savedPercent = parseFloat(localStorage.getItem('withdrawPercent')) || 100;
-        const balance = parseFloat(localStorage.getItem('userbalance')) || userBalance || 0;
-        const amount = balance * (savedPercent / 100);
+        const amountInput = document.getElementById('withdrawalAmount');
+        const amount = amountInput ? parseFloat(amountInput.value) || 0 : 0;
         const receive = amount;
 
         const summaryEl = document.getElementById('withdrawSummaryAmount');
@@ -5341,13 +5336,13 @@ const token = localStorage.getItem('token');
         const storedMin = localStorage.getItem('withdrawalMin');
         const wMin = storedMin !== '' && storedMin !== null ? parseFloat(storedMin) : 0.001;
         const amountEl = document.getElementById('withdrawalAmount');
-        if (amountEl) amountEl.value = isNaN(wMin) ? 0.001 : wMin;
+        if (amountEl) { amountEl.value = isNaN(wMin) ? 0.001 : wMin; updateWithdrawSummary(); }
     }
 
     function setMaxWithdrawAmount() {
         const balance = parseFloat(localStorage.getItem('userbalance')) || userBalance || 0;
         const amountEl = document.getElementById('withdrawalAmount');
-        if (amountEl) amountEl.value = balance;
+        if (amountEl) { amountEl.value = balance; updateWithdrawSummary(); }
     }
 
     function updateMinMaxButtonLabels() {
