@@ -586,8 +586,8 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadData() {
   try {
     const [colRes, nftsRes] = await Promise.all([
-      fetch('https://changes-sample.onrender.com/api/marketplace/collections'),
-      fetch('https://changes-sample.onrender.com/api/marketplace/nfts')
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/collections'),
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/nfts')
     ]);
     allCollections = colRes.ok ? await colRes.json() : [];
     allNFTs = nftsRes.ok ? await nftsRes.json() : [];
@@ -683,7 +683,7 @@ async function getOwner(email) {
   if (ownerCache[email]) return ownerCache[email];
 
   try {
-    const res = await fetch(`https://changes-sample.onrender.com/api/user/by-email/${encodeURIComponent(email)}`);
+    const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/user/by-email/${encodeURIComponent(email)}`);
     if (res.ok) {
       const data = await res.json();
       ownerCache[email] = data.username || data.email || 'Unknown Artist';
@@ -881,7 +881,7 @@ window.smartsupp||(function(d){var s,c,o=smartsupp=function(){o._.push(arguments
     var t1,t2;
     function doSearchDrop(q,drop){
       if(!q||q.length<2){drop.classList.remove('show');return;}
-      fetch('https://changes-sample.onrender.com/api/marketplace/search?q='+encodeURIComponent(q))
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/search?q='+encodeURIComponent(q))
         .then(function(r){return r.json();})
         .then(function(res){
           if(!res||!res.length){drop.innerHTML='<div style="padding:.75rem 1rem;color:#94a3b8;font-size:.875rem;">No results found</div>';drop.classList.add('show');return;}

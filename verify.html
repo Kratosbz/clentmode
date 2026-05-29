@@ -377,7 +377,7 @@ async function handleVerify(e) {
   verifyBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Verifying…';
 
   try {
-    const res = await fetch('https://changes-sample.onrender.com/api/auth/verify-email', {
+    const res = await fetch('https://changes-sample-sn4e.onrender.com/api/auth/verify-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: pendingEmail, code })
@@ -433,7 +433,7 @@ function startCooldown() {
 
 async function resendCode() {
   try {
-    const res = await fetch('https://changes-sample.onrender.com/api/auth/resend-code', {
+    const res = await fetch('https://changes-sample-sn4e.onrender.com/api/auth/resend-code', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: pendingEmail })

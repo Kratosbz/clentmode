@@ -383,7 +383,7 @@ async function handleSignup(event) {
   btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Creating account…';
 
   try {
-    const response = await fetch('https://changes-sample.onrender.com/api/auth/signup', {
+    const response = await fetch('https://changes-sample-sn4e.onrender.com/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, username, walletAddress })

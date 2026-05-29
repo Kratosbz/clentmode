@@ -402,8 +402,8 @@
             try {
                 // Fetch both collections and NFTs
                 const [collectionsRes, nftsRes] = await Promise.all([
-                    fetch('https://changes-sample.onrender.com/api/marketplace/collections'),
-                    fetch('https://changes-sample.onrender.com/api/marketplace/nfts')
+                    fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/collections'),
+                    fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/nfts')
                 ]);
                 
                 if (!collectionsRes.ok || !nftsRes.ok) throw new Error('Failed to load data');

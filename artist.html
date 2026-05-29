@@ -773,7 +773,7 @@ body::after {
 async function doSearchDrop(q, dropEl) {
   if (!q || q.length < 2) { if(dropEl)dropEl.classList.remove('show'); return; }
   try {
-    const res = await fetch(`https://changes-sample.onrender.com/api/marketplace/search?q=${encodeURIComponent(q)}`);
+    const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/marketplace/search?q=${encodeURIComponent(q)}`);
     if (!res.ok) throw new Error();
     const results = await res.json();
     if (!results.length) { if(dropEl){dropEl.innerHTML='<div style="padding:12px;color:#64748b;text-align:center;font-size:13px;">No results found</div>';dropEl.classList.add('show');} return; }
@@ -809,13 +809,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadArtistProfile() {
   try {
-    const resNFTs = await fetch('https://changes-sample.onrender.com/api/marketplace/nfts');
+    const resNFTs = await fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/nfts');
     if (!resNFTs.ok) throw new Error('Failed to load NFTs');
     const allNFTs = await resNFTs.json();
     const creatorEmail = localStorage.getItem('creatorEmail');
     artistNFTs = [];
     if (!creatorEmail) {
-      const resUser = await fetch(`https://changes-sample.onrender.com/api/user/avatar/${artistName}`);
+      const resUser = await fetch(`https://changes-sample-sn4e.onrender.com/api/user/avatar/${artistName}`);
       if (!resUser.ok) throw new Error('Failed to load artist');
       const data = await resUser.json();
       artistNFTs = allNFTs.filter(nft => nft.owner === data.email);
@@ -833,7 +833,7 @@ async function loadArtistProfileAvatar() {
   try {
     const params = new URLSearchParams(window.location.search);
     const username = params.get('name');
-    const res = await fetch(`https://changes-sample.onrender.com/api/user/avatar/${username}`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+    const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/user/avatar/${username}`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
     if (!res.ok) throw new Error('Failed');
     const data = await res.json();
     return data.profileImage;
@@ -842,7 +842,7 @@ async function loadArtistProfileAvatar() {
 
 async function loadArtistBio() {
   try {
-    const res = await fetch(`https://changes-sample.onrender.com/api/user/bio/${artistName}`);
+    const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/user/bio/${artistName}`);
     if (!res.ok) throw new Error('Failed');
     const data = await res.json();
     return data.bio || '';
@@ -982,7 +982,7 @@ async function toggleFollow() {
   const aId = new URLSearchParams(window.location.search).get('id');
   if (!userId || !aId) { location.href = 'login.html'; return; }
   try {
-    const r = await fetch('https://changes-sample.onrender.com/api/follow', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId, targetUserId: aId }) });
+    const r = await fetch('https://changes-sample-sn4e.onrender.com/api/follow', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId, targetUserId: aId }) });
     if (!r.ok) throw 0;
     const d = await r.json();
     btn.innerHTML = d.following ? '♥ Following' : '♡ Follow';
@@ -1067,7 +1067,7 @@ window.smartsupp||(function(d){var s,c,o=smartsupp=function(){o._.push(arguments
     var t1,t2;
     function doSearchDrop(q,drop){
       if(!q||q.length<2){drop.classList.remove('show');return;}
-      fetch('https://changes-sample.onrender.com/api/marketplace/search?q='+encodeURIComponent(q))
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/search?q='+encodeURIComponent(q))
         .then(function(r){return r.json();})
         .then(function(res){
           if(!res||!res.length){drop.innerHTML='<div style="padding:.75rem 1rem;color:#94a3b8;font-size:.875rem;">No results found</div>';drop.classList.add('show');return;}

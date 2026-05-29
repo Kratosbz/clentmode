@@ -937,7 +937,7 @@ async function loadCarousels() {
   try {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token');
-    const res = await fetch('https://changes-sample.onrender.com/api/marketplace/nfts');
+    const res = await fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/nfts');
     if (!res.ok) throw new Error('Failed');
     const nfts = await res.json();
     featuredDropsItems = shuffleArray([...nfts]).slice(0, 10);
@@ -1010,9 +1010,9 @@ async function loadMarketplaceData() {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token');
     const [nftsRes, auctionsRes, exhibitionsRes] = await Promise.all([
-      fetch('https://changes-sample.onrender.com/api/marketplace/nfts'),
-      fetch('https://changes-sample.onrender.com/api/marketplace/auctions'),
-      fetch('https://changes-sample.onrender.com/api/marketplace/exhibitions')
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/nfts'),
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/auctions'),
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/exhibitions')
     ]);
     if (nftsRes.ok) allNFTs = await nftsRes.json();
     if (auctionsRes.ok) allAuctions = await auctionsRes.json();
@@ -1079,7 +1079,7 @@ async function toggleLike(nftId) {
   filterAndRenderNFTs();
   try {
     const token = localStorage.getItem('token');
-    if (token) await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${nftId}/like`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ unlike: isLiked }) });
+    if (token) await fetch(`https://changes-sample-sn4e.onrender.com/api/marketplace/nfts/${nftId}/like`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ unlike: isLiked }) });
   } catch (e) { console.error(e); }
 }
 
@@ -1087,7 +1087,7 @@ async function performSearch(query) {
   const dropdown = document.getElementById('searchDropdown');
   if (!query || query.length < 2) { dropdown.classList.remove('show'); return; }
   try {
-    const res = await fetch(`https://changes-sample.onrender.com/api/marketplace/search?q=${encodeURIComponent(query)}`);
+    const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/marketplace/search?q=${encodeURIComponent(query)}`);
     if (!res.ok) throw new Error('Search failed');
     const results = await res.json();
     if (!results.length) { dropdown.innerHTML = '<div style="padding:14px 16px;color:var(--muted);text-align:center;font-size:12px;font-family:\'DM Mono\',monospace;">No results found</div>'; dropdown.classList.add('show'); return; }
@@ -1116,7 +1116,7 @@ async function buyNFT(nftId) {
   const result = await Swal.fire({ icon: 'question', title: 'Confirm Purchase', text: `Buy "${nft.name}" for ${nft.price} ${nft.currency || 'ETH'}?`, showCancelButton: true, confirmButtonText: 'Buy Now', confirmButtonColor: '#22c55e' });
   if (!result.isConfirmed) return;
   try {
-    const res = await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${nftId}/buy`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
+    const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/marketplace/nfts/${nftId}/buy`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
     if (!res.ok) { const e = await res.json(); throw new Error(e.message || 'Purchase failed'); }
     await Swal.fire({ icon: 'success', title: 'Success!', text: `You now own "${nft.name}".`, confirmButtonColor: '#22c55e' });
     loadMarketplaceData();
@@ -1209,7 +1209,7 @@ window.smartsupp||(function(d){var s,c,o=smartsupp=function(){o._.push(arguments
     var t1,t2;
     function doSearchDrop(q,drop){
       if(!q||q.length<2){drop.classList.remove('show');return;}
-      fetch('https://changes-sample.onrender.com/api/marketplace/search?q='+encodeURIComponent(q))
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/search?q='+encodeURIComponent(q))
         .then(function(r){return r.json();})
         .then(function(res){
           if(!res||!res.length){drop.innerHTML='<div style="padding:.75rem 1rem;color:#94a3b8;font-size:.875rem;">No results found</div>';drop.classList.add('show');return;}

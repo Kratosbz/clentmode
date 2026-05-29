@@ -999,7 +999,7 @@
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch('https://changes-sample.onrender.com/api/admin/session',{
+                const res = await fetch('https://changes-sample-sn4e.onrender.com/api/admin/session',{
                      credentials:"include",
  headers: {
         'Content-Type': 'application/json',
@@ -1041,7 +1041,7 @@ async function adminLogin() {
 
     try {
         // 🔐 Send login credentials (no token yet)
-        const res = await fetch('https://changes-sample.onrender.com/api/admin/login', {
+        const res = await fetch('https://changes-sample-sn4e.onrender.com/api/admin/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -1084,7 +1084,7 @@ async function adminLogin() {
 
 
         async function adminLogout() {
-            await fetch('https://changes-sample.onrender.com/api/admin/logout', { method: 'POST', credentials:"include",
+            await fetch('https://changes-sample-sn4e.onrender.com/api/admin/logout', { method: 'POST', credentials:"include",
  headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // ✅ Send JWT
@@ -1124,7 +1124,7 @@ async function adminLogin() {
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch('https://changes-sample.onrender.com/api/admin/stats',{
+                const res = await fetch('https://changes-sample-sn4e.onrender.com/api/admin/stats',{
                      credentials:"include",
  headers: {
         'Content-Type': 'application/json',
@@ -1161,7 +1161,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/users?page=${page}&search=${search}&status=${status}`
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/users?page=${page}&search=${search}&status=${status}`
                 ,{
                      credentials:"include",
  headers: {
@@ -1214,7 +1214,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/users/${id}`,{
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/users/${id}`,{
                      credentials:"include",
  headers: {
         'Content-Type': 'application/json',
@@ -1288,7 +1288,7 @@ const token = localStorage.getItem('adminToken');
         const token = localStorage.getItem('adminToken'); 
         if (!token) throw new Error('No token found');
 
-        const res = await fetch(`https://changes-sample.onrender.com/api/admin/users/${id}`, {
+        const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/users/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -1325,7 +1325,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                    const res = await fetch(`https://changes-sample.onrender.com/api/admin/users/${id}`, { method: 'DELETE', credentials:"include",
+                    const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/users/${id}`, { method: 'DELETE', credentials:"include",
  headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // ✅ Send JWT
@@ -1362,7 +1362,7 @@ const token = localStorage.getItem('adminToken');
 
     // 2️⃣ Call impersonation endpoint
     const res = await fetch(
-      `https://changes-sample.onrender.com/api/admin/users/${id}/impersonate`,
+      `https://changes-sample-sn4e.onrender.com/api/admin/users/${id}/impersonate`,
       {
         method: 'POST',
         credentials: 'include',
@@ -1410,7 +1410,7 @@ const token = localStorage.getItem('adminToken');
 
 
         async function stopImpersonation() {
-            await fetch('https://changes-sample.onrender.com/api/admin/stop-impersonation', { method: 'POST' , credentials:"include",
+            await fetch('https://changes-sample-sn4e.onrender.com/api/admin/stop-impersonation', { method: 'POST' , credentials:"include",
  headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // ✅ Send JWT
@@ -1429,7 +1429,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/nfts?page=${page}&search=${search}&status=${status}`,{
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/nfts?page=${page}&search=${search}&status=${status}`,{
 
                     credentials:"include",
  headers: {
@@ -1480,7 +1480,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/nfts/${id}`,{
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/nfts/${id}`,{
                      credentials:"include",
  headers: {
         'Content-Type': 'application/json',
@@ -1520,7 +1520,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/nfts/${id}`, {
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/nfts/${id}`, {
                     method: 'PUT',
                      headers: {
         'Content-Type': 'application/json',
@@ -1554,7 +1554,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                    const res = await fetch(`https://changes-sample.onrender.com/api/admin/nfts/${id}`, { method: 'DELETE', credentials:"include",
+                    const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/nfts/${id}`, { method: 'DELETE', credentials:"include",
  headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // ✅ Send JWT
@@ -1585,7 +1585,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/nfts/${id}/buy`, {
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/nfts/${id}/buy`, {
                     method: 'POST',
                      headers: {
         'Content-Type': 'application/json',
@@ -1613,7 +1613,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/collections?page=${page}&search=${search}`,{
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/collections?page=${page}&search=${search}`,{
                      credentials:"include",
  headers: {
         'Content-Type': 'application/json',
@@ -1658,7 +1658,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/collections?page=1`,{
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/collections?page=1`,{
                      credentials:"include",
  headers: {
         'Content-Type': 'application/json',
@@ -1694,7 +1694,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/collections/${id}`, {
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/collections/${id}`, {
                     method: 'PUT',
                      headers: {
         'Content-Type': 'application/json',
@@ -1728,7 +1728,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                    await fetch(`https://changes-sample.onrender.com/api/admin/collections/${id}`, { method: 'DELETE' , credentials:"include",
+                    await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/collections/${id}`, { method: 'DELETE' , credentials:"include",
  headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // ✅ Send JWT
@@ -1750,7 +1750,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/financial-requests?page=${page}&type=deposit&status=${status}`,{
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/financial-requests?page=${page}&type=deposit&status=${status}`,{
                      credentials:"include",
  headers: {
         'Content-Type': 'application/json',
@@ -1794,7 +1794,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/financial-requests?page=${page}&type=withdrawal&status=${status}`,{
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/financial-requests?page=${page}&type=withdrawal&status=${status}`,{
                      credentials:"include",
  headers: {
         'Content-Type': 'application/json',
@@ -1848,7 +1848,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/financial-requests/${id}/${action}`, {
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/financial-requests/${id}/${action}`, {
                     method: 'POST',
                      headers: {
         'Content-Type': 'application/json',
@@ -1881,7 +1881,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/transactions?page=${page}&type=${type}`,{
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/transactions?page=${page}&type=${type}`,{
                      credentials:"include",
  headers: {
         'Content-Type': 'application/json',
@@ -1917,7 +1917,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/sales?page=${page}&status=${status}`,{
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/sales?page=${page}&status=${status}`,{
                      credentials:"include",
  headers: {
         'Content-Type': 'application/json',
@@ -1952,7 +1952,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch(`https://changes-sample.onrender.com/api/admin/auctions?page=${page}&status=${status}`,{
+                const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/auctions?page=${page}&status=${status}`,{
                      credentials:"include",
  headers: {
         'Content-Type': 'application/json',
@@ -1990,7 +1990,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch('https://changes-sample.onrender.com/api/admin/admins',{
+                const res = await fetch('https://changes-sample-sn4e.onrender.com/api/admin/admins',{
                      credentials:"include",
  headers: {
         'Content-Type': 'application/json',
@@ -2045,7 +2045,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                const res = await fetch('https://changes-sample.onrender.com/api/admin/admins', {
+                const res = await fetch('https://changes-sample-sn4e.onrender.com/api/admin/admins', {
                     method: 'POST',
                      headers: {
         'Content-Type': 'application/json',
@@ -2081,7 +2081,7 @@ const token = localStorage.getItem('adminToken');
 const token = localStorage.getItem('adminToken'); 
     if (!token) throw new Error('No token found');
 
-                    await fetch(`https://changes-sample.onrender.com/api/admin/admins/${id}`, { method: 'DELETE', credentials:"include",
+                    await fetch(`https://changes-sample-sn4e.onrender.com/api/admin/admins/${id}`, { method: 'DELETE', credentials:"include",
  headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // ✅ Send JWT

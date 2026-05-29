@@ -505,8 +505,8 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadCollection(id) {
   try {
     const [nftsRes, collRes] = await Promise.all([
-      fetch('https://changes-sample.onrender.com/api/marketplace/nfts'),
-      fetch(`https://changes-sample.onrender.com/api/collections/${id}`)
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/nfts'),
+      fetch(`https://changes-sample-sn4e.onrender.com/api/collections/${id}`)
     ]);
     const allNFTs = nftsRes.ok ? await nftsRes.json() : [];
     collectionData = collRes.ok ? await collRes.json() : null;
@@ -624,7 +624,7 @@ async function toggleLike(nftId) {
   try {
     const token = localStorage.getItem('token');
     if (!token) return;
-    await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${nftId}/like`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ unlike: isLiked }) });
+    await fetch(`https://changes-sample-sn4e.onrender.com/api/marketplace/nfts/${nftId}/like`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ unlike: isLiked }) });
   } catch (e) { console.error(e); }
 }
 
@@ -640,7 +640,7 @@ async function buyNFT(nftId) {
   const result = await Swal.fire({ icon: 'question', title: 'Confirm Purchase', text: `Buy "${nft.name}" for ${nft.price} ${nft.currency || 'ETH'}?`, showCancelButton: true, confirmButtonText: 'Buy Now', confirmButtonColor: '#22c55e' });
   if (!result.isConfirmed) return;
   try {
-    const res = await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${nftId}/buy`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
+    const res = await fetch(`https://changes-sample-sn4e.onrender.com/api/marketplace/nfts/${nftId}/buy`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
     if (!res.ok) { const e = await res.json(); throw new Error(e.message || 'Purchase failed'); }
     await Swal.fire({ icon: 'success', title: 'Success!', text: `You now own "${nft.name}".`, confirmButtonColor: '#22c55e' });
     const params = new URLSearchParams(window.location.search);
@@ -698,7 +698,7 @@ window.smartsupp||(function(d){var s,c,o=smartsupp=function(){o._.push(arguments
     var t1,t2;
     function doSearchDrop(q,drop){
       if(!q||q.length<2){drop.classList.remove('show');return;}
-      fetch('https://changes-sample.onrender.com/api/marketplace/search?q='+encodeURIComponent(q))
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/search?q='+encodeURIComponent(q))
         .then(function(r){return r.json();})
         .then(function(res){
           if(!res||!res.length){drop.innerHTML='<div style="padding:.75rem 1rem;color:#94a3b8;font-size:.875rem;">No results found</div>';drop.classList.add('show');return;}

@@ -1104,9 +1104,9 @@ function setupListeners(){
 async function loadData(){
   try{
     const[nr,ar,er]=await Promise.all([
-      fetch('https://changes-sample.onrender.com/api/marketplace/nfts'),
-      fetch('https://changes-sample.onrender.com/api/marketplace/auctions'),
-      fetch('https://changes-sample.onrender.com/api/marketplace/exhibitions')
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/nfts'),
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/auctions'),
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/exhibitions')
     ]);
     if(nr.ok)allNFTs=await nr.json();
     if(ar.ok)allAuctions=await ar.json();
@@ -1120,7 +1120,7 @@ async function loadData(){
 /* CAROUSELS */
 async function loadCarousels(){
   try{
-    const res=await fetch('https://changes-sample.onrender.com/api/marketplace/nfts');
+    const res=await fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/nfts');
     if(!res.ok)throw new Error();
     const nfts=await res.json();
     fItems=shuffle([...nfts]).slice(0,12);
@@ -1313,7 +1313,7 @@ async function renderAuctions(){
   /* Guarantee nftMap is populated — fetch fresh if allNFTs not yet loaded */
   if(!Object.keys(nftMap).length){
     try{
-      const r=await fetch('https://changes-sample.onrender.com/api/marketplace/nfts');
+      const r=await fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/nfts');
       if(r.ok){allNFTs=await r.json();buildNftMap();}
     }catch(e){}
   }
@@ -1377,7 +1377,7 @@ document.getElementById('exhibitionsGrid').addEventListener('click',e=>{const b=
 async function doSearchDrop(q, dropEl) {
   if(q.length<2){dropEl.classList.remove('show');return;}
   try{
-    const res=await fetch(`https://changes-sample.onrender.com/api/marketplace/search?q=${encodeURIComponent(q)}`);
+    const res=await fetch(`https://changes-sample-sn4e.onrender.com/api/marketplace/search?q=${encodeURIComponent(q)}`);
     if(!res.ok)throw new Error();
     const results=await res.json();
     if(!results.length){dropEl.innerHTML='<div class="p-3 text-center" style="color:#64748b;font-size:.875rem;">No results found</div>';}
@@ -1402,7 +1402,7 @@ async function toggleLike(id){
   const nft=allNFTs.find(n=>n._id===id);
   if(nft)nft.likes=lk?Math.max(0,(nft.likes||0)-1):(nft.likes||0)+1;
   renderNFTs();
-  try{const token=localStorage.getItem('token');if(!token)throw new Error();await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${id}/like`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify({unlike:lk})});}catch(e){}
+  try{const token=localStorage.getItem('token');if(!token)throw new Error();await fetch(`https://changes-sample-sn4e.onrender.com/api/marketplace/nfts/${id}/like`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify({unlike:lk})});}catch(e){}
 }
 
 /* MODAL */
@@ -1433,16 +1433,16 @@ function openArtworkModal(id){
 }
 function closeArtworkModal(){document.getElementById('artworkModal').style.display='none';document.body.style.overflow='';window.history.pushState({},'','/marketplace');curNFT=null;}
 function toggleModalLike(){if(!curNFT)return;toggleLike(curNFT._id);const lk=liked.includes(curNFT._id);const lb=document.getElementById('modalLikeBtn');lb.innerHTML=`<i class="bi bi-heart${lk?'-fill':''} me-1"></i><span id="modalLikeCount">${curNFT.likes||0}</span>`;lb.className=`btn btn-sm rounded-pill ${lk?'btn-danger':'btn-outline-danger'}`;}
-async function incrementViews(id){try{const t=localStorage.getItem('token');if(!t)throw new Error();await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${id}/view`,{method:'POST'});}catch(e){}}
+async function incrementViews(id){try{const t=localStorage.getItem('token');if(!t)throw new Error();await fetch(`https://changes-sample-sn4e.onrender.com/api/marketplace/nfts/${id}/view`,{method:'POST'});}catch(e){}}
 async function buyNFT(id){
   const nft=allNFTs.find(n=>n._id===id);if(!nft)return;
-  const sr=await fetch('https://changes-sample.onrender.com/api/auth/session');const sess=await sr.json();
+  const sr=await fetch('https://changes-sample-sn4e.onrender.com/api/auth/session');const sess=await sr.json();
   if(!sess.authenticated){const r=await Swal.fire({icon:'warning',title:'Login Required',text:'Log in to purchase.',showCancelButton:true,confirmButtonText:'Login',confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});if(r.isConfirmed)window.location.href='/dashboard.html';return;}
   const c=await Swal.fire({icon:'question',title:'Confirm Purchase',text:`Buy "${nft.name}" for ${nft.price} ${nft.currency||'ETH'}?`,showCancelButton:true,confirmButtonText:'Buy Now',confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});
   if(!c.isConfirmed)return;
   try{
     const token=localStorage.getItem('token');if(!token)throw new Error('No token');
-    const res=await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${id}/buy`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`}});
+    const res=await fetch(`https://changes-sample-sn4e.onrender.com/api/marketplace/nfts/${id}/buy`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`}});
     if(!res.ok){const err=await res.json();throw new Error(err.message);}
     await Swal.fire({icon:'success',title:'Purchased!',text:`"${nft.name}" is now in your collection.`,confirmButtonColor:'#3b82f6',background:'#0e1018',color:'#eef2ff'});
     closeArtworkModal();loadData();

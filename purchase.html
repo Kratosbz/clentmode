@@ -510,7 +510,7 @@
 // const token = localStorage.getItem('token'); 
 //     if (!token) throw new Error('No token found');
 
-                const res = await fetch('https://changes-sample.onrender.com/api/marketplace/nfts');
+                const res = await fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/nfts');
                 if (!res.ok) throw new Error('Failed to load');
                 
                 const allNFTs = await res.json();
@@ -522,7 +522,7 @@
                 
                 document.title = `${currentNFT.name} - Ethergalleries`;
                 
-                await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${nftId}/view`, { method: 'POST' });
+                await fetch(`https://changes-sample-sn4e.onrender.com/api/marketplace/nfts/${nftId}/view`, { method: 'POST' });
                 
                 artistNFTs = allNFTs.filter(n => n.creator === currentNFT.creator && n._id !== nftId);
                 categoryNFTs = allNFTs.filter(n => n.category === currentNFT.category && n._id !== nftId && n.creator !== currentNFT.creator);
@@ -547,7 +547,7 @@
     const encodedEmail = encodeURIComponent(email.trim().toLowerCase());
 
     const res = await fetch(
-      `https://changes-sample.onrender.com/api/user/by-email/${encodedEmail}`,
+      `https://changes-sample-sn4e.onrender.com/api/user/by-email/${encodedEmail}`,
       {
         method: "GET",
         credentials: "include", // keep if you use cookies/session
@@ -796,7 +796,7 @@ document.getElementById('mainContent').innerHTML = `
 const token = localStorage.getItem('token'); 
     if (!token) throw new Error('No token found');
 
-                await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${currentNFT._id}/like`, {
+                await fetch(`https://changes-sample-sn4e.onrender.com/api/marketplace/nfts/${currentNFT._id}/like`, {
                     method: 'POST',
                      headers: {
         'Content-Type': 'application/json',

@@ -1178,9 +1178,9 @@ let likedNFTs = JSON.parse(localStorage.getItem('likedNFTs') || '[]');
 async function loadMarketplaceData() {
     try {
         const [nftsRes, auctionsRes, exhibitionsRes] = await Promise.all([
-            fetch('https://changes-sample.onrender.com/api/marketplace/nfts'),
-            fetch('https://changes-sample.onrender.com/api/marketplace/auctions'),
-            fetch('https://changes-sample.onrender.com/api/marketplace/exhibitions')
+            fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/nfts'),
+            fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/auctions'),
+            fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/exhibitions')
         ]);
 
         if (nftsRes.ok) {

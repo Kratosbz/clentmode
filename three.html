@@ -703,8 +703,8 @@ let allNFTs=[],allAuctions=[],curCat='all',displayCount=16;
 async function loadData(){
   try{
     const[nr,ar]=await Promise.all([
-      fetch('https://changes-sample.onrender.com/api/marketplace/nfts'),
-      fetch('https://changes-sample.onrender.com/api/marketplace/auctions'),
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/nfts'),
+      fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/auctions'),
     ]);
     if(nr.ok)allNFTs=await nr.json();
     if(ar.ok)allAuctions=await ar.json();
@@ -834,7 +834,7 @@ async function buyNFT(id){
   if(!confirm(`Buy "${nft.name}" for ${nft.price} ${nft.currency||'ETH'}?`))return;
   const token=localStorage.getItem('token');if(!token){alert('Please log in to purchase.');return;}
   try{
-    const r=await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${id}/buy`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`}});
+    const r=await fetch(`https://changes-sample-sn4e.onrender.com/api/marketplace/nfts/${id}/buy`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`}});
     if(!r.ok)throw new Error((await r.json()).message);
     alert('Purchase successful!');closeModal();loadData();
   }catch(e){alert('Error: '+(e.message||'Purchase failed'));}

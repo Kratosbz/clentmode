@@ -542,7 +542,7 @@ let lp=0;const ldBar=document.getElementById('ldBar'),ldTxt=document.getElementB
 let allNFTs=[],allAuctions=[],curCat='all';
 async function loadData(){
   try{
-    const[nr,ar]=await Promise.all([fetch('https://changes-sample.onrender.com/api/marketplace/nfts'),fetch('https://changes-sample.onrender.com/api/marketplace/auctions')]);
+    const[nr,ar]=await Promise.all([fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/nfts'),fetch('https://changes-sample-sn4e.onrender.com/api/marketplace/auctions')]);
     if(nr.ok)allNFTs=await nr.json();if(ar.ok)allAuctions=await ar.json();
   }catch(e){}
   buildTicker();updateMetrics();renderNFTs();renderCollections();renderAuctions();
@@ -698,7 +698,7 @@ async function buyNFT(id){
   const n=allNFTs.find(x=>x._id===id);if(!n)return;
   const token=localStorage.getItem('token');if(!token){alert('Please log in first.');return}
   if(!confirm(`Buy "${n.name}" for ${n.price} ${n.currency||'ETH'}?`))return;
-  try{const r=await fetch(`https://changes-sample.onrender.com/api/marketplace/nfts/${id}/buy`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`}});if(!r.ok)throw new Error((await r.json()).message);alert('Purchase successful!');closeModal();loadData()}catch(e){alert('Error: '+(e.message||'Purchase failed'))}
+  try{const r=await fetch(`https://changes-sample-sn4e.onrender.com/api/marketplace/nfts/${id}/buy`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`}});if(!r.ok)throw new Error((await r.json()).message);alert('Purchase successful!');closeModal();loadData()}catch(e){alert('Error: '+(e.message||'Purchase failed'))}
 }
 async function placeBid(id){const amt=prompt('Enter bid amount (ETH):');if(!amt)return;alert(`Bid of ${amt} ETH submitted!`)}
 function subscribe(){const v=document.getElementById('nlEmail').value;if(!v||!v.includes('@')){alert('Please enter a valid email.');return}alert(`Subscribed with ${v}!`);document.getElementById('nlEmail').value=''}
