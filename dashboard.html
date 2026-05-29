@@ -6183,12 +6183,12 @@ function checkAuthStatus() {
   const token = localStorage.getItem('token');
 
   // ❌ No token → not authenticated
-  if (!token) {
-    console.log('No token found');
-    dontshowDashboard();
-    showAuthPage('login');
-    return;
-  }
+//   if (!token) {
+//     console.log('No token found');
+//     dontshowDashboard();
+//     showAuthPage('login');
+//     return;
+//   }
 
 
   // ✅ Token exists → assume authenticated
