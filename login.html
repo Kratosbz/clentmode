@@ -370,33 +370,34 @@ async function handleLogin(event) {
   const email = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPassword').value;
 
-  try {
-    const token = localStorage.getItem('token');
-    const response = await fetch('https://changes-sample-sn4e.onrender.com/api/auth/login', {
+ try {
+  const response = await fetch(
+    'https://changes-sample-sn4e.onrender.com/api/auth/login',
+    {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({ email, password })
-    });
-
-    const data = await response.json();
-
-    if (data.needsVerification) {
-      localStorage.setItem('pendingVerificationEmail', data.email);
-      window.location.href = './verify.html';
-      return;
     }
+  );
 
-    if (!response.ok) {
-      Swal.fire({ icon: 'error', title: 'Login failed', text: data.message || 'Please check your credentials.', confirmButtonColor: '#22c55e', background: '#0e1018', color: '#eef2ff' });
-      return;
-    }
+  const data = await response.json();
 
-    if (data.token) localStorage.setItem('token', data.token);
-    localStorage.setItem('userEmail', data.email);
-    window.location.href = './dashboard.html';
+  console.log(data);
+
+  if (!response.ok) {
+    alert(data.message);
+    return;
+  }
+
+  if (data.token) {
+    localStorage.setItem('token', data.token);
+    console.log('TOKEN SAVED');
+  }
+
+  window.location.href = './dashboard.html';
+
 
   } catch (err) {
     Swal.fire({ icon: 'error', title: 'Connection error', text: 'Unable to reach the server. Please try again.', confirmButtonColor: '#22c55e', background: '#0e1018', color: '#eef2ff' });
